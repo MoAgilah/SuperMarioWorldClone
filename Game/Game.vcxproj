@@ -155,6 +155,40 @@
     <ClInclude Include="Code\GameObjects\PPlant.h" />
     <ClInclude Include="Code\GameObjects\Rex.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\Fonts\arial.ttf" />
+    <Font Include="Resources\Fonts\supermarioworld.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Sprites\bill.png" />
+    <Image Include="Resources\Sprites\BreakingBox.png" />
+    <Image Include="Resources\Sprites\ChkPnt.png" />
+    <Image Include="Resources\Sprites\Chuck.png" />
+    <Image Include="Resources\Sprites\Coin.png" />
+    <Image Include="Resources\Sprites\CoinBB.png" />
+    <Image Include="Resources\Sprites\Goal.png" />
+    <Image Include="Resources\Sprites\Koopa.png" />
+    <Image Include="Resources\Sprites\mario.png" />
+    <Image Include="Resources\Sprites\Name.png" />
+    <Image Include="Resources\Sprites\Pipe1.png" />
+    <Image Include="Resources\Sprites\Pipe2.png" />
+    <Image Include="Resources\Sprites\Pipe3.png" />
+    <Image Include="Resources\Sprites\PPlant.png" />
+    <Image Include="Resources\Sprites\QBox.png" />
+    <Image Include="Resources\Sprites\Rex.png" />
+    <Image Include="Resources\Sprites\SBox.png" />
+    <Image Include="Resources\Sprites\Shroom.png" />
+    <Image Include="Resources\Sprites\Super.png" />
+    <Image Include="Resources\Sprites\Time.png" />
+    <Image Include="Resources\Sprites\Title.png" />
+    <Image Include="Resources\Sprites\YCoin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\FlashShader.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\TileTypes.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
