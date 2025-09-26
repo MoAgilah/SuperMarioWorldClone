@@ -28,6 +28,18 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{a9d9e67c-66a7-40df-9f27-129148f82950}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{6656d098-b276-4d5f-8726-6611f08af047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{2982b3b3-cd5c-469c-bb7e-11157ec47c47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\States">
+      <UniqueIdentifier>{f27b85f7-146c-40c1-a62e-880d2820b386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\States">
+      <UniqueIdentifier>{1c5613ac-1703-45e3-80d6-52925aa98eca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source.cpp">
@@ -51,6 +63,27 @@
     <ClCompile Include="Code\GameObjects\Rex.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Engine\States\DebugState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\LoadingState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\MainMenuState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\MainState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\PauseMenuState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\PlayerState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\States\TitleState.cpp">
+      <Filter>Source Files\Engine\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\GameObjects\Bill.h">
@@ -70,6 +103,27 @@
     </ClInclude>
     <ClInclude Include="Code\GameObjects\Rex.h">
       <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\DebugState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\LoadingState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\MainMenuState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\MainState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\PauseMenuState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\PlayerState.h">
+      <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\States\TitleState.h">
+      <Filter>Header Files\Engine\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
