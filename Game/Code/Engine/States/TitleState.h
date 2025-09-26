@@ -11,6 +11,8 @@ public:
 	explicit TitleState(GameManager* gameMgr);
 	~TitleState() override = default;
 
+	std::string_view GetStateName() const { return "Title"; }
+
 	void Initialise() override;
 	void Pause() override;
 	void Resume() override;

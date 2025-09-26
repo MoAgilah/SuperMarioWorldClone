@@ -2,7 +2,7 @@
 
 #include "../../GameObjects/Player.h"
 #include <Engine/Core/Timer.h>
-#include <Engine/Interface/Scene/IGameState.h>
+#include <Engine/Interface/Scene/IStateMachine.h>
 #include <memory>
 
 /*

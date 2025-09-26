@@ -9,6 +9,8 @@ public:
 	explicit MainState(GameManager* gameMgr);
 	~MainState() override = default;
 
+	std::string_view GetStateName() const { return "Main"; }
+
 	void Initialise() override;
 	void Pause() override;
 	void Resume() override;

@@ -11,6 +11,8 @@ public:
 	explicit PauseMenuState(GameManager* gameMgr);
 	~PauseMenuState() override = default;
 
+	std::string_view GetStateName() const { return "Pause"; }
+
 	void Initialise() override;
 	void Pause() override;
 	void Resume() override;

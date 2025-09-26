@@ -131,6 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Engine\Collisions\MarioCollisionManager.cpp" />
+    <ClCompile Include="Code\Engine\Core\MarioFramework.cpp" />
+    <ClCompile Include="Code\Engine\Scenes\YoshiIsland1.cpp" />
     <ClCompile Include="Code\Engine\States\DebugState.cpp" />
     <ClCompile Include="Code\Engine\States\LoadingState.cpp" />
     <ClCompile Include="Code\Engine\States\MainMenuState.cpp" />
@@ -155,6 +158,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Engine\Collisions\MarioCollisionManager.h" />
+    <ClInclude Include="Code\Engine\Core\MarioFramework.h" />
+    <ClInclude Include="Code\Engine\Scenes\YoshiIsland1.h" />
     <ClInclude Include="Code\Engine\States\DebugState.h" />
     <ClInclude Include="Code\Engine\States\LoadingState.h" />
     <ClInclude Include="Code\Engine\States\MainMenuState.h" />

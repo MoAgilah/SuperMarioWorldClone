@@ -40,6 +40,24 @@
     <Filter Include="Source Files\Engine\States">
       <UniqueIdentifier>{1c5613ac-1703-45e3-80d6-52925aa98eca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Scene">
+      <UniqueIdentifier>{89e8d786-62c4-4b8f-a3fd-419aa8757fa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Scene">
+      <UniqueIdentifier>{0c4d7ea4-1a79-4068-a07b-c573e3638326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Core">
+      <UniqueIdentifier>{24bff894-3aeb-4182-ad9f-be2a271f63d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core">
+      <UniqueIdentifier>{12835318-8034-41a2-9db1-7d495ec35e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Collisions">
+      <UniqueIdentifier>{5cdacb7d-a1a3-4e6e-9126-1d924751ca79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Collisions">
+      <UniqueIdentifier>{91d8bd35-86fb-41f6-b0b5-94beb853224a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source.cpp">
@@ -84,6 +102,15 @@
     <ClCompile Include="Code\Engine\States\TitleState.cpp">
       <Filter>Source Files\Engine\States</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Engine\Scenes\YoshiIsland1.cpp">
+      <Filter>Source Files\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\Collisions\MarioCollisionManager.cpp">
+      <Filter>Source Files\Engine\Collisions</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Engine\Core\MarioFramework.cpp">
+      <Filter>Source Files\Engine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\GameObjects\Bill.h">
@@ -124,6 +151,15 @@
     </ClInclude>
     <ClInclude Include="Code\Engine\States\TitleState.h">
       <Filter>Header Files\Engine\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\Scenes\YoshiIsland1.h">
+      <Filter>Header Files\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\Collisions\MarioCollisionManager.h">
+      <Filter>Header Files\Engine\Collisions</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Engine\Core\MarioFramework.h">
+      <Filter>Header Files\Engine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

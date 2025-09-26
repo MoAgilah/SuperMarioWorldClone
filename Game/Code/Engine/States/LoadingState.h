@@ -13,6 +13,8 @@ public:
 	explicit LoadingState(GameManager* gameMgr);
 	~LoadingState() override = default;
 
+	std::string_view GetStateName() const { return "Loading"; }
+
 	void Initialise() override;
 	void Pause() override;
 	void Resume() override;
