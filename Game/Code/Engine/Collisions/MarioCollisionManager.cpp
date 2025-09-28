@@ -1,7 +1,7 @@
 #include "MarioCollisionManager.h"
 
-MarioCollisionManager::MarioCollisionManager()
-    : ICollisionManager(nullptr)
+MarioCollisionManager::MarioCollisionManager(std::shared_ptr<IGrid> grid)
+    : ICollisionManager(std::move(grid))
 {}
 
 void MarioCollisionManager::DynamicObjectToObjectResolution(IDynamicGameObject* obj1, IGameObject* obj2, float time)

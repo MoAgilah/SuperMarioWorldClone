@@ -5,7 +5,7 @@
 class MarioCollisionManager : public ICollisionManager
 {
 public:
-	MarioCollisionManager();
+	MarioCollisionManager(std::shared_ptr<IGrid> grid);
 	~MarioCollisionManager() = default;
 
 private:
