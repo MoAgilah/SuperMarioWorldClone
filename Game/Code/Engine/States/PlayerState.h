@@ -1,97 +1,118 @@
 #pragma once
 
-#include "../../GameObjects/Player.h"
 #include <Engine/Core/Timer.h>
-#include <Engine/Interface/Scene/IStateMachine.h>
+#include <Engine/Interface/Scene/IObjectState.h>
+#include <Utilities/MovementController.h>
 #include <memory>
 
-/*
-class PlayerState : public IGameState
+class Player;
+class SFAnimatedSprite;
+
+class PlayerState : public IObjectState
 {
 public:
-	explicit PlayerState(std::string_view name, Player* ply)
-		: GameState(name)
-	{
-		m_player = ply;
-		m_animSpr = m_player->GetAnimSpr();
-		m_physCtrl = m_player->GetPhysicsController();
-	}
+	PlayerState(Player* ply);
+	~PlayerState();
 
-	~PlayerState() override
-	{
-		if (m_player)
-			m_player = nullptr;
+	void Pause() override;
+	void Resume() override;
 
-		if (m_animSpr)
-			m_animSpr = nullptr;
-
-		if (m_physCtrl)
-			m_physCtrl = nullptr;
-	}
-
-	void Pause() override { m_player->SetActive(false); }
-	void Resume() override { m_player->SetActive(true); }
-
-	Player* GetPlayer() { return m_player; }
+	SFAnimatedSprite* GetAnimSpr();
+	Player* GetPlayer();
 
 protected:
 
-	Player* m_player;
-	AnimatedSprite* m_animSpr;
-	PhysicsController* m_physCtrl;
+	bool m_initialisedCtrl = false;
+	static MovementController m_movementCtrl;
 };
 
 class GroundedState : public PlayerState
 {
 public:
-	explicit GroundedState(Player* ply)
-		: PlayerState("Grounded", ply), m_turnTimer(0) {}
+	GroundedState(Player* ply);
+	~GroundedState() = default;
+
+	std::string_view GetStateName() const override { return "Grounded"; }
+
+	void Resume() override;
 
 	void Initialise() override;
-	void Resume() override;
 	void ProcessInputs() override;
 	void Update(float deltaTime) override;
 
 private:
 
-	void UpdateGroundAnimation();
-	void Slide(bool dir);
+	void UpdateAnimation() override;
+};
 
-	Timer m_turnTimer;
-	bool m_turningAround = false;
+class SlopedState : public PlayerState
+{
+public:
+	SlopedState(Player* ply);
+	~SlopedState() = default;
+
+	std::string_view GetStateName() const override { return "Sloped"; }
+
+	void Initialise() override;
+	void ProcessInputs() override;
+	void Update(float deltaTime) override;
+
+private:
+
+	void UpdateAnimation() override;
 };
 
 class AirborneState : public PlayerState
 {
 public:
-	explicit AirborneState(Player* ply)
-		: PlayerState("Airborne", ply) {}
+	AirborneState(Player* ply);
+	~AirborneState() = default;
+
+	std::string_view GetStateName() const override { return "Airborne"; }
+
+	void Resume() override;
 
 	void Initialise() override;
 	void ProcessInputs() override;
 	void Update(float deltaTime) override;
+
+private:
+
+	void UpdateAnimation() override;
 };
 
-class CrouchingState : public PlayerState
+class CrouchedState : public PlayerState
 {
 public:
-	explicit CrouchingState(Player* ply)
-		: PlayerState("Crouching", ply) {}
+	CrouchedState(Player* ply);
+	~CrouchedState() = default;
+
+	std::string_view GetStateName() const override { return "Crouched"; }
+
+	void Resume() override;
 
 	void Initialise() override;
-	void Resume() override;
 	void ProcessInputs() override;
 	void Update(float deltaTime) override;
+
+private:
+
+	void UpdateAnimation() override;
 };
 
 class DieingState : public PlayerState
 {
 public:
-	explicit DieingState(Player* ply)
-		: PlayerState("Dieing", ply) {}
+	DieingState(Player* ply);
+	~DieingState() = default;
+
+	std::string_view GetStateName() const override { return "Dieing"; }
 
 	void Initialise() override;
 	void ProcessInputs() override;
 	void Update(float deltaTime) override;
+
+private:
+
+	void UpdateAnimation() override;
 };
-*/

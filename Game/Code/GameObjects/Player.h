@@ -7,6 +7,7 @@
 #include <Engine/Core/Timer.h>
 #include <Engine/Input/KeyCode.h>
 #include <GameObjects/GameObject.h>
+#include "../Engine/States/PlayerState.h"
 #include <Engine/Core/GameStateMgr.h>
 
 enum MarioAnims { IDLE, LOOKUP, JUMP, FALL, RUNJUMP, SKID, SLIDE, VICTORY, CROUCH, GROW, DIE, MOVING, RUNNING, SPINJUMP };
@@ -16,6 +17,8 @@ enum MarioBoxes { REGULAR, SUPER, CROUCHED, NUMBOXES };
 class Timer;
 
 namespace sf { class Shader; }
+
+class SFAnimatedSprite;
 
 enum Keys
 {
@@ -74,6 +77,8 @@ public:
 
 	Timer* GetAirTimer() { return &m_airTimer; }
 
+	SFAnimatedSprite* GetAnimatedSprite();
+
 private:
 
 	void ProcessInput();
@@ -92,6 +97,6 @@ private:
 	Timer m_invulTimer;
 	Vector2f m_spawnLoc;
 	sf::Shader* m_fragShader;
-	GameStateMgr m_stateMgr;
+	GameStateMgr<IObjectState> m_stateMgr;
 	std::array<Vector2f, MarioBoxes::NUMBOXES> m_boxSizes{ Vector2f(9,16), Vector2f(9,25), Vector2f(14,11) };
 };

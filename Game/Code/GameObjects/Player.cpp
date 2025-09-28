@@ -369,6 +369,15 @@ void Player::SetAirbourne(bool air)
 		SetOnGround(false);
 }
 
+SFAnimatedSprite* Player::GetAnimatedSprite()
+{
+	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	if (spr)
+		return spr;
+
+	return nullptr;
+}
+
 void Player::ProcessInput()
 {
 	if (!GetIsAlive())
