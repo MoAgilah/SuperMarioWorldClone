@@ -42,6 +42,12 @@ public:
 
 	void Update(float deltaTime) final;
 	void Render(IRenderer* renderer) final;
+
+	void OnCollisionEnter(IGameObject* obj);
+	void OnCollisionStay(IGameObject* obj);
+	void OnCollisionExit(IGameObject* obj);
+	void ResolveCollisions(float time, const Vector2f& separationVector, float relativeHitPosition);
+
 	void Reset() override;
 
 	bool GetIsSuper() const { return m_super; }

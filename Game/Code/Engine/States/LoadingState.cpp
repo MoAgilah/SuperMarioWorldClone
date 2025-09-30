@@ -13,7 +13,7 @@ void LoadResources()
 
 	scene->AddEnemies();
 	scene->AddObjects();
-	scene->AddForeGroundSprites();
+	scene->AddForeGroundObjects();
 
 	GameConstants::GameIsReady = true;
 }

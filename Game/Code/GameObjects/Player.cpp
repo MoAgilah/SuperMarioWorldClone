@@ -225,6 +225,25 @@ void Player::Render(IRenderer* renderer)
 #endif
 }
 
+void Player::OnCollisionEnter(IGameObject* obj)
+{
+}
+
+void Player::OnCollisionStay(IGameObject* obj)
+{
+
+}
+
+void Player::OnCollisionExit(IGameObject* obj)
+{
+
+}
+
+void Player::ResolveCollisions(float time, const Vector2f& separationVector, float relativeHitPosition)
+{
+
+}
+
 void Player::Reset()
 {
 	SetInitialPosition(m_spawnLoc);

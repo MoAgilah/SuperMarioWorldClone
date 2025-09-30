@@ -9,7 +9,7 @@ class SFText;
 class SFSprite;
 
 enum class Texts { Name, Time, Max };
-enum class Sprites { Pipe1, Pipe2, Pipe3, Name, Time, Max};
+enum class Sprites { Name, Time, Max};
 
 class YoshiIsland1 : public IScene
 {
@@ -17,21 +17,14 @@ public:
 	YoshiIsland1();
 	~YoshiIsland1() = default;
 
-	void Update(float deltaTime) override;
-	void Render(IRenderer* renderer) override;
-	void ResetScene() override;
-
-	void CheckIsInView();
-
-	void AddObject(const Vector2f& pos);
+	void SpawnGameObjectAt(const std::string& id, std::shared_ptr<GameObject> obj, const Vector2f& pos) override;
 
 	void AddEnemies();
 	void AddGUI();
 	void AddObjects();
-	void AddForeGroundSprites();
+	void AddForeGroundObjects();
 
 private:
 
 	void UpdateGUI(float deltaTime);
-	void RenderGUI(IRenderer* renderer);
 };

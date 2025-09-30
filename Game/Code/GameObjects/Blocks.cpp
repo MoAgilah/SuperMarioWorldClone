@@ -135,7 +135,7 @@ void RotatingBlock::Scatter()
 	if (!spr)
 		return;
 
-	spr->Move(0, GameConstants::ObjectSpeed);
+	spr->OffsetPosition(Vector2f(0, GameConstants::ObjectSpeed));
 
 	if (GetPosition().y > 600.f + (float)spr->GetFrameSize().y)
 	{
