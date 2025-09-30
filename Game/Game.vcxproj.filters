@@ -64,6 +64,12 @@
     <Filter Include="Source Files\GameObjects\Enemies">
       <UniqueIdentifier>{e1b22331-d823-4b63-9b4e-207e5fd6b194}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{49d6a319-9263-44d6-8961-f6e838837bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{36a42d01-fe3d-47f6-961e-15299fe0e921}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source.cpp">
@@ -126,6 +132,9 @@
     <ClCompile Include="Code\GameObjects\Pipes.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Utilities\GameMode.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\GameObjects\Player.h">
@@ -185,11 +194,11 @@
     <ClInclude Include="Code\GameObjects\Pipes.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Utilities\GameMode.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\Fonts\arial.ttf">
-      <Filter>Resource Files\Font</Filter>
-    </Font>
     <Font Include="Resources\Fonts\supermarioworld.ttf">
       <Filter>Resource Files\Font</Filter>
     </Font>

@@ -60,9 +60,7 @@ void LoadingState::Update(float deltaTime)
 	m_titleMessage.Update(deltaTime);
 
 	if (GameConstants::GameIsReady)
-	{
 		m_gameMgr->GetGameStateMgr()->PopState();
-	}
 }
 
 void LoadingState::Render()
@@ -71,7 +69,6 @@ void LoadingState::Render()
 	if (renderer)
 	{
 		m_backgroundSpr.Render(renderer);
-
 		m_titleMessage.Render(renderer);
 	}
 }

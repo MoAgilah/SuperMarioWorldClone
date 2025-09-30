@@ -35,9 +35,7 @@ void TitleState::Resume()
 void TitleState::ProcessInputs()
 {
 	if (m_gameMgr->GetInputManager()->IsAnyKeyPressed())
-	{
-		//m_gameMgr->GetGameStateMgr()->ChangeState(new MainMenuState(m_gameMgr));
-	}
+		m_gameMgr->GetGameStateMgr()->ChangeState(new MainMenuState(m_gameMgr));
 }
 
 void TitleState::Update(float deltaTime)
