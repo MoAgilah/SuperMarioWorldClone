@@ -1,5 +1,6 @@
-#include "Chuck.h"
+﻿#include "Chuck.h"
 
+#include "../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Collisions/BoundingBox.h>
@@ -8,13 +9,16 @@
 
 Chuck::Chuck(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck",5,7,GameConstants::FPS, false,0.5f),
-		std::make_shared<BoundingBox<SFRect>>(Vector2f(24.f,25.f),Vector2f())), m_waitTimer(0)
+		std::make_shared<BoundingBox<SFRect>>(Vector2f(24.f,25.f),Vector2f())), m_waitTimer(0.5f)
 {
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
 	m_volume->Update(GetPosition());
+	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.60f);
+	SetSpeedY(GameMode::m_marioMaxSpdY);
+
 	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
 	if (spr)
 		spr->SetFrames({ 3, 1, 1, 7, 3 });
@@ -60,89 +64,58 @@ void Chuck::DecrementLife()
 	}
 }
 
-void Chuck::Animate(float deltaTime)
+namespace {
+    // Upward takeoff speed in px/frame (SMW-ish gravity: 0.1875 px/f^2)
+    constexpr float kChuckJumpVy = -3.5f; // ~2 tiles apex; try -3.0f (1.5 tiles) or -3.9f (2.5 tiles)
+}
+
+void Chuck::Animate(float dt)
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (!spr)
-		return;
-	/*PhysicsController* physCtrl = GetPhysicsController();*/
+    auto* spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+    if (!spr)
+        return;
 
-	spr->Update(deltaTime);
+    spr->Update(dt);
 
-	if (m_tookHit)
-	{
-		if (GetAirbourne())
-		{
-			/*if (physCtrl->GetPhysicsType() != PhysicsType::drop)
-				physCtrl->SetFalling();*/
+    if (GetOnGround())
+    {
+        m_waitTimer.Update(dt);
+        if (m_waitTimer.CheckEnd())
+        {
+            spr->EnsureAnim(ChuckAnims::BOUNCE);
+            SetAirTime(0.75f);
+            SetYVelocity(GameMode::m_marioMaxSpdY);
+            SetAirbourne(true);
+        }
+        else
+        {
+            SetYVelocity(0);
+        }
+    }
+    else
+    {
+        if (GetAirbourne())
+        {
+            if (GetAirTimer()->CheckEnd())
+            {
+                spr->EnsureAnim(ChuckAnims::CLAP);
+                SetAirbourne(false);
+                SetYVelocity(0);
+            }
+        }
+        else
+        {
+            if (!GetOnGround())
+            {
+                if (GetYVelocity() < GameMode::m_marioMaxSpdY)
+                    IncrementYVelocity(GameConstants::Gravity);
+            }
+        }
+    }
 
-			//IncrementYVelocity(physCtrl->GetYAcceleration());
-		}
-		else
-		{
-			if (spr->PlayedNumTimes(2))
-			{
-				m_tookHit = false;
-				SetInvulnerability(false);
-			}
-		}
-
-		if (GetOnGround())
-			SetAirbourne(false);
-	}
-	else
-	{
-		if (GetAirbourne())
-		{
-			m_waitTimer.Update(deltaTime);
-			if (m_waitTimer.CheckEnd())
-			{
-				/*if (physCtrl->GetPhysicsType() != PhysicsType::rise)
-					physCtrl->SetAerial();*/
-
-				//DecrementYVelocity(physCtrl->GetYAcceleration());
-				GetAirTimer()->Update(deltaTime);
-				if (spr->GetCurrentAnim() != ChuckAnims::LEAP)
-					spr->ChangeAnim(ChuckAnims::LEAP);
-			}
-			else
-			{
-				SetYVelocity(0);
-			}
-		}
-		else
-		{
-			/*if (physCtrl->GetPhysicsType() != PhysicsType::drop)
-				physCtrl->SetFalling();*/
-
-			//IncrementYVelocity(physCtrl->GetYAcceleration());
-		}
-
-		auto currentPos = GetPosition();
-
-		if (GetAirTimer()->CheckEnd())
-		{
-			if (spr->GetCurrentAnim() != ChuckAnims::CLAP)
-				spr->ChangeAnim(ChuckAnims::CLAP);
-			SetAirbourne(false);
-		}
-
-		if (GetOnGround())
-		{
-			if (!GetAirbourne())
-			{
-				if (spr->GetCurrentAnim() != ChuckAnims::BOUNCE)
-					spr->ChangeAnim(ChuckAnims::BOUNCE);
-				m_waitTimer.SetCurrTime(0.5f);
-				SetAirTime(0.75f);
-				SetAirbourne(true);
-			}
-		}
-	}
-
-	if (GetYVelocity() != 0)
-	{
-		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
-		GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
-	}
+    if (GetYVelocity() != 0.0f)
+    {
+        Move(0.0f, GetYVelocity() * GameConstants::FPS * dt);
+        GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
+    }
 }

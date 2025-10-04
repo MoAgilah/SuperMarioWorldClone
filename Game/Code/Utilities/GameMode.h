@@ -11,4 +11,6 @@ class GameMode
 {
 public:
 	static GameType m_gameType;
+	static float m_mariosMaxSpdX;
+	static float m_marioMaxSpdY;
 };

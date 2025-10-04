@@ -1,5 +1,6 @@
 #include "Koopa.h"
 
+#include "../Utilities/GameMode.h"
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Interface/Collisions/ICollisionManager.h>
 #include <Engine/Core/Constants.h>
@@ -16,7 +17,11 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
 	m_volume->Update(GetPosition());
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+
+	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.25f);
+	SetSpeedY(GameMode::m_marioMaxSpdY);
+
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
 	{
 		spr->SetFrames({ 2, 3, 1 });
@@ -26,100 +31,91 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 
 void Koopa::Reset()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
-	{
-		if (spr->GetCurrentAnim() != KoopaAnims::WALK)
-			spr->ChangeAnim(KoopaAnims::WALK);
-	}
+		spr->EnsureAnim(KoopaAnims::WALK);
+
 	Enemy::Reset();
+}
+
+void Koopa::SetDirection(bool dir)
+{
+	Enemy::SetDirection(dir);
+	if (dir)
+		SetXVelocity(GetSpeedX());
+	else
+		SetXVelocity(-GetSpeedX());
 }
 
 void Koopa::Die()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
-	{
-		if (spr->GetCurrentAnim() != KoopaAnims::COMPRESS)
-			spr->ChangeAnim(KoopaAnims::COMPRESS);
-	}
+		spr->EnsureAnim(KoopaAnims::COMPRESS);
+
 	SetTimeLeftActive(0.5f);
 }
 
 void Koopa::Animate(float deltaTime)
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (!spr)
-		return;
-	//PhysicsController* physCtrl = GetPhysicsController();
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	auto* colMgr = GameManager::Get()->GetCollisionMgr();
-	if (colMgr)
+
+	if (!spr)
 		return;
 
 	spr->Update(deltaTime);
 
-	SetPrevPosition(GetPosition());
+	if (HasLifes())
+	{
 
-	if (GetDirection())
-	{
-		SetXVelocity(GameConstants::ObjectSpeed);
-	}
-	else
-	{
-		SetXVelocity(-GameConstants::ObjectSpeed);
-	}
+		SetPrevPosition(GetPosition());
 
-	if (GetOnGround())
-	{
-		if (GetOnSlope())
+		if (GetOnGround())
 		{
-			if (spr->GetCurrentAnim() != KoopaAnims::NOSEDIVE)
-				spr->ChangeAnim(KoopaAnims::NOSEDIVE);
-
-			if (!GetXVelocity())
+			if (GetOnSlope())
 			{
-				if (GetShouldSlideLeft())
-					SetSlideLeft(true);
+				spr->EnsureAnim(KoopaAnims::NOSEDIVE);
 
-				if (GetShouldSlideRight())
-					SetSlideRight(true);
+				if (!GetSlideLeft() || !GetSlideRight())
+				{
+					if (GetDirection())
+					{
+
+						SetShouldSlideRight(true);
+					}
+					else
+					{
+						SetShouldSlideLeft(true);
+					}
+				}
+				else
+				{
+					if (GetSlideLeft())
+						DecrementXVelocity(GameConstants::Gravity);
+
+					if (GetSlideRight())
+						IncrementXVelocity(GameConstants::Gravity);
+				}
+			}
+			else
+			{
+				if (spr->GetCurrentAnim() == KoopaAnims::NOSEDIVE)
+					spr->ChangeAnim(KoopaAnims::WALK);
+
+				SetSlideLeft(false);
+				SetSlideRight(false);
 			}
 
-			if (GetSlideLeft() || GetSlideRight())
-			{
-				/*if (GetSlideLeft())
-					DecrementXVelocity(physCtrl->GetXAcceleration());
-
-				if (GetSlideRight())
-					IncrementXVelocity(physCtrl->GetXAcceleration());*/
-			}
+			if (GetYVelocity() != 0)
+				SetYVelocity(0);
 		}
 		else
 		{
-			/*if (physCtrl->GetPhysicsType() == PhysicsType::drop)
-				physCtrl->SetWalking();
-
-			if (animSpr->GetCurrentAnim() == KoopaAnims::NOSEDIVE)
-				animSpr->ChangeAnim(KoopaAnims::WALK);*/
-
-			SetSlideLeft(false);
-			SetSlideRight(false);
-			SetShouldSlideLeft(false);
-			SetShouldSlideRight(false);
+			if (GetYVelocity() < GameMode::m_marioMaxSpdY)
+				IncrementYVelocity(GameConstants::Gravity);
 		}
 
-		SetYVelocity(0);
-	}
-	else
-	{
-		/*if (physCtrl->GetPhysicsType() != PhysicsType::drop)
-			physCtrl->SetFalling();*/
-
-		IncrementYVelocity(GameConstants::Gravity);
-	}
-
-	if (HasLifes())
-	{
 		if (GetXVelocity() != 0)
 		{
 			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);

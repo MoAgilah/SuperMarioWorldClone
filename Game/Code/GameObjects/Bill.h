@@ -3,18 +3,12 @@
 #include "Player.h"
 #include <GameObjects/Enemy.h>
 #include <Utilities/Vector.h>
+#include <memory>
 
-struct HalfCapsule
-{
-//	sf::CircleShape circle;
-//	AABB box;
-//
-//	bool Intersects(AABB* box);
-//
-//private:
-//
-//	bool CircleToAABB(AABB* box);
-};
+template <typename TCapsule>
+struct HalfCapsule;
+
+class SFCapsule;
 
 class Bill : public Enemy
 {
@@ -26,9 +20,10 @@ public:
 	bool Intersects(IGameObject* obj) override;
 
 	bool Intersects(IDynamicGameObject* obj, float& tFirst, float& tLast) override;
-	//bool IsPlayerAbove(Player* ply) final;
 
 	void Die() final { SetTimeLeftActive(2.f); }
+
+	void SetDirection(bool dir);
 
 	bool GetAirbourne() const = delete;
 	void SetAirbourne(bool air) = delete;
@@ -41,5 +36,5 @@ private:
 	void UpdateBody();
 	void Animate(float deltaTime) final;
 
-	HalfCapsule m_halfCap;
+	std::shared_ptr<HalfCapsule<SFCapsule>> m_halfCap;
 };

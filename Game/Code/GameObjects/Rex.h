@@ -13,6 +13,8 @@ public:
 	void Reset() final;
 	void Die() final;
 
+	void SetDirection(bool dir);
+
 	bool Tall() const { return !m_squished; }
 	void DecrementLife() final;
 

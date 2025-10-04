@@ -15,10 +15,13 @@ enum MarioAnims { IDLE, LOOKUP, JUMP, FALL, RUNJUMP, SKID, SLIDE, VICTORY, CROUC
 enum MarioBoxes { REGULAR, SUPER, CROUCHED, NUMBOXES };
 
 class Timer;
-
-namespace sf { class Shader; }
-
 class SFAnimatedSprite;
+class SFShader;
+
+template<typename T>
+class BoundingBox;
+class SFRect;
+
 
 enum Keys
 {
@@ -31,8 +34,6 @@ enum Keys
 	SJUMP_KEY = KeyCode::D,
 	MAXKEYS
 };
-
-class CNeuralNet;
 
 class Player : public DynamicGameObject
 {
@@ -52,9 +53,6 @@ public:
 
 	bool GetIsSuper() const { return m_super; }
 	void SetIsSuper(bool super);
-
-	bool GetGoalHit() const { return m_goalHit; }
-	void SetGoalHit(bool goal) { m_goalHit = goal; }
 
 	bool GetIsAlive() const { return m_alive; }
 	void SetIsAlive(bool val, float airtime = 0.1f);
@@ -84,6 +82,10 @@ public:
 	Timer* GetAirTimer() { return &m_airTimer; }
 
 	SFAnimatedSprite* GetAnimatedSprite();
+	SFShader* GetShader();
+	BoundingBox<SFRect>* GetBox();
+
+	GameStateMgr<IObjectState>* GetStateMgr() { return &m_stateMgr; }
 
 private:
 
@@ -95,14 +97,13 @@ private:
 	bool m_alive = true;
 	bool m_cantjump = false;
 	bool m_cantSpinJump = false;
-	bool m_goalHit = false;
 	bool m_airbourne = false;
 	int m_coinTotal = 0;
 	float m_heightDiff = 11.25;
 	Timer m_airTimer;
 	Timer m_invulTimer;
 	Vector2f m_spawnLoc;
-	sf::Shader* m_fragShader;
+	SFShader* m_fragShader;
 	GameStateMgr<IObjectState> m_stateMgr;
 	std::array<Vector2f, MarioBoxes::NUMBOXES> m_boxSizes{ Vector2f(9,16), Vector2f(9,25), Vector2f(14,11) };
 };

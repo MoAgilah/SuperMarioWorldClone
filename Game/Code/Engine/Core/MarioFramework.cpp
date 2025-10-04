@@ -8,7 +8,7 @@
 
 MarioFramework::MarioFramework()
 {
-	GameConstants::ObjectSpeed = 8.f;
+	GameConstants::Gravity = 0.1875f;
 	GameConstants::WindowTitle = "SFMLMario";
 	GameConstants::WindowColour = Colour::Black;
 

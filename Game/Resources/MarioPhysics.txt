@@ -1,3 +1,16 @@
+| Entity                     | Motion Type  | Speed (px/frame) | Speed (px/sec) |  Tiles/sec  | Relative to Mario (≈ 4 px/f run) | Notes                         |
+| :------------------------- | :----------- | :--------------: | :------------: | :---------: | :------------------------------: | :---------------------------- |
+| **Mario (walk)**           | Horizontal   |   **1.5 px/f**   |     90 px/s    |   5.6 t/s   |             — (base)             | Walking without dash          |
+| **Mario (run / P-speed)**  | Horizontal   | **3.5–4.0 px/f** |  210–240 px/s  |  13–15 t/s  |             100 % ref            | Full dash / flight speed      |
+| **Rex (normal)**           | Horizontal   |   **0.5 px/f**   |     30 px/s    |   1.9 t/s   |              ≈ 12 %              | Slow walk                     |
+| **Rex (flattened)**        | Horizontal   |   **0.75 px/f**  |     45 px/s    |   2.8 t/s   |              ≈ 19 %              | Slightly faster after 1 stomp |
+| **Koopa Troopa (walking)** | Horizontal   |   **1.0 px/f**   |     60 px/s    |   3.8 t/s   |              ≈ 25 %              | Green / red ground pace       |
+| **Koopa shell (sliding)**  | Horizontal   |   **4.0 px/f**   |    240 px/s    |    15 t/s   |              ≈ 100 %             | Equal to Mario’s max run      |
+| **Charging Chuck (run)**   | Horizontal   | **2.0–2.5 px/f** |  120–150 px/s  | 7.5–9.4 t/s |             ≈ 50–65 %            | Sprinting toward Mario        |
+| **Banzai Bill**            | Horizontal   |   **3.0 px/f**   |    180 px/s    |   11.3 t/s  |              ≈ 75 %              | Huge slow-moving projectile   |
+| **Piranha Plant**          | **Vertical** |   **1.0 px/f**   |     60 px/s    |   3.8 t/s   |              ≈ 25 %              | Rises/falls; not horizontal   |
+
+
 GROUND PHYSICS
  
 Flat Ground Physics

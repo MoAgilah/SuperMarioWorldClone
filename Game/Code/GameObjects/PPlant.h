@@ -12,6 +12,7 @@ public:
 
 	void Reset() final;
 
+	void SetDirection(bool dir) override;
 
 	void Die() final;
 

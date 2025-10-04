@@ -1,6 +1,8 @@
 #include "PlayerState.h"
 
 #include "../../GameObjects/Player.h"
+#include "../../Utilities/GameMode.h"
+#include <Utilities/Utils.h>
 #include <Drawables/SFSprite.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
@@ -9,52 +11,134 @@
 
 MovementController PlayerState::m_movementCtrl = {};
 
+// Lateral
+enum class LateralLoco
+{
+	Walk,
+	Run,
+	Sprint,
+	EOL
+};
+
+enum class LateralAccl
+{
+	Imp
+};
+
+enum class LateralDecl
+{
+	Stop,
+	Skid
+};
+
+// Inclined
+enum class InclinedLoco
+{
+	Walk,
+	Run,
+	SmlDecWalk,
+	LrgDecWalk,
+	SmlDecRun,
+	LrgDecRun,
+	Slide
+};
+
+enum class InclinedAccl
+{
+	Imp,
+	SldSmlInc,
+	SldLrgInc
+};
+
+// Vertical
+enum class VerticalLoco
+{
+	Low,
+	Med,
+	High,
+	Max,
+	Slam,
+	Tap
+};
+
+enum class VerticalAccl
+{
+	High,
+	Low
+};
+
+enum MovementStates
+{
+	Lateral,
+	Crouched,
+	Vertical,
+	Inclined,
+	Dieing
+};
+
 PlayerState::PlayerState(Player* ply)
 	: IObjectState(ply)
 {
 	if (!m_initialisedCtrl)
 	{
-		Physics grounded;
+		MovementState lateral;
 
-		grounded.AddVelocity("Walk", 1.5f);
-		grounded.AddVelocity("Run", 2.5f);
-		grounded.AddVelocity("Sprint", 3.5f);
-		grounded.AddVelocity("EOL", 1.25f);
+		lateral.AddVelocity(ToInt(LateralLoco::Walk), 1.5f);
+		lateral.AddVelocity(ToInt(LateralLoco::Run), 2.5f);
+		lateral.AddVelocity(ToInt(LateralLoco::Sprint), 3.5f);
 
-		grounded.AddAcceleration("Imp", 0.0546875f);
+		GameMode::m_mariosMaxSpdX = lateral.GetVelocity(ToInt(LateralLoco::Sprint));
 
-		grounded.AddDeceleration("Stop", 0.0546875f);
-		grounded.AddDeceleration("Skid", 0.046875f);
+		lateral.AddVelocity(ToInt(LateralLoco::EOL), 1.25f);
 
-		m_movementCtrl.AddPhysicsState("Grounded", grounded);
+		lateral.AddAcceleration(ToInt(LateralAccl::Imp), 0.0546875f);
 
-		Physics sloped;
+		lateral.AddDeceleration(ToInt(LateralDecl::Stop), 0.0546875f);
+		lateral.AddDeceleration(ToInt(LateralDecl::Skid), 0.046875f);
 
-		sloped.AddVelocity("Walking", 0.8125f);
-		sloped.AddVelocity("Running", 1.375f);
-		sloped.AddVelocity("Sliding", 3.9375f);
+		m_walkCap = lateral.GetVelocity(ToInt(LateralLoco::Walk));
+		m_runCap = lateral.GetVelocity(ToInt(LateralLoco::Run));
+		m_sprintCap = lateral.GetVelocity(ToInt(LateralLoco::Sprint));
 
-		grounded.AddAcceleration("G26", 0.125f);
-		grounded.AddAcceleration("G45", 0.1875f);
-		grounded.AddAcceleration("GS26", 0.0625f);
-		grounded.AddAcceleration("GS45", 0.125f);
+		m_movementCtrl.AddMovementXState(Lateral, lateral);
 
-		m_movementCtrl.AddPhysicsState("Sloped", sloped);
+		MovementState inclined;
 
-		Physics jumping;
+		inclined.AddVelocity(ToInt(InclinedLoco::Walk), 0.8125f);
+		inclined.AddVelocity(ToInt(InclinedLoco::Run), 1.375f);
 
-		jumping.AddVelocity("Low", 3.4375f);		// X Velocity < 1 px/f (-Y)
-		jumping.AddVelocity("Med", 3.5625f);		// X Velocity > 1 px/f (-Y)
-		jumping.AddVelocity("High", 3.6875f);		// X Velocity > 2 px/f (-Y)
-		jumping.AddVelocity("Max", 3.9375f);		// X Velocity > 3 px/f (-Y)
+		inclined.AddVelocity(ToInt(InclinedLoco::SmlDecWalk),
+			inclined.GetVelocity(ToInt(InclinedLoco::Walk)) + 0.125f);
+		inclined.AddVelocity(ToInt(InclinedLoco::LrgDecWalk),
+			inclined.GetVelocity(ToInt(InclinedLoco::Walk)) + 0.1875f);
 
-		jumping.AddVelocity("Slam", 4.f);			// -Y
-		jumping.AddVelocity("Tap", 3.f);			// -Y
+		inclined.AddVelocity(ToInt(InclinedLoco::SmlDecRun),
+			inclined.GetVelocity(ToInt(InclinedLoco::Run)) + 0.125f);
+		inclined.AddVelocity(ToInt(InclinedLoco::LrgDecRun),
+			inclined.GetVelocity(ToInt(InclinedLoco::Run)) + 0.1875f);
 
-		jumping.AddAcceleration("High", 0.0625f);	//(A held, Y Vel < -2 px/f)
-		jumping.AddAcceleration("Low", 0.3125f);	//(Y Vel > -2 px / f)
+		lateral.AddAcceleration(ToInt(InclinedAccl::Imp), 0.0546875f);
+		lateral.AddAcceleration(ToInt(InclinedAccl::SldSmlInc), 0.0625f);
+		lateral.AddAcceleration(ToInt(InclinedAccl::SldLrgInc), 0.125f);
 
-		m_movementCtrl.AddPhysicsState("Jumping", jumping);
+		m_movementCtrl.AddMovementXState(Inclined, inclined);
+
+		MovementState vertical;
+
+		vertical.AddVelocity(ToInt(VerticalLoco::Low), 3.4375f);			// X Velocity < 1 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::Med), 3.5625f);			// X Velocity > 1 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::High), 3.6875f);		// X Velocity > 2 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::Max), 3.9375f);			// X Velocity > 3 px/f (-Y)
+
+		GameMode::m_marioMaxSpdY = lateral.GetVelocity(ToInt(VerticalLoco::Max));
+
+		vertical.AddVelocity(ToInt(VerticalLoco::Slam), 4.f);			// -Y
+		vertical.AddVelocity(ToInt(VerticalLoco::Tap), 3.f);				// -Y
+
+		vertical.AddAcceleration(ToInt(VerticalAccl::High), 0.0625f);	//(A held, Y Vel < -2 px/f)
+		vertical.AddAcceleration(ToInt(VerticalAccl::Low), 0.3125f);		//(Y Vel > -2 px / f)
+
+		m_movementCtrl.AddMovementYState(Vertical, vertical);
 
 		m_initialisedCtrl = true;
 	}
@@ -76,6 +160,15 @@ void PlayerState::Resume()
 	GetPlayer()->SetActive(true);
 }
 
+void PlayerState::Update(float deltaTime)
+{
+	auto ply = GetPlayer();
+	if (!ply)
+		return;
+
+
+}
+
 SFAnimatedSprite* PlayerState::GetAnimSpr()
 {
 	return nullptr;
@@ -90,255 +183,107 @@ Player* PlayerState::GetPlayer()
 	return nullptr;
 }
 
-GroundedState::GroundedState(Player* ply)
+void PlayerState::MoveLeft(Player* ply)
+{
+	if (!ply)
+		return;
+
+	if (ply->GetDirection())
+		ply->SetDirection(false);
+
+	auto& currMovState = m_movementCtrl.GetCurrentXState();
+
+	ply->DecrementXVelocity(currMovState.GetCurrentAccel());
+}
+
+void PlayerState::MoveRight(Player* ply)
+{
+	if (!ply)
+		return;
+
+	if (!ply->GetDirection())
+		ply->SetDirection(true);
+
+	auto& currMovState = m_movementCtrl.GetCurrentXState();
+
+	ply->IncrementXVelocity(currMovState.GetCurrentAccel());
+}
+
+void PlayerState::MoveUp(Player* ply)
+{
+	if (!ply)
+		return;
+
+	auto& currMovState = m_movementCtrl.GetCurrentYState();
+
+	ply->DecrementYVelocity(currMovState.GetCurrentAccel());
+}
+
+void PlayerState::MoveDown(Player* ply)
+{
+	if (!ply)
+		return;
+
+	auto& currMovState = m_movementCtrl.GetCurrentYState();
+
+	ply->IncrementYVelocity(currMovState.GetCurrentAccel());
+}
+
+void PlayerState::InitiateJump(Player* ply)
+{
+	if (!ply)
+		return;
+
+	if (ply->GetOnGround() && !ply->GetCantJump())
+	{
+		ply->SetAirbourne(true);
+		ply->SetCantJump(true);
+		ply->GetStateMgr()->PushState(new VerticalState(ply));
+	}
+}
+
+void PlayerState::InititateSpinJump(Player* ply)
+{
+	if (!ply)
+		return;
+
+	if (ply->GetOnGround() && !ply->GetCantSpinJump())
+	{
+		ply->SetAirbourne(true);
+		ply->SetCantSpinJump(true);
+		ply->GetStateMgr()->PushState(new VerticalState(ply, true));
+	}
+}
+
+LateralState::LateralState(Player* ply)
 	: PlayerState(ply)
 {
 }
 
-void GroundedState::Initialise()
+void LateralState::Initialise()
 {
-	auto animSpr = GetAnimSpr();
-	if (animSpr)
-	{
-		if (animSpr->GetCurrentAnim() != MarioAnims::IDLE)
-			animSpr->ChangeAnim(MarioAnims::IDLE);
-	}
+	m_movementCtrl.ChangeMovementXState(Lateral);
 }
 
-void GroundedState::Resume()
+void LateralState::Resume()
 {
 	auto ply = GetPlayer();
 	auto animSpr = GetAnimSpr();
 
-	if (ply && animSpr)
-	{
-		if (ply->GetXVelocity() == 0)
-			animSpr->ChangeAnim(MarioAnims::IDLE);
-		else
-			UpdateAnimation();
-	}
+	if (!ply || !animSpr)
+		return;
+
+	m_movementCtrl.ChangeMovementXState(Lateral);
+
+	if (ply->GetAirbourne())
+		ply->GetStateMgr()->PushState(new VerticalState(ply, ply->GetCantSpinJump()));
+	else
+		ply->SetIsCrouched(false);
 
 	PlayerState::Resume();
 }
 
-void GroundedState::ProcessInputs()
-{
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-	auto inputManager = GameManager::Get()->GetInputManager();
-
-	if (!ply || !animSpr || !inputManager)
-		return;
-
-	if (inputManager->GetKeyState(Keys::LEFT_KEY) && inputManager->GetKeyState(Keys::RIGHT_KEY))
-	{
-		// prioritize multi keys based on previous direction
-		if (ply->GetDirection())
-		{
-			UpdateAnimation();
-			//ply->IncrementXVelocity(m_physCtrl->GetXAcceleration());
-		}
-		else
-		{
-			UpdateAnimation();
-			//ply->DecrementXVelocity(m_physCtrl->GetXAcceleration());
-		}
-	}
-	else
-	{
-		if (inputManager->GetKeyState(Keys::LEFT_KEY))
-		{
-			if (ply->GetDirection())
-			{
-				ply->SetDirection(false);
-				/*if (ply->GetXVelocity() > m_physCtrl->GetXAcceleration())
-					Slide(ply->GetDirection());*/
-			}
-
-			/*if (!m_turningAround)
-			{
-				UpdateAnimation();
-				ply->DecrementXVelocity(m_physCtrl->GetXAcceleration());
-			}*/
-		}
-
-		if (inputManager->GetKeyState(Keys::RIGHT_KEY))
-		{
-			if (!ply->GetDirection())
-			{
-				ply->SetDirection(true);
-				/*if (ply->GetXVelocity() < -m_physCtrl->GetXAcceleration())
-					Slide(ply->GetDirection());*/
-			}
-
-			/*if (!m_turningAround)
-			{
-				UpdateAnimation();
-				ply->IncrementXVelocity(m_physCtrl->GetXAcceleration());
-			}*/
-		}
-	}
-
-	if (inputManager->GetKeyState(Keys::UP_KEY))
-	{
-		if (!inputManager->GetKeyState(Keys::LEFT_KEY) && !inputManager->GetKeyState(Keys::RIGHT_KEY))
-		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::LOOKUP)
-				animSpr->ChangeAnim(MarioAnims::LOOKUP);
-		}
-	}
-
-	if (inputManager->GetKeyState(Keys::RUN_KEY))
-	{
-		/*if (m_physCtrl->GetXVelocityType() == XVelocity::walking)
-			m_physCtrl->SetRunning();*/
-	}
-	else
-	{
-		/*if (m_physCtrl->GetXVelocityType() != XVelocity::walking)
-			m_physCtrl->SetWalking();*/
-	}
-
-	if (inputManager->GetKeyState(Keys::JUMP_KEY))
-	{
-		if (ply->GetOnGround() && !ply->GetCantJump())
-		{
-			animSpr->UpdateAnimSpeed(0.5f);
-			/*switch (m_physCtrl->GetXVelocityType())
-			{
-			case XVelocity::walking:
-				[[fallthrough]];
-			case XVelocity::running:
-				if (animSpr->GetCurrentAnim() != MarioAnims::JUMP)
-					animSpr->ChangeAnim(MarioAnims::JUMP);
-				break;
-			case XVelocity::sprinting:
-				if (animSpr->GetCurrentAnim() != MarioAnims::RUNJUMP)
-					animSpr->ChangeAnim(MarioAnims::RUNJUMP);
-				break;
-			}*/
-
-			ply->SetAirbourne(true);
-			ply->SetCantJump(true);
-			/*if (m_physCtrl->GetPhysicsType() != PhysicsType::rise)
-			{
-				m_physCtrl->SetAerial();
-				ply->GetAirTimer()->SetTime(m_physCtrl->GetAirTime());
-			}*/
-		}
-	}
-	else
-	{
-		ply->SetCantJump(false);
-	}
-
-	if (inputManager->GetKeyState(Keys::SJUMP_KEY))
-	{
-		if (ply->GetOnGround() && !ply->GetCantSpinJump())
-		{
-			animSpr->UpdateAnimSpeed(0.5f);
-			if (animSpr->GetCurrentAnim() != MarioAnims::SPINJUMP)
-				animSpr->ChangeAnim(MarioAnims::SPINJUMP);
-			ply->SetAirbourne(true);
-			ply->SetCantSpinJump(true);
-			/*if (m_physCtrl->GetPhysicsType() != PhysicsType::rise)
-			{
-				m_physCtrl->SetAerial();
-				ply->GetAirTimer()->SetTime(m_physCtrl->GetAirTime());
-			}*/
-		}
-	}
-	else
-	{
-		ply->SetCantSpinJump(false);
-	}
-}
-
-void GroundedState::Update(float deltaTime)
-{
-	/*if (m_turningAround)
-	{
-		m_turnTimer.Update(deltaTime);
-		if (m_turnTimer.CheckEnd())
-			m_turningAround = false;
-	}*/
-}
-
-void GroundedState::UpdateAnimation()
-{
-	auto animSpr = GetAnimSpr();
-
-	if (!animSpr)
-		return;
-
-	/*switch (m_physCtrl->GetXVelocityType())
-	{
-	case XVelocity::walking:
-		animSpr->UpdateAnimSpeed(0.5f);
-		if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
-			animSpr->ChangeAnim(MarioAnims::MOVING);
-		break;
-	case XVelocity::running:
-		animSpr->UpdateAnimSpeed(0.75f);
-		if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
-			animSpr->ChangeAnim(MarioAnims::MOVING);
-		break;
-	case XVelocity::sprinting:
-		animSpr->UpdateAnimSpeed(0.5f);
-		if (animSpr->GetCurrentAnim() != MarioAnims::RUNNING)
-			animSpr->ChangeAnim(MarioAnims::RUNNING);
-		break;
-	}*/
-}
-
-SlopedState::SlopedState(Player* ply)
-	: PlayerState(ply)
-{
-}
-
-void SlopedState::Initialise()
-{
-	auto player = GetPlayer();
-	auto animSpr = player->GetAnimatedSprite();
-
-	player->SetXVelocity(0);
-	if (animSpr)
-	{
-		if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-			animSpr->ChangeAnim(MarioAnims::CROUCH);
-	}
-}
-
-void SlopedState::ProcessInputs()
-{
-}
-
-void SlopedState::Update(float deltaTime)
-{
-}
-
-void SlopedState::UpdateAnimation()
-{
-}
-
-AirborneState::AirborneState(Player* ply)
-	: PlayerState(ply)
-{
-}
-
-void AirborneState::Resume()
-{
-}
-
-void AirborneState::Initialise()
-{
-	auto ply = GetPlayer();
-
-	if (ply)
-		ply->SetYVelocity(-15);
-}
-
-void AirborneState::ProcessInputs()
+void LateralState::ProcessInputs()
 {
 	auto ply = GetPlayer();
 	auto animSpr = GetAnimSpr();
@@ -348,44 +293,81 @@ void AirborneState::ProcessInputs()
 		return;
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
-	{
-		if (ply->GetDirection())
-			ply->SetDirection(false);
-
-		//ply->DecrementXVelocity(m_physCtrl->GetXAcceleration());
-	}
+		MoveLeft(ply);
 
 	if (inputManager->GetKeyState(Keys::RIGHT_KEY))
-	{
-		 if (!ply->GetDirection())
-			 ply->SetDirection(true);
+		MoveRight(ply);
 
-		 //ply->IncrementXVelocity(m_physCtrl->GetXAcceleration());
+	if (!inputManager->GetKeyState(Keys::LEFT_KEY) && !inputManager->GetKeyState(Keys::RIGHT_KEY))
+	{
+		if (inputManager->GetKeyState(Keys::UP_KEY))
+		{
+			if (animSpr->GetCurrentAnim() != MarioAnims::LOOKUP)
+				animSpr->ChangeAnim(MarioAnims::LOOKUP);
+		}
+		else
+		{
+			if (animSpr->GetCurrentAnim() != MarioAnims::IDLE)
+				animSpr->ChangeAnim(MarioAnims::IDLE);
+		}
 	}
 
-	if (!inputManager->GetKeyState(Keys::JUMP_KEY))
+	if (inputManager->GetKeyState(Keys::DOWN_KEY))
 	{
-		/*if (ply->GetAirbourne() && ply->GetCantJump())
-			ply->GetAirTimer()->SetTime(0);*/
+		ply->SetIsCrouched(true);
+		ply->GetStateMgr()->PushState(new CrouchedState(ply));
 	}
 
-	if (!inputManager->GetKeyState(Keys::SJUMP_KEY))
+	m_runKeyHeld = inputManager->GetKeyState(Keys::RUN_KEY);
+
+	if (inputManager->GetKeyState(Keys::JUMP_KEY))
 	{
-		/*if (ply->GetAirbourne() && ply->GetCantSpinJump())
-			ply->GetAirTimer()->SetTime(0);*/
+		InitiateJump(ply);
+	}
+	else
+	{
+		ply->SetCantJump(false);
+	}
+
+	if (inputManager->GetKeyState(Keys::SJUMP_KEY))
+	{
+		InititateSpinJump(ply);
+	}
+	else
+	{
+		ply->SetCantSpinJump(false);
 	}
 }
 
-void AirborneState::Update(float deltaTime)
+void LateralState::Update(float deltaTime)
 {
-	// nothing to update
+	ProcessInputs();
+	UpdateAnimation();
+
+	if (m_runKeyHeld)
+	{
+		auto velX = GetPlayer()->GetXVelocity();
+
+		if (velX < m_walkCap)
+		{
+			m_movementCtrl.GetCurrentXState().SetCurrentVelLimit(ToInt(LateralLoco::Walk));
+		}
+		if (velX >= m_walkCap && velX < m_runCap)
+		{
+			m_movementCtrl.GetCurrentXState().SetCurrentVelLimit(ToInt(LateralLoco::Run));
+		}
+		if (velX >= m_runCap)
+		{
+			m_movementCtrl.GetCurrentXState().SetCurrentVelLimit(ToInt(LateralLoco::Sprint));
+		}
+	}
+	else
+	{
+		m_movementCtrl.GetCurrentXState().SetCurrentVelLimit(ToInt(LateralLoco::Walk));
+	}
 }
 
-void AirborneState::UpdateAnimation()
-{
-}
-
-void CrouchedState::Initialise()
+void LateralState::UpdateAnimation()
 {
 	auto ply = GetPlayer();
 	auto animSpr = GetAnimSpr();
@@ -393,9 +375,37 @@ void CrouchedState::Initialise()
 	if (!ply || !animSpr)
 		return;
 
-	ply->SetXVelocity(0);
-	if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-		animSpr->ChangeAnim(MarioAnims::CROUCH);
+	auto& currMovState = m_movementCtrl.GetCurrentXState();
+
+	if (m_runKeyHeld)
+	{
+		auto currVelLimit = currMovState.GetCurrentVelLimit();
+
+		if (currVelLimit == m_runCap)
+		{
+			if (animSpr->GetCurrAnimSpeed() != 0.75f)
+				animSpr->UpdateAnimSpeed(0.75f);
+
+			if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
+				animSpr->ChangeAnim(MarioAnims::MOVING);
+		}
+		else if (currVelLimit == m_sprintCap)
+		{
+			if (animSpr->GetCurrAnimSpeed() != 0.5f)
+				animSpr->UpdateAnimSpeed(0.5f);
+
+			if (animSpr->GetCurrentAnim() != MarioAnims::RUNNING)
+				animSpr->ChangeAnim(MarioAnims::RUNNING);
+		}
+	}
+	else
+	{
+		if (animSpr->GetCurrAnimSpeed() != 0.5f)
+			animSpr->UpdateAnimSpeed(0.5f);
+
+		if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
+			animSpr->ChangeAnim(MarioAnims::MOVING);
+	}
 }
 
 CrouchedState::CrouchedState(Player* ply)
@@ -411,11 +421,30 @@ void CrouchedState::Resume()
 	if (!ply || !animSpr)
 		return;
 
+	m_movementCtrl.ChangeMovementXState(Lateral);
+
+	ply->SetIsCrouched(true);
+
 	if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
 		animSpr->ChangeAnim(MarioAnims::CROUCH);
 
 	ply->SetXVelocity(0);
 	PlayerState::Resume();
+}
+
+void CrouchedState::Initialise()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+
+	if (!ply || !animSpr)
+		return;
+
+	m_movementCtrl.ChangeMovementXState(Lateral);
+
+	ply->SetXVelocity(0);
+	if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
+		animSpr->ChangeAnim(MarioAnims::CROUCH);
 }
 
 void CrouchedState::ProcessInputs()
@@ -427,10 +456,12 @@ void CrouchedState::ProcessInputs()
 	if (!ply || !animSpr || !inputManager)
 		return;
 
+	if (!inputManager->GetKeyState(Keys::DOWN_KEY))
+		ply->GetStateMgr()->PopState();
+
 	if (inputManager->GetKeyState(Keys::JUMP_KEY))
 	{
-		if (!ply->GetCantJump())
-			ply->SetAirbourne(true);
+		InitiateJump(ply);
 	}
 	else
 	{
@@ -439,13 +470,7 @@ void CrouchedState::ProcessInputs()
 
 	if (inputManager->GetKeyState(Keys::SJUMP_KEY))
 	{
-		if (!ply->GetCantSpinJump())
-		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::SPINJUMP)
-				animSpr->ChangeAnim(MarioAnims::SPINJUMP);
-
-			ply->SetAirbourne(true);
-		}
+		InititateSpinJump(ply);
 	}
 	else
 	{
@@ -455,16 +480,232 @@ void CrouchedState::ProcessInputs()
 
 void CrouchedState::Update(float deltaTime)
 {
-	// nothing to update
+	ProcessInputs();
+	UpdateAnimation();
 }
 
 void CrouchedState::UpdateAnimation()
 {
 }
 
+InclinedState::InclinedState(Player* ply)
+	: PlayerState(ply)
+{
+}
+
+void InclinedState::Resume()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+
+	if (!ply || !animSpr)
+		return;
+
+	m_movementCtrl.ChangeMovementXState(Inclined);
+}
+
+void InclinedState::Initialise()
+{
+	auto ply = GetPlayer();
+	auto animSpr = ply->GetAnimatedSprite();
+
+	if (!ply || !animSpr)
+		return;
+
+	m_movementCtrl.ChangeMovementXState(Inclined);
+}
+
+void InclinedState::ProcessInputs()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+	auto inputManager = GameManager::Get()->GetInputManager();
+
+	if (!ply || !animSpr || !inputManager)
+		return;
+
+	if (inputManager->GetKeyState(Keys::LEFT_KEY))
+		MoveLeft(ply);
+
+	if (inputManager->GetKeyState(Keys::RIGHT_KEY))
+		MoveRight(ply);
+
+	if (inputManager->GetKeyState(Keys::JUMP_KEY))
+	{
+		InitiateJump(ply);
+	}
+	else
+	{
+		ply->SetCantJump(false);
+	}
+
+	if (inputManager->GetKeyState(Keys::SJUMP_KEY))
+	{
+		InititateSpinJump(ply);
+	}
+	else
+	{
+		ply->SetCantSpinJump(false);
+	}
+}
+
+void InclinedState::Update(float deltaTime)
+{
+	ProcessInputs();
+	UpdateAnimation();
+}
+
+void InclinedState::UpdateAnimation()
+{
+}
+
+VerticalState::VerticalState(Player* ply, bool spinJump)
+	: PlayerState(ply)
+{
+	m_airTimer = ply->GetAirTimer();
+}
+
+void VerticalState::Resume()
+{
+}
+
+void VerticalState::Initialise()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+
+	if (!ply || !animSpr)
+		return;
+
+	auto& currMovState = m_movementCtrl.GetCurrentYState();
+
+	animSpr->UpdateAnimSpeed(0.5f);
+
+	if (m_spinJump)
+	{
+		if (animSpr->GetCurrentAnim() != MarioAnims::SPINJUMP)
+			animSpr->ChangeAnim(MarioAnims::SPINJUMP);
+	}
+	else
+	{
+		if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
+		{
+			if (animSpr->GetCurrentAnim() != MarioAnims::JUMP)
+				animSpr->ChangeAnim(MarioAnims::JUMP);
+		}
+	}
+
+	float xVel = ply->GetXVelocity();
+	if (xVel < Speed::Low)
+	{
+		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Low));
+	}
+	else if (xVel > Speed::Low)
+	{
+		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Med));
+	}
+	else if (xVel > Speed::Med)
+	{
+		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::High));
+	}
+	else if (xVel > Speed::High)
+	{
+		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Max));
+	}
+
+	m_airTimer->RestartTimer();
+}
+
+void VerticalState::ProcessInputs()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+	auto inputManager = GameManager::Get()->GetInputManager();
+
+	if (!ply || !animSpr || !inputManager)
+		return;
+
+	if (inputManager->GetKeyState(Keys::LEFT_KEY))
+		MoveLeft(ply);
+
+	if (inputManager->GetKeyState(Keys::RIGHT_KEY))
+		MoveRight(ply);
+
+	if (inputManager->GetKeyState(Keys::JUMP_KEY))
+		MoveUp(ply);
+
+	if (inputManager->GetKeyState(Keys::SJUMP_KEY))
+		MoveUp(ply);
+
+	bool endAirTime = false;
+	if (m_spinJump)
+	{
+		endAirTime = !inputManager->GetKeyState(Keys::SJUMP_KEY)
+			&& ply->GetAirbourne()
+			&& ply->GetCantSpinJump();
+	}
+	else
+	{
+		endAirTime = !inputManager->GetKeyState(Keys::JUMP_KEY)
+			&& ply->GetAirbourne()
+			&& ply->GetCantJump();
+	}
+
+	if (endAirTime)
+		m_airTimer->SetCurrTime(0);
+}
+
+void VerticalState::Update(float deltaTime)
+{
+	ProcessInputs();
+	UpdateAnimation();
+
+	auto ply = GetPlayer();
+	if (!ply)
+		return;
+
+	auto& movementState = m_movementCtrl.GetCurrentYState();
+
+	auto yVel = ply->GetYVelocity();
+	if (yVel < Speed::Med)
+	{
+		movementState.SetCurrentAccel(ToInt(VerticalAccl::High));
+	}
+	else if (yVel > Speed::Med)
+	{
+		movementState.SetCurrentAccel(ToInt(VerticalAccl::Low));
+	}
+
+	m_airTimer->Update(deltaTime);
+	if (m_airTimer->CheckEnd())
+		MoveDown(ply);
+
+	if (ply->GetOnGround())
+		ply->GetStateMgr()->PopState();
+}
+
+void VerticalState::UpdateAnimation()
+{
+	auto ply = GetPlayer();
+	auto animSpr = GetAnimSpr();
+
+	if (!ply || !animSpr)
+		return;
+
+	if (m_airTimer->CheckEnd())
+	{
+		if (!m_spinJump && animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
+		{
+			if (animSpr->GetCurrentAnim() != MarioAnims::FALL)
+				animSpr->ChangeAnim(MarioAnims::FALL);
+		}
+	}
+}
+
 DieingState::DieingState(Player* ply)
 	: PlayerState(ply)
 {
+	m_airTimer = ply->GetAirTimer();
 }
 
 void DieingState::Initialise()
@@ -496,28 +737,18 @@ void DieingState::Update(float deltaTime)
 
 	if (ply->GetAirbourne())
 	{
-		ply->GetAirTimer()->Update(deltaTime);
-		if (ply->GetAirTimer()->CheckEnd())
+		m_airTimer->Update(deltaTime);
+		if (m_airTimer->CheckEnd())
 			ply->SetAirbourne(false);
 
-		/*if (m_physCtrl->GetPhysicsType() != PhysicsType::rise)
-			m_physCtrl->SetAerial();*/
-
-		//ply->DecrementYVelocity(m_physCtrl->GetYAcceleration());
-		ply->Move(Vector2f(0, ply->GetYVelocity() * GameConstants::FPS * deltaTime));
+		MoveUp(ply);
 	}
 	else
 	{
-		/*if (m_physCtrl->GetPhysicsType() != PhysicsType::drop)
-			m_physCtrl->SetAerial();*/
-
-		//ply->IncrementYVelocity(m_physCtrl->GetYAcceleration());
-		ply->Move(Vector2f(0, ply->GetYVelocity() * GameConstants::FPS * deltaTime));
+		MoveDown(ply);
 
 		if (GameManager::Get()->GetCamera()->CheckVerticalBounds(ply->GetVolume()))
-		{
 			ply->Reset();
-		}
 	}
 }
 

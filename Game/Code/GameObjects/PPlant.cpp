@@ -1,5 +1,6 @@
 #include "PPlant.h"
 
+#include "../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Collisions/BoundingBox.h>
@@ -16,21 +17,31 @@ PPlant::PPlant(const Vector2f& initPos)
 	SetPosition(GetInitialPosition());
 	m_volume->Update(GetPosition());
 
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	SetSpeedX(0);
+	SetSpeedY(GameMode::m_mariosMaxSpdX * 0.25f);
+	SetAirTime(1.3f);
+
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
 		spr->SetFrames({2});
 }
 
 void PPlant::Reset()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
-	{
-		if(spr->GetCurrentAnim() != PPlantAnims::SINK)
-			spr->ChangeAnim(PPlantAnims::SINK);
-	}
+		spr->EnsureAnim(PPlantAnims::SINK);
 
 	Enemy::Reset();
+}
+
+void PPlant::SetDirection(bool dir)
+{
+	Enemy::SetDirection(dir);
+	if (GetDirection())
+		SetYVelocity(GetSpeedY());
+	else
+		SetYVelocity(GetSpeedY());
 }
 
 void PPlant::Die()
@@ -44,26 +55,9 @@ void PPlant::Animate(float deltaTime)
 	if (!spr)
 		return;
 
-	//PhysicsController* physCtrl = GetPhysicsController();
-
 	spr->Update(deltaTime);
 
 	SetPrevPosition(GetPosition());
-
-	if (GetDirection())
-	{
-		SetYVelocity(GameConstants::ObjectSpeed);
-	}
-	else
-	{
-		SetYVelocity(-GameConstants::ObjectSpeed);
-	}
-
-	if (GetYVelocity() != 0)
-	{
-		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
-		GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
-	}
 
 	if (GetAirbourne())
 	{
@@ -81,6 +75,12 @@ void PPlant::Animate(float deltaTime)
 	if (GetAirTimer()->CheckEnd())
 	{
 		SetAirbourne(false);
-		SetAirTime(/*GameConstants::MaxAirTime*/1+.3f);
+		GetAirTimer()->RestartTimer();
+	}
+
+	if (GetYVelocity() != 0)
+	{
+		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
+		GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
 	}
 }

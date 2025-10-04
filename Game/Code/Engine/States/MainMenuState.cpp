@@ -7,12 +7,10 @@
 
 enum MenuPosition { Automation, Manual };
 
-Vector2f menuSize = { GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f };
-
 MainMenuState::MainMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr),
 	m_backgroundSpr("Title"),
-	m_menu(Vector2f(menuSize), 2.f, {1, 2}, MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
+	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, {1, 2}, MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
 {
 	m_gameMgr = gameMgr;
 }

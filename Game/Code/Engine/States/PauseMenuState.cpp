@@ -26,11 +26,9 @@ void PauseMenuActionFunc(int menuPosition)
 	}
 }
 
-Vector2f menuSize = { GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f };
-
 PauseMenuState::PauseMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"),
-	m_menu(Vector2f(menuSize), 2.f, Vector2f(1,3), MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
+	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, Vector2f(1,3), MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
 {
 	m_gameMgr = gameMgr;
 }

@@ -1,5 +1,6 @@
 #include "Rex.h"
 
+#include "../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Collisions/BoundingBox.h>
@@ -15,7 +16,11 @@ Rex::Rex(bool dir, const Vector2f& initPos)
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
 	m_volume->Update(GetPosition());
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+
+	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.12f);
+	SetSpeedY(GameMode::m_marioMaxSpdY);
+
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
 		spr->SetFrames({ 2, 3, 2, 1 });
 }
@@ -23,12 +28,11 @@ Rex::Rex(bool dir, const Vector2f& initPos)
 void Rex::Reset()
 {
 
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.12f);
+
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
-	{
-		if (spr->GetCurrentAnim() != RexAnims::WALKTALL)
-			spr->ChangeAnim(RexAnims::WALKTALL);
-	}
+		spr->EnsureAnim(RexAnims::WALKTALL);
 
 	auto box = dynamic_cast<BoundingBox<SFRect>*>(m_volume.get());
 	if (box)
@@ -39,31 +43,37 @@ void Rex::Reset()
 
 void Rex::Die()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+	auto spr = GetAnimatedSprite(m_drawable.get());
 	if (spr)
-	{
-		if (spr->GetCurrentAnim() != RexAnims::FLATTEN)
-			spr->ChangeAnim(RexAnims::FLATTEN);
-	}
+		spr->EnsureAnim(RexAnims::FLATTEN);
+
 	SetTimeLeftActive(1.f);
+}
+
+void Rex::SetDirection(bool dir)
+{
+	Enemy::SetDirection(dir);
+	if (dir)
+		SetXVelocity(GetSpeedX());
+	else
+		SetXVelocity(-GetSpeedX());
 }
 
 void Rex::DecrementLife()
 {
 	if (Tall())
 	{
-		auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
+		auto spr = GetAnimatedSprite(m_drawable.get());
 		if (spr)
-		{
-			if (spr->GetCurrentAnim() != RexAnims::TRANSITION)
-				spr->ChangeAnim(RexAnims::TRANSITION);
-		}
+			spr->EnsureAnim(RexAnims::TRANSITION);
 
 		auto box = dynamic_cast<BoundingBox<SFRect>*>(m_volume.get());
 		if (box)
 			box->Reset(Vector2f(14, 16));
 
 		Move((GetDirection() ? -1.f : 1.f) * 3.f, m_heightDiff);
+
+		SetSpeedX(GameMode::m_mariosMaxSpdX * 0.19f);
 
 		m_transitioning = true;
 		m_squished = true;
@@ -78,31 +88,18 @@ void Rex::Animate(float deltaTime)
 	if (!spr)
 		return;
 
-	//PhysicsController* physCtrl = GetPhysicsController();
-	auto colMgr = GameManager::Get()->GetCollisionMgr();
-
 	spr->Update(deltaTime);
 
 	if (m_transitioning)
 	{
 		if (spr->PlayedNumTimes(1))
 		{
-			if (spr->GetCurrentAnim() != RexAnims::WALKSHORT)
-				spr->ChangeAnim(RexAnims::WALKSHORT);
+			spr->EnsureAnim(RexAnims::WALKSHORT);
 			m_transitioning = false;
 		}
 	}
 
 	SetPrevPosition(GetPosition());
-
-	if (GetDirection())
-	{
-		SetXVelocity(GameConstants::ObjectSpeed);
-	}
-	else
-	{
-		SetXVelocity(-GameConstants::ObjectSpeed);
-	}
 
 	if (GetOnGround())
 	{
@@ -110,10 +107,8 @@ void Rex::Animate(float deltaTime)
 	}
 	else
 	{
-		/*if (physCtrl->GetPhysicsType() != PhysicsType::drop)
-			physCtrl->SetFalling();*/
-
-		IncrementYVelocity(GameConstants::Gravity);
+		if (GetYVelocity() < GameMode::m_marioMaxSpdY)
+			IncrementYVelocity(GameConstants::Gravity);
 	}
 
 	if (HasLifes())
@@ -121,7 +116,7 @@ void Rex::Animate(float deltaTime)
 		if (GetXVelocity() != 0)
 		{
 			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);
-			colMgr->ProcessCollisions(this);
+			GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
 		}
 
 		//CheckForHorizontalBounds(deltaTime);
@@ -129,7 +124,7 @@ void Rex::Animate(float deltaTime)
 		if (GetYVelocity() != 0)
 		{
 			Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
-			colMgr->ProcessCollisions(this);
+			GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
 		}
 	}
 }
