@@ -36,7 +36,7 @@ void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<Game
 
 	obj->SetPosition(pos);
 
-	auto [it, inserted] = m_objects.emplace(std::move(id), std::move(obj));
+	auto [it, inserted] = m_objects.emplace(id, std::move(obj));
 	if (inserted)
 		m_spawnedObjKeys.push_back(it->first);
 }
