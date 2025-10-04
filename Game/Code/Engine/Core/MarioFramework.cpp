@@ -1,8 +1,8 @@
 #include "MarioFramework.h"
 
 #include "../Collisions/MarioCollisionManager.h"
-#include "../States/TitleState.h"
 #include "../States/DebugState.h"
+#include "../States/TitleState.h"
 #include <Collisions/SFGrid.h>
 #include <Engine/Core/Constants.h>
 

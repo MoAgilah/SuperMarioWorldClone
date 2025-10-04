@@ -1,6 +1,8 @@
 #pragma once
 
 #include <GameObjects/GameObject.h>
+#include <Engine/Core/Timer.h>
+#include <Utilities/Vector.h>
 #include <string>
 
 class Pipe : public GameObject

@@ -1,15 +1,15 @@
 #include "PPlant.h"
 
 #include "../Utilities/GameMode.h"
+#include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
+#include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
-#include <Engine/Collisions/BoundingBox.h>
-#include <Drawables/SFSprite.h>
-#include <Drawables/SFShape.h>
 
 PPlant::PPlant(const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck", 1, 2, GameConstants::FPS, false, 0.5f),
-	std::make_shared<BoundingBox<SFRect>>(Vector2f(14, 19), Vector2f()))
+	std::make_shared<BoundingBox<SFRect>>(Vector2f(14, 19)))
 {
 	SetInitialDirection(false);
 	SetDirection(GetInitialDirection());

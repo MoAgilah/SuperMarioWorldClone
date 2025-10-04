@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GameObjects/Box.h>
+#include <Utilities/Vector.h>
 #include <memory>
 #include <vector>
 

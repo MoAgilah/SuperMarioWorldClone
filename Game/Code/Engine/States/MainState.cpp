@@ -1,9 +1,9 @@
 #include "MainState.h"
 
-#include <Engine/Input/KeyCode.h>
-#include <Engine/Core/Constants.h>
 #include "LoadingState.h"
 #include "PauseMenuState.h"
+#include <Engine/Core/Constants.h>
+#include <Engine/Input/KeyCode.h>
 
 MainState::MainState(GameManager* gameMgr)
 	: IGameState(gameMgr)

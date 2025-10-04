@@ -1,7 +1,7 @@
 #pragma once
 
-#include <UI/SFMenu.h>
 #include <Drawables/SFSprite.h>
+#include <UI/SFMenu.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Interface/Scene/IGameState.h>
 

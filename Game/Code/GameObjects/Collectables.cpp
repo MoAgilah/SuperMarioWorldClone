@@ -1,8 +1,8 @@
 #include "Collectables.h"
 
 #include "../GameObjects/Player.h"
-#include <Drawables/SFSprite.h>
 #include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
@@ -10,7 +10,7 @@
 int YCoin::s_collected = 1;
 
 Coin::Coin(const Vector2f& initPos)
-	: StaticCollectable(std::make_shared<SFAnimatedSprite>("Coin", 1, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(12, 16), Vector2f()), initPos)
+	: StaticCollectable(std::make_shared<SFAnimatedSprite>("Coin", 1, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(12, 16)), initPos)
 {
 	m_volume->Update(initPos);
 	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
@@ -30,7 +30,7 @@ void Coin::Collect(GameObject* object)
 }
 
 YCoin::YCoin(const Vector2f& initPos)
-	: StaticCollectable(std::make_shared<SFAnimatedSprite>("YCoin", 1, 6, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 25), Vector2f()), initPos)
+	: StaticCollectable(std::make_shared<SFAnimatedSprite>("YCoin", 1, 6, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 25)), initPos)
 {
 	m_volume->Update(initPos);
 	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
@@ -59,7 +59,7 @@ void YCoin::Collect(GameObject* obj)
 }
 
 CheckPoint::CheckPoint(const Vector2f& initPos)
-	: StaticCollectable(std::make_shared<SFSprite>("ChkPnt"), std::make_shared<BoundingBox<SFRect>>(Vector2f(20, 3), Vector2f()), initPos)
+	: StaticCollectable(std::make_shared<SFSprite>("ChkPnt"), std::make_shared<BoundingBox<SFRect>>(Vector2f(20, 3)), initPos)
 {
 	m_volume->Update(initPos);
 }
@@ -77,7 +77,7 @@ void CheckPoint::Collect(GameObject* obj)
 }
 
 Mushroom::Mushroom(const Vector2f& initPos)
-	: DynamicCollectable(std::make_shared<SFSprite>("Shroom"), std::make_shared<BoundingBox<SFRect>>(Vector2f(13, 10), Vector2f()), initPos)
+	: DynamicCollectable(std::make_shared<SFSprite>("Shroom"), std::make_shared<BoundingBox<SFRect>>(Vector2f(13, 10)), initPos)
 {
 	m_volume->Update(initPos);
 }
@@ -132,7 +132,7 @@ void Mushroom::Collect(GameObject* obj)
 }
 
 Goal::Goal(const Vector2f& initPos)
-	: DynamicCollectable(std::make_shared<SFSprite>("Goal"), std::make_shared<BoundingBox<SFRect>>(Vector2f(25, 8), Vector2f()), initPos)
+	: DynamicCollectable(std::make_shared<SFSprite>("Goal"), std::make_shared<BoundingBox<SFRect>>(Vector2f(25, 8)), initPos)
 	, m_airTimer(0)
 {
 	SetInitialDirection(true);

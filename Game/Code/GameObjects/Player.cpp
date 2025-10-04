@@ -13,7 +13,7 @@
 #include <iostream>
 
 Player::Player(const Vector2f& pos)
-	: DynamicGameObject(std::make_shared<SFAnimatedSprite>("Mario", 14, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(9,16), Vector2f()))
+	: DynamicGameObject(std::make_shared<SFAnimatedSprite>("Mario", 14, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(9,16)))
 	, m_airTimer(0.4f), m_invulTimer(1)
 {
 	SetInitialDirection(true);
@@ -27,11 +27,11 @@ Player::Player(const Vector2f& pos)
 	if (spr)
 		spr->SetFrames({ 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4 });
 
-	auto shader = dynamic_cast<SFShader*>(GameManager::Get()->GetShaderMgr().GetShader("FlashShader"));
+	auto shader = GameManager::Get()->GetShaderMgr().GetShader("FlashShader");
 	if (shader)
 	{
 		m_fragShader = shader;
-		m_fragShader->GetNativeShader().setUniform("flashColor", sf::Glsl::Vec4(1, 1, 1, 1));
+		GetShader()->GetNativeShader().setUniform("flashColor", sf::Glsl::Vec4(1, 1, 1, 1));
 	}
 
 	m_invulTimer.SetCurrTime(0);
@@ -79,7 +79,7 @@ void Player::Update(float deltaTime)
 		if (GetIfInvulnerable())
 		{
 			m_invulTimer.Update(deltaTime);
-			m_fragShader->GetNativeShader().setUniform("time", m_invulTimer.GetCurrTime());
+			GetShader()->GetNativeShader().setUniform("time", m_invulTimer.GetCurrTime());
 		}
 	}
 	else
@@ -289,35 +289,6 @@ void Player::ProcessInput()
 		return;
 
 	Input();
-
-	m_stateMgr.ProcessInputs();
-
-	/*if (GameManager::Get()->GetInputManager()->GetKeyState(Keys::DOWN_KEY))
-	{
-		if (GetOnSlope())
-		{
-			if (spr->GetCurrentAnim() != MarioAnims::SLIDE)
-				spr->ChangeAnim(MarioAnims::SLIDE);
-		}
-		else
-		{
-			if (!GetIsCrouched())
-				SetIsCrouched(true);
-		}
-	}
-	else
-	{
-		if (GetOnSlope())
-		{
-			if (spr->GetCurrentAnim() == MarioAnims::SLIDE)
-				spr->ChangeAnim(MarioAnims::IDLE);
-		}
-		else
-		{
-			if (GetIsCrouched())
-				SetIsCrouched(false);
-		}
-	}*/
 }
 
 void Player::Input()

@@ -1,16 +1,15 @@
 #include "Koopa.h"
 
 #include "../Utilities/GameMode.h"
+#include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingBox.h>
-#include <Engine/Interface/Collisions/ICollisionManager.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
-#include <Drawables/SFSprite.h>
-#include <Drawables/SFShape.h>
 
 Koopa::Koopa(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Koopa",3,3,GameConstants::FPS, false, 0.5f),
-		std::make_shared<BoundingBox<SFRect>>(Vector2f(17, 12),Vector2f()))
+		std::make_shared<BoundingBox<SFRect>>(Vector2f(17, 12)))
 {
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());

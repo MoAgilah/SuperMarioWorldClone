@@ -1,7 +1,7 @@
 #include "Pipes.h"
 
-#include <Drawables/SFSprite.h>
 #include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingBox.h>
 
 Pipe::Pipe(const std::string& texID, const Vector2f& pos)

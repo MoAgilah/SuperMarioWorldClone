@@ -1,10 +1,10 @@
 ﻿#include "Bill.h"
 
 #include "../Utilities/GameMode.h"
-#include <Drawables/SFSprite.h>
 #include <Drawables/SFShape.h>
-#include <Engine/Collisions/BoundingHalfCapsule.h>
+#include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingCapsule.h>
+#include <Engine/Collisions/BoundingHalfCapsule.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <memory>

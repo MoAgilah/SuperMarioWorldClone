@@ -1,7 +1,7 @@
 #include "TitleState.h"
 
-#include <Engine/Core/Constants.h>
 #include "MainMenuState.h"
+#include <Engine/Core/Constants.h>
 
 TitleState::TitleState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"), m_titleMessage(TextConfig("Pong"))

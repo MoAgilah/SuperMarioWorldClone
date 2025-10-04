@@ -1,20 +1,18 @@
 #pragma once
 
-#include <array>
-#include <string>
-
-#include <Engine/Core/Constants.h>
+#include "../Engine/States/PlayerState.h"
 #include <Engine/Core/Timer.h>
+#include <Engine/Core/GameStateMgr.h>
+#include <Engine/Interface/Resources/IShader.h>
 #include <Engine/Input/KeyCode.h>
 #include <GameObjects/GameObject.h>
-#include "../Engine/States/PlayerState.h"
-#include <Engine/Core/GameStateMgr.h>
+#include <array>
+#include <string>
 
 enum MarioAnims { IDLE, LOOKUP, JUMP, FALL, RUNJUMP, SKID, SLIDE, VICTORY, CROUCH, GROW, DIE, MOVING, RUNNING, SPINJUMP };
 
 enum MarioBoxes { REGULAR, SUPER, CROUCHED, NUMBOXES };
 
-class Timer;
 class SFAnimatedSprite;
 class SFShader;
 
@@ -103,7 +101,7 @@ private:
 	Timer m_airTimer;
 	Timer m_invulTimer;
 	Vector2f m_spawnLoc;
-	SFShader* m_fragShader;
+	IShader* m_fragShader;
 	GameStateMgr<IObjectState> m_stateMgr;
 	std::array<Vector2f, MarioBoxes::NUMBOXES> m_boxSizes{ Vector2f(9,16), Vector2f(9,25), Vector2f(14,11) };
 };

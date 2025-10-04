@@ -1,19 +1,19 @@
 #include "YoshiIsland1.h"
 
-#include "../../GameObjects/Koopa.h"
 #include "../../GameObjects/Bill.h"
-#include "../../GameObjects/Rex.h"
-#include "../../GameObjects/PPlant.h"
-#include "../../GameObjects/Chuck.h"
 #include "../../GameObjects/Blocks.h"
-#include "../../GameObjects/Pipes.h"
 #include "../../GameObjects/Collectables.h"
+#include "../../GameObjects/Chuck.h"
+#include "../../GameObjects/Koopa.h"
+#include "../../GameObjects/Pipes.h"
+#include "../../GameObjects/PPlant.h"
+#include "../../GameObjects/Rex.h"
 #include <Drawables/SFSprite.h>
 #include <Drawables/SFText.h>
 #include <Renderer/SFCamera.h>
-#include <Engine/Interface/Collisions/ITile.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Engine/Interface/Collisions/ITile.h>
 #include <SFML/Graphics/View.hpp>
 
 YoshiIsland1::YoshiIsland1()

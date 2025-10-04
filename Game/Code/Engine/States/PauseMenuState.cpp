@@ -1,7 +1,7 @@
 #include "PauseMenuState.h"
 
-#include <Engine/Core/Constants.h>
 #include "TitleState.h"
+#include <Engine/Core/Constants.h>
 
 enum MenuPosition { Resume, ToTitle, Quit };
 

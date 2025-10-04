@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Player.h"
 #include <GameObjects/Enemy.h>
 #include <Utilities/Vector.h>
 #include <memory>

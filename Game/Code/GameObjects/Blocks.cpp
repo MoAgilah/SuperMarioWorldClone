@@ -1,13 +1,13 @@
 #include "Blocks.h"
 
-#include <Drawables/SFSprite.h>
 #include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 
 QuestionBlock::QuestionBlock(const Vector2f& initPos)
-	: Box(std::make_shared<SFAnimatedSprite>("QBlock", 2,4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16), Vector2f()), initPos)
+	: Box(std::make_shared<SFAnimatedSprite>("QBlock", 2,4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), initPos)
 {
 	m_volume->Update(initPos);
 	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());

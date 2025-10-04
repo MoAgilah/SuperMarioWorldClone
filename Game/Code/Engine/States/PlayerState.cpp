@@ -2,8 +2,8 @@
 
 #include "../../GameObjects/Player.h"
 #include "../../Utilities/GameMode.h"
-#include <Utilities/Utils.h>
 #include <Drawables/SFSprite.h>
+#include <Utilities/Utils.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <format>

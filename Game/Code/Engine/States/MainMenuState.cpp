@@ -1,9 +1,9 @@
 #include "MainMenuState.h"
 
+#include "MainState.h"
 #include "../../Utilities/GameMode.h"
 #include <Drawables/SFText.h>
 #include <Engine/Core/Constants.h>
-#include "MainState.h"
 
 enum MenuPosition { Automation, Manual };
 

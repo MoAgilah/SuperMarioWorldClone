@@ -1,8 +1,8 @@
 #include "LoadingState.h"
 
-#include <thread>
-#include <Engine/Core/Constants.h>
 #include "MainMenuState.h"
+#include <Engine/Core/Constants.h>
+#include <thread>
 
 void LoadResources()
 {

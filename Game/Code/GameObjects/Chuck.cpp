@@ -1,15 +1,15 @@
 ﻿#include "Chuck.h"
 
 #include "../Utilities/GameMode.h"
+#include <Drawables/SFShape.h>
+#include <Drawables/SFSprite.h>
+#include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
-#include <Engine/Collisions/BoundingBox.h>
-#include <Drawables/SFSprite.h>
-#include <Drawables/SFShape.h>
 
 Chuck::Chuck(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck",5,7,GameConstants::FPS, false,0.5f),
-		std::make_shared<BoundingBox<SFRect>>(Vector2f(24.f,25.f),Vector2f())), m_waitTimer(0.5f)
+		std::make_shared<BoundingBox<SFRect>>(Vector2f(24.f,25.f))), m_waitTimer(0.5f)
 {
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());
