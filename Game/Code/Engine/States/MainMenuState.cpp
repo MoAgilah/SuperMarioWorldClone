@@ -4,6 +4,7 @@
 #include "../../Utilities/GameMode.h"
 #include <Drawables/SFText.h>
 #include <Engine/Core/Constants.h>
+#include <Utilities/Utils.h>
 
 enum MenuPosition { Automation, Manual };
 
@@ -11,9 +12,7 @@ MainMenuState::MainMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr),
 	m_backgroundSpr("Title"),
 	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, {1, 2}, MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
-{
-	m_gameMgr = gameMgr;
-}
+{}
 
 void MainMenuState::Initialise()
 {
@@ -31,7 +30,7 @@ void MainMenuState::Initialise()
 
 	auto cell = m_menu.GetCell({ 1,1 });
 
-	if (cell)
+	ENSURE_VALID(cell);
 	{
 
 		TextConfig config;
@@ -48,7 +47,7 @@ void MainMenuState::Initialise()
 
 	cell = m_menu.GetCell({ 1,2 });
 
-	if (cell)
+	ENSURE_VALID(cell);
 	{
 
 		TextConfig config;
@@ -66,11 +65,10 @@ void MainMenuState::Initialise()
 	m_menu.SetActiveCells();
 
 	auto menuNav = m_menu.GetMenuNav();
-	if (menuNav)
-	{
-		menuNav->SetCursorRange({ 0,1 });
-		menuNav->SetCurrCursorPos(0);
-	}
+	ENSURE_VALID(menuNav);
+
+	menuNav->SetCursorRange({ 0,1 });
+	menuNav->SetCurrCursorPos(0);
 }
 
 void MainMenuState::Pause()
@@ -81,11 +79,13 @@ void MainMenuState::Resume()
 
 void MainMenuState::ProcessInputs()
 {
-	auto inputMgr = GameManager::Get()->GetInputManager();
+	ENSURE_VALID(m_gameMgr);
+	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Enter)))
 	{
-		switch (m_menu.GetMenuNav()->GetCurrCursorPos())
+		GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
+		switch (menuNav->GetCurrCursorPos())
 		{
 		case MenuPosition::Automation:
 			GameMode::m_gameType = GameType::Automation;
@@ -95,7 +95,7 @@ void MainMenuState::ProcessInputs()
 			break;
 		}
 
-		GameManager::Get()->GetGameStateMgr()->ChangeState(new MainState(GameManager::Get()));
+		m_gameMgr->GetGameStateMgr()->ChangeState(new MainState(GameManager::Get()));
 	}
 }
 
@@ -108,11 +108,8 @@ void MainMenuState::Update(float deltaTime)
 
 void MainMenuState::Render()
 {
-	auto renderer = m_gameMgr->GetRenderer();
-	if (renderer)
-	{
-		m_backgroundSpr.Render(renderer);
+	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
-		m_menu.Render(renderer);
-	}
+	m_backgroundSpr.Render(renderer);
+	m_menu.Render(renderer);
 }

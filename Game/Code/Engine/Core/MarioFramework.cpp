@@ -5,6 +5,7 @@
 #include "../States/TitleState.h"
 #include <Collisions/SFGrid.h>
 #include <Engine/Core/Constants.h>
+#include <Utilities/Utils.h>
 
 MarioFramework::MarioFramework()
 {
@@ -23,11 +24,13 @@ void MarioFramework::Initialise()
 	m_gameMgr.GetSoundMgr().AddMusic("../Game/Resources/Music/");
 	m_gameMgr.GetTextureMgr().AddTextures("../Game/Resources/Textures/");
 
-	m_gameMgr.GetRenderer()->Initialise(GameConstants::ScreenDim, GameConstants::WindowTitle);
+	GET_OR_RETURN(renderer, m_gameMgr.GetRenderer());
+	renderer->Initialise(GameConstants::ScreenDim, GameConstants::WindowTitle);
 
 	GameConstants::TileFilePaths = "../Game/Resources/TileTypes.txt";
 
 	m_gameMgr.SetICollisionManager(std::make_shared<MarioCollisionManager>(std::make_shared<SFGrid>(15, 313, "Arial", GameConstants::TileFilePaths)));
+	ENSURE_VALID(m_gameMgr.GetCollisionMgr());
 
 	m_gameMgr.GetGameStateMgr()->ChangeState(new TitleState(&m_gameMgr));
 }

@@ -7,6 +7,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <format>
@@ -21,11 +22,13 @@ Player::Player(const Vector2f& pos)
 	SetInitialPosition(pos);
 	SetPosition(GetInitialPosition());
 	SetSpawnLoc();
+
+	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 
-	auto spr = GetAnimatedSprite();
-	if (spr)
-		spr->SetFrames({ 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4 });
+	GET_OR_RETURN(spr, GetAnimatedSprite());
+
+	spr->SetFrames({ 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4 });
 
 	auto shader = GameManager::Get()->GetShaderMgr().GetShader("FlashShader");
 	if (shader)
@@ -39,10 +42,9 @@ Player::Player(const Vector2f& pos)
 
 void Player::Update(float deltaTime)
 {
-	auto gameMgr = GameManager::Get();
-
-	if (!m_drawable && !gameMgr)
-		return;
+	ENSURE_VALID(m_drawable);
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ProcessInput();
 
@@ -53,7 +55,7 @@ void Player::Update(float deltaTime)
 
 	if (GetIsAlive())
 	{
-		auto inputManager = gameMgr->GetInputManager();
+		GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 		if (GetOnGround())
 			SetYVelocity(0);
@@ -66,14 +68,14 @@ void Player::Update(float deltaTime)
 		{
 			SetPrevPosition(GetPosition());
 			Move(Vector2f(GetXVelocity() * GameConstants::FPS * deltaTime, 0));
-			gameMgr->GetCollisionMgr()->ProcessCollisions(this);
+			colMgr->ProcessCollisions(this);
 		}
 
 		if (GetYVelocity() != 0)
 		{
 			SetPrevPosition(GetPosition());
 			Move(Vector2f(0, GetYVelocity() * GameConstants::FPS * deltaTime));
-			gameMgr->GetCollisionMgr()->ProcessCollisions(this);
+			colMgr->ProcessCollisions(this);
 		}
 
 		if (GetIfInvulnerable())
@@ -91,11 +93,14 @@ void Player::Update(float deltaTime)
 
 void Player::Render(IRenderer* renderer)
 {
-	if (!renderer || !m_drawable || !m_fragShader)
-		return;
+	ENSURE_VALID(renderer);
+	ENSURE_VALID(m_drawable);
+	ENSURE_VALID(m_fragShader);
 
 	m_drawable->Render(renderer, m_fragShader);
 #if defined _DEBUG
+
+	ENSURE_VALID(m_volume);
 	m_volume->Render(renderer);
 #endif
 }
@@ -134,21 +139,24 @@ void Player::Reset()
 	m_airTimer.RestartTimer();
 	m_stateMgr.ClearStates();
 	m_stateMgr.ChangeState(new LateralState(this));
-	GameManager::Get()->GetTimer().RestartTimer();
-	GameManager::Get()->GetScene()->ResetScene();
+
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+
+
+	gameMgr->GetTimer().RestartTimer();
+
+	GET_OR_RETURN(scene, gameMgr->GetScene());
+
+	scene->ResetScene();
 }
 
 void Player::SetIsSuper(bool super)
 {
 	m_super = super;
 
-	auto spr = GetAnimatedSprite();
-	if (!spr)
-		return;
+	GET_OR_RETURN(spr, GetAnimatedSprite());
 
-	auto box = GetBox();
-	if (!box)
-		return;
+	GET_OR_RETURN(box, GetBox());
 
 	if (m_super)
 	{
@@ -180,9 +188,7 @@ void Player::SetIsAlive(bool val, float airtime)
 {
 	m_alive = val;
 	if (!m_alive)
-	{
 		m_airTimer.SetCurrTime(airtime);
-	}
 }
 
 void Player::SetSpawnLoc(Vector2f loc)
@@ -199,9 +205,7 @@ void Player::SetSpawnLoc(Vector2f loc)
 
 void Player::SetIsCrouched(bool crouched)
 {
-	auto box = dynamic_cast<BoundingBox<SFRect>*>(m_volume.get());
-	if (!box)
-		return;
+	GET_OR_RETURN(box, GetBox());
 
 	m_crouched = crouched;
 	if (m_crouched)
@@ -285,7 +289,9 @@ BoundingBox<SFRect>* Player::GetBox()
 
 void Player::ProcessInput()
 {
-	if (!m_drawable && !GetIsAlive())
+	ENSURE_VALID(m_drawable);
+
+	if (!GetIsAlive())
 		return;
 
 	Input();

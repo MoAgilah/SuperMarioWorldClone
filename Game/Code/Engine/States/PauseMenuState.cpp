@@ -3,45 +3,14 @@
 #include "../../Utilities/GameMode.h"
 #include <Drawables/SFText.h>
 #include <Engine/Core/Constants.h>
+#include <Utilities/Utils.h>
 
 enum MenuPosition { Resume, ToTitle, Quit };
-
-void PauseMenuActionFunc(int menuPosition)
-{
-	auto gameMgr = GameManager::Get();
-	if (gameMgr)
-		return;
-
-	switch (menuPosition)
-	{
-	case MenuPosition::Resume:
-		gameMgr->GetGameStateMgr()->PopState();
-		break;
-	case MenuPosition::ToTitle:
-		GameMode::ToTitle();
-		break;
-	case MenuPosition::Quit:
-	{
-		auto renderer = gameMgr->GetRenderer();
-		if (renderer)
-			return;
-
-		auto window = renderer->GetWindow();
-		if (window)
-			return;
-
-		window->Close();
-	}
-		break;
-	}
-}
 
 PauseMenuState::PauseMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"),
 	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, Vector2f(1,3), MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
-{
-	m_gameMgr = gameMgr;
-}
+{}
 
 void PauseMenuState::Initialise()
 {
@@ -59,7 +28,7 @@ void PauseMenuState::Initialise()
 
 	auto cell = m_menu.GetCell({ 1,1 });
 
-	if (cell)
+	ENSURE_VALID(cell);
 	{
 
 		TextConfig config;
@@ -76,7 +45,7 @@ void PauseMenuState::Initialise()
 
 	cell = m_menu.GetCell({ 1,2 });
 
-	if (cell)
+	ENSURE_VALID(cell);
 	{
 
 		TextConfig config;
@@ -93,7 +62,7 @@ void PauseMenuState::Initialise()
 
 	cell = m_menu.GetCell({ 1,3 });
 
-	if (cell)
+	ENSURE_VALID(cell);
 	{
 
 		TextConfig config;
@@ -110,12 +79,10 @@ void PauseMenuState::Initialise()
 
 	m_menu.SetActiveCells();
 
-	auto menuNav = m_menu.GetMenuNav();
-	if (menuNav)
-	{
-		menuNav->SetCursorRange({ 0,1,2 });
-		menuNav->SetCurrCursorPos(0);
-	}
+	GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
+
+	menuNav->SetCursorRange({ 0,1,2 });
+	menuNav->SetCurrCursorPos(0);
 }
 
 void PauseMenuState::Pause()
@@ -127,7 +94,8 @@ void PauseMenuState::Resume()
 
 void PauseMenuState::ProcessInputs()
 {
-	auto inputMgr = GameManager::Get()->GetInputManager();
+	ENSURE_VALID(m_gameMgr);
+	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Enter)))
 	{
@@ -140,14 +108,9 @@ void PauseMenuState::ProcessInputs()
 			GameMode::ToTitle();
 			break;
 		case MenuPosition::Quit:
-			auto renderer = m_gameMgr->GetRenderer();
-			if (renderer)
-				return;
 
-			auto window = renderer->GetWindow();
-			if (window)
-				return;
-
+			GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+			GET_OR_RETURN(window, renderer->GetWindow());
 			window->Close();
 			break;
 		}
@@ -163,11 +126,8 @@ void PauseMenuState::Update(float deltaTime)
 
 void PauseMenuState::Render()
 {
-	auto renderer = m_gameMgr->GetRenderer();
-	if (renderer)
-	{
-		m_backgroundSpr.Render(renderer);
+	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
-		m_menu.Render(renderer);
-	}
+	m_backgroundSpr.Render(renderer);
+	m_menu.Render(renderer);
 }

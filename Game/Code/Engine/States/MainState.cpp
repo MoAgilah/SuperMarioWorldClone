@@ -2,8 +2,11 @@
 
 #include "LoadingState.h"
 #include "PauseMenuState.h"
+#include "../../GameObjects/Player.h"
+#include "../../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Input/KeyCode.h>
+#include <Utilities/Utils.h>
 
 MainState::MainState(GameManager* gameMgr)
 	: IGameState(gameMgr)
@@ -13,6 +16,7 @@ MainState::MainState(GameManager* gameMgr)
 
 void MainState::Initialise()
 {
+	ENSURE_VALID(m_gameMgr);
 	m_gameMgr->GetGameStateMgr()->PushState(new LoadingState(m_gameMgr));
 }
 
@@ -29,7 +33,8 @@ void MainState::Resume()
 
 void MainState::ProcessInputs()
 {
-	auto inputMgr = GameManager::Get()->GetInputManager();
+	ENSURE_VALID(m_gameMgr);
+	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Space)))
 	{
@@ -43,8 +48,12 @@ void MainState::ProcessInputs()
 
 void MainState::Update(float deltaTime)
 {
+	ENSURE_VALID(m_gameMgr);
+
 	if (m_ready)
 	{
+		GET_OR_RETURN(ply, GameMode::GetPlayer());
+
 		ProcessInputs();
 
 		m_gameMgr->GetTimer().Update(deltaTime);
@@ -52,23 +61,28 @@ void MainState::Update(float deltaTime)
 		m_gameMgr->CheckInView();
 
 		m_gameMgr->GetScene()->Update(deltaTime);
-		/*m_gameMgr->GetPlayer()->Update(deltaTime);*/
+
+		ply->Update(deltaTime);
 	}
 }
 
 void MainState::Render()
 {
+	ENSURE_VALID(m_gameMgr);
+
 	if (m_ready)
 	{
-		auto renderer = m_gameMgr->GetRenderer();
-		if (renderer)
-		{
-			m_gameMgr->GetCamera()->Reset(renderer);
+		GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+		GET_OR_RETURN(ply, GameMode::GetPlayer());
 
-			m_gameMgr->GetScene()->Render(renderer);
-			/*m_gameMgr->GetPlayer()->Render(window);*/
+		m_gameMgr->GetCamera()->Reset(renderer);
 
-			m_gameMgr->GetCollisionMgr()->Render(renderer);
-		}
+		m_gameMgr->GetScene()->Render(renderer);
+
+		ply->Render(renderer);
+
+		GET_OR_RETURN(colMgr, m_gameMgr->GetCollisionMgr());
+
+		colMgr->Render(renderer);
 	}
 }

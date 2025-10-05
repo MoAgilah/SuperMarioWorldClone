@@ -1,15 +1,20 @@
 #include "LoadingState.h"
 
 #include "MainMenuState.h"
+#include "../../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
+#include <Utilities/Utils.h>
 #include <thread>
 
 void LoadResources()
 {
-	auto gameMgr = GameManager::Get();
-	/*gameMgr->InitPlayer();*/
+	GET_OR_RETURN(gameMgr, GameManager::Get());
 
-	auto scene = gameMgr->GetScene();
+	GameMode::InitPlayer();
+
+	GET_OR_RETURN(ply, GameMode::GetPlayer());
+
+	GET_OR_RETURN(scene, gameMgr->GetScene());
 
 	scene->AddEnemies();
 	scene->AddObjects();
@@ -65,10 +70,7 @@ void LoadingState::Update(float deltaTime)
 
 void LoadingState::Render()
 {
-	auto renderer = m_gameMgr->GetRenderer();
-	if (renderer)
-	{
-		m_backgroundSpr.Render(renderer);
-		m_titleMessage.Render(renderer);
-	}
+	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+	m_backgroundSpr.Render(renderer);
+	m_titleMessage.Render(renderer);
 }

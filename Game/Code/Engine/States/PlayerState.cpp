@@ -152,25 +152,25 @@ PlayerState::~PlayerState()
 
 void PlayerState::Pause()
 {
-	GetPlayer()->SetActive(false);
+	GET_OR_RETURN(ply, GetPlayer());
+	ply->SetActive(false);
 }
 
 void PlayerState::Resume()
 {
-	GetPlayer()->SetActive(true);
+	GET_OR_RETURN(ply, GetPlayer());
+	ply->SetActive(true);
 }
 
 void PlayerState::Update(float deltaTime)
-{
-	auto ply = GetPlayer();
-	if (!ply)
-		return;
-
-
-}
+{}
 
 SFAnimatedSprite* PlayerState::GetAnimSpr()
 {
+	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable);
+	if (spr)
+		return spr;
+
 	return nullptr;
 }
 
@@ -185,8 +185,7 @@ Player* PlayerState::GetPlayer()
 
 void PlayerState::MoveLeft(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	if (ply->GetDirection())
 		ply->SetDirection(false);
@@ -198,8 +197,7 @@ void PlayerState::MoveLeft(Player* ply)
 
 void PlayerState::MoveRight(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	if (!ply->GetDirection())
 		ply->SetDirection(true);
@@ -211,8 +209,7 @@ void PlayerState::MoveRight(Player* ply)
 
 void PlayerState::MoveUp(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
@@ -221,8 +218,7 @@ void PlayerState::MoveUp(Player* ply)
 
 void PlayerState::MoveDown(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
@@ -231,8 +227,7 @@ void PlayerState::MoveDown(Player* ply)
 
 void PlayerState::InitiateJump(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	if (ply->GetOnGround() && !ply->GetCantJump())
 	{
@@ -244,8 +239,7 @@ void PlayerState::InitiateJump(Player* ply)
 
 void PlayerState::InititateSpinJump(Player* ply)
 {
-	if (!ply)
-		return;
+	ENSURE_VALID(ply);
 
 	if (ply->GetOnGround() && !ply->GetCantSpinJump())
 	{
@@ -267,11 +261,8 @@ void LateralState::Initialise()
 
 void LateralState::Resume()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
@@ -285,12 +276,10 @@ void LateralState::Resume()
 
 void LateralState::ProcessInputs()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-	auto inputManager = GameManager::Get()->GetInputManager();
-
-	if (!ply || !animSpr || !inputManager)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -301,15 +290,9 @@ void LateralState::ProcessInputs()
 	if (!inputManager->GetKeyState(Keys::LEFT_KEY) && !inputManager->GetKeyState(Keys::RIGHT_KEY))
 	{
 		if (inputManager->GetKeyState(Keys::UP_KEY))
-		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::LOOKUP)
-				animSpr->ChangeAnim(MarioAnims::LOOKUP);
-		}
+			animSpr->EnsureAnim(MarioAnims::LOOKUP);
 		else
-		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::IDLE)
-				animSpr->ChangeAnim(MarioAnims::IDLE);
-		}
+			animSpr->EnsureAnim(MarioAnims::IDLE);
 	}
 
 	if (inputManager->GetKeyState(Keys::DOWN_KEY))
@@ -346,7 +329,9 @@ void LateralState::Update(float deltaTime)
 
 	if (m_runKeyHeld)
 	{
-		auto velX = GetPlayer()->GetXVelocity();
+		GET_OR_RETURN(ply, GetPlayer());
+
+		auto velX = ply->GetXVelocity();
 
 		if (velX < m_walkCap)
 		{
@@ -369,11 +354,8 @@ void LateralState::Update(float deltaTime)
 
 void LateralState::UpdateAnimation()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	auto& currMovState = m_movementCtrl.GetCurrentXState();
 
@@ -386,16 +368,14 @@ void LateralState::UpdateAnimation()
 			if (animSpr->GetCurrAnimSpeed() != 0.75f)
 				animSpr->UpdateAnimSpeed(0.75f);
 
-			if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
-				animSpr->ChangeAnim(MarioAnims::MOVING);
+			animSpr->EnsureAnim(MarioAnims::MOVING);
 		}
 		else if (currVelLimit == m_sprintCap)
 		{
 			if (animSpr->GetCurrAnimSpeed() != 0.5f)
 				animSpr->UpdateAnimSpeed(0.5f);
 
-			if (animSpr->GetCurrentAnim() != MarioAnims::RUNNING)
-				animSpr->ChangeAnim(MarioAnims::RUNNING);
+			animSpr->EnsureAnim(MarioAnims::RUNNING);
 		}
 	}
 	else
@@ -403,8 +383,7 @@ void LateralState::UpdateAnimation()
 		if (animSpr->GetCurrAnimSpeed() != 0.5f)
 			animSpr->UpdateAnimSpeed(0.5f);
 
-		if (animSpr->GetCurrentAnim() != MarioAnims::MOVING)
-			animSpr->ChangeAnim(MarioAnims::MOVING);
+		animSpr->EnsureAnim(MarioAnims::MOVING);
 	}
 }
 
@@ -415,18 +394,14 @@ CrouchedState::CrouchedState(Player* ply)
 
 void CrouchedState::Resume()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
 	ply->SetIsCrouched(true);
 
-	if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-		animSpr->ChangeAnim(MarioAnims::CROUCH);
+	animSpr->EnsureAnim(MarioAnims::CROUCH);
 
 	ply->SetXVelocity(0);
 	PlayerState::Resume();
@@ -434,27 +409,21 @@ void CrouchedState::Resume()
 
 void CrouchedState::Initialise()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
 	ply->SetXVelocity(0);
-	if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-		animSpr->ChangeAnim(MarioAnims::CROUCH);
+	animSpr->EnsureAnim(MarioAnims::CROUCH);
 }
 
 void CrouchedState::ProcessInputs()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-	auto inputManager = GameManager::Get()->GetInputManager();
-
-	if (!ply || !animSpr || !inputManager)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (!inputManager->GetKeyState(Keys::DOWN_KEY))
 		ply->GetStateMgr()->PopState();
@@ -495,34 +464,26 @@ InclinedState::InclinedState(Player* ply)
 
 void InclinedState::Resume()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Inclined);
 }
 
 void InclinedState::Initialise()
 {
-	auto ply = GetPlayer();
-	auto animSpr = ply->GetAnimatedSprite();
-
-	if (!ply || !animSpr)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Inclined);
 }
 
 void InclinedState::ProcessInputs()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-	auto inputManager = GameManager::Get()->GetInputManager();
-
-	if (!ply || !animSpr || !inputManager)
-		return;
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -563,6 +524,7 @@ VerticalState::VerticalState(Player* ply, bool spinJump)
 	: PlayerState(ply)
 {
 	m_airTimer = ply->GetAirTimer();
+	ENSURE_VALID(m_airTimer);
 }
 
 void VerticalState::Resume()
@@ -571,11 +533,9 @@ void VerticalState::Resume()
 
 void VerticalState::Initialise()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
@@ -583,15 +543,13 @@ void VerticalState::Initialise()
 
 	if (m_spinJump)
 	{
-		if (animSpr->GetCurrentAnim() != MarioAnims::SPINJUMP)
-			animSpr->ChangeAnim(MarioAnims::SPINJUMP);
+		animSpr->EnsureAnim(MarioAnims::SPINJUMP);
 	}
 	else
 	{
 		if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
 		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::JUMP)
-				animSpr->ChangeAnim(MarioAnims::JUMP);
+			animSpr->EnsureAnim(MarioAnims::JUMP);
 		}
 	}
 
@@ -618,12 +576,11 @@ void VerticalState::Initialise()
 
 void VerticalState::ProcessInputs()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-	auto inputManager = GameManager::Get()->GetInputManager();
-
-	if (!ply || !animSpr || !inputManager)
-		return;
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -660,9 +617,8 @@ void VerticalState::Update(float deltaTime)
 	ProcessInputs();
 	UpdateAnimation();
 
-	auto ply = GetPlayer();
-	if (!ply)
-		return;
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(ply, GetPlayer());
 
 	auto& movementState = m_movementCtrl.GetCurrentYState();
 
@@ -686,19 +642,13 @@ void VerticalState::Update(float deltaTime)
 
 void VerticalState::UpdateAnimation()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	if (m_airTimer->CheckEnd())
 	{
 		if (!m_spinJump && animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-		{
-			if (animSpr->GetCurrentAnim() != MarioAnims::FALL)
-				animSpr->ChangeAnim(MarioAnims::FALL);
-		}
+			animSpr->EnsureAnim(MarioAnims::FALL);
 	}
 }
 
@@ -706,18 +656,16 @@ DieingState::DieingState(Player* ply)
 	: PlayerState(ply)
 {
 	m_airTimer = ply->GetAirTimer();
+	ENSURE_VALID(m_airTimer);
 }
 
 void DieingState::Initialise()
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
 
-	if (!ply || !animSpr)
-		return;
-
-	if (animSpr->GetCurrentAnim() != MarioAnims::DIE)
-		animSpr->ChangeAnim(MarioAnims::DIE);
+	animSpr->EnsureAnim(MarioAnims::DIE);
 
 	ply->SetAirbourne(true);
 }
@@ -729,11 +677,11 @@ void DieingState::ProcessInputs()
 
 void DieingState::Update(float deltaTime)
 {
-	auto ply = GetPlayer();
-	auto animSpr = GetAnimSpr();
-
-	if (!ply || !animSpr)
-		return;
+	ENSURE_VALID(m_airTimer);
+	GET_OR_RETURN(ply, GetPlayer());
+	GET_OR_RETURN(animSpr, GetAnimSpr());
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(camera, gameMgr->GetCamera());
 
 	if (ply->GetAirbourne())
 	{
@@ -747,7 +695,7 @@ void DieingState::Update(float deltaTime)
 	{
 		MoveDown(ply);
 
-		if (GameManager::Get()->GetCamera()->CheckVerticalBounds(ply->GetVolume()))
+		if (camera->CheckVerticalBounds(ply->GetVolume()))
 			ply->Reset();
 	}
 }

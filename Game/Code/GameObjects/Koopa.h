@@ -13,8 +13,6 @@ public:
 
 	void Reset() final;
 
-	void SetDirection(bool dir) override;
-
 	bool GetAirbourne() const = delete;
 	void SetAirbourne(bool air) = delete;
 	float GetAirTime() const = delete;

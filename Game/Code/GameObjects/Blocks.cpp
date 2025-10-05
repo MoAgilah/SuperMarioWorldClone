@@ -5,33 +5,31 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 
 QuestionBlock::QuestionBlock(const Vector2f& initPos)
 	: Box(std::make_shared<SFAnimatedSprite>("QBlock", 2,4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), initPos)
 {
+	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-	{
-		spr->SetFrames({ 1, 4 });
-		spr->ChangeAnim(QBlockAnims::ROTATE);
-	}
+
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->SetFrames({ 1, 4 });
+	spr->ChangeAnim(QBlockAnims::ROTATE);
 }
 
 void QuestionBlock::Update(float deltaTime)
 {
 	if (GetActive())
 	{
-		auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-		if (!spr)
-			return;
+		GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 		spr->Update(deltaTime);
 
 		if (GetJustHit())
 		{
-			if (spr->GetCurrentAnim() != QBlockAnims::DUD)
-				spr->ChangeAnim(QBlockAnims::DUD);
+			spr->EnsureAnim(QBlockAnims::DUD);
 
 			SetCanHit(false);
 			SetJustHit(false);
@@ -41,12 +39,9 @@ void QuestionBlock::Update(float deltaTime)
 
 void QuestionBlock::Reset()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-	{
-		if (spr->GetCurrentAnim() != QBlockAnims::ROTATE)
-			spr->ChangeAnim(QBlockAnims::ROTATE);
-	}
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(QBlockAnims::ROTATE);
 
 	Box::Reset();
 }
@@ -54,19 +49,19 @@ void QuestionBlock::Reset()
 RotatingBlock::RotatingBlock(const Vector2f& initPos)
 	: Box(std::make_shared<SFAnimatedSprite>("RBlock", 2, 4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16), Vector2f()), initPos)
 {
+	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-		spr->SetFrames({ 1, 4 });
+
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->SetFrames({ 1, 4 });
 }
 
 void RotatingBlock::Update(float deltaTime)
 {
 	if (GetActive())
 	{
-		auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-		if (!spr)
-			return;
+		GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 		if (GetJustSmashed())
 		{
@@ -76,8 +71,7 @@ void RotatingBlock::Update(float deltaTime)
 				spr->SetFrameData(2, 9, { 9, 9 });
 				spr->SetScale(Vector2f(1, 1));
 
-				if (spr->GetCurrentAnim() != ShatterAnims::SCATTER)
-					spr->ChangeAnim(ShatterAnims::SCATTER);
+				spr->EnsureAnim(ShatterAnims::SCATTER);
 
 				spr->SetShouldLoop(false);
 			}
@@ -92,8 +86,7 @@ void RotatingBlock::Update(float deltaTime)
 				spr->Update(deltaTime);
 				if (spr->PlayedNumTimes(2))
 				{
-					if (spr->GetCurrentAnim() != RBlockAnims::WAIT)
-						spr->ChangeAnim(RBlockAnims::WAIT);
+					spr->EnsureAnim(RBlockAnims::WAIT);
 
 					SetCanHit(true);
 				}
@@ -101,8 +94,7 @@ void RotatingBlock::Update(float deltaTime)
 
 			if (GetJustHit())
 			{
-				if (spr->GetCurrentAnim() != RBlockAnims::SPIN)
-					spr->ChangeAnim(RBlockAnims::SPIN);
+				spr->EnsureAnim(RBlockAnims::SPIN);
 
 				SetCanHit(false);
 				SetJustHit(false);
@@ -113,9 +105,7 @@ void RotatingBlock::Update(float deltaTime)
 
 void RotatingBlock::Reset()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (!spr)
-		return;
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	if (spr->GetTexID() != "RotatingBlock")
 	{
@@ -123,17 +113,14 @@ void RotatingBlock::Reset()
 		spr->SetFrameData(2, 4, { 1, 4 });
 	}
 
-	if (spr->GetCurrentAnim() != RBlockAnims::WAIT)
-		spr->ChangeAnim(RBlockAnims::WAIT);
+	spr->EnsureAnim(RBlockAnims::WAIT);
 
 	Box::Reset();
 }
 
 void RotatingBlock::Scatter()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (!spr)
-		return;
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->OffsetPosition(Vector2f(0, GameConstants::ObjectSpeed));
 
@@ -144,8 +131,7 @@ void RotatingBlock::Scatter()
 
 	if (spr->PlayedOnce())
 	{
-		if (spr->GetCurrentAnim() != ShatterAnims::DROP)
-			spr->ChangeAnim(ShatterAnims::DROP);
+		spr->EnsureAnim(ShatterAnims::DROP);
 
 		spr->SetShouldLoop(true);
 	}

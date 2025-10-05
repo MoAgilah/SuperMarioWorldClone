@@ -4,14 +4,17 @@
 #include "../Engine/States/TitleState.h"
 #include "../GameObjects/Player.h"
 #include <Collisions/SFGrid.h>
+#include <GameObjects/GameObject.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Interface/Collisions/ITile.h>
 
 std::shared_ptr<Player> GameMode::s_player = nullptr;
 GameType GameMode::m_gameType = GameType::Manual;
-float GameMode::m_mariosMaxSpdX = 0;
-float GameMode::m_marioMaxSpdY = 0;
+float GameMode::m_leftMost = 15.6f;
+float GameMode::m_rightMost = 11400.f;
+float GameMode::m_mariosMaxSpdX = 0.f;
+float GameMode::m_marioMaxSpdY = 0.f;
 
 void GameMode::InitPlayer()
 {
@@ -56,4 +59,19 @@ void GameMode::ToTitle()
 
 	if (s_player)
 		s_player = nullptr;
+}
+
+void GameMode::CheckForHorizontalBounds(float deltaTime, IDynamicGameObject* obj)
+{
+	ENSURE_VALID(obj);
+	GET_OR_RETURN(volume, obj->GetVolume());
+
+	if (volume->GetPoint(Side::Left).x <= m_leftMost)
+	{
+		obj->Move(-obj->GetVelocity().x * GameConstants::FPS * deltaTime, 0);
+
+		auto ply = dynamic_cast<Player*>(obj);
+		if (!ply)
+			obj->SetDirection(!obj->GetDirection());
+	}
 }

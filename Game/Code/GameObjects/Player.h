@@ -20,7 +20,6 @@ template<typename T>
 class BoundingBox;
 class SFRect;
 
-
 enum Keys
 {
 	LEFT_KEY = KeyCode::Left,

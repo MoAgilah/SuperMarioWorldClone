@@ -6,6 +6,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 
 Koopa::Koopa(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Koopa",3,3,GameConstants::FPS, false, 0.5f),
@@ -15,59 +16,44 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
-	m_volume->Update(GetPosition());
-
 	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.25f);
 	SetSpeedY(GameMode::m_marioMaxSpdY);
 
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	if (spr)
-	{
-		spr->SetFrames({ 2, 3, 1 });
-		spr->ChangeAnim(KoopaAnims::WALK);
-	}
+	ENSURE_VALID(m_volume);
+	m_volume->Update(GetPosition());
+
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->SetFrames({ 2, 3, 1 });
+	spr->ChangeAnim(KoopaAnims::WALK);
 }
 
 void Koopa::Reset()
 {
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	if (spr)
-		spr->EnsureAnim(KoopaAnims::WALK);
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(KoopaAnims::WALK);
 
 	Enemy::Reset();
 }
 
-void Koopa::SetDirection(bool dir)
-{
-	Enemy::SetDirection(dir);
-	if (dir)
-		SetXVelocity(GetSpeedX());
-	else
-		SetXVelocity(-GetSpeedX());
-}
-
 void Koopa::Die()
 {
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	if (spr)
-		spr->EnsureAnim(KoopaAnims::COMPRESS);
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(KoopaAnims::COMPRESS);
 
 	SetTimeLeftActive(0.5f);
 }
 
 void Koopa::Animate(float deltaTime)
 {
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	auto* colMgr = GameManager::Get()->GetCollisionMgr();
-
-	if (!spr)
-		return;
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->Update(deltaTime);
 
 	if (HasLifes())
 	{
-
 		SetPrevPosition(GetPosition());
 
 		if (GetOnGround())
@@ -115,13 +101,16 @@ void Koopa::Animate(float deltaTime)
 				IncrementYVelocity(GameConstants::Gravity);
 		}
 
+		GET_OR_RETURN(gameMgr, GameManager::Get());
+		GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+
 		if (GetXVelocity() != 0)
 		{
 			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);
 			colMgr->ProcessCollisions(this);
 		}
 
-		/*CheckForHorizontalBounds(deltaTime);*/
+		GameMode::CheckForHorizontalBounds(deltaTime, this);
 
 		if (GetYVelocity() != 0)
 		{

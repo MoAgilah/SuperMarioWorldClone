@@ -6,6 +6,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 
 PPlant::PPlant(const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck", 1, 2, GameConstants::FPS, false, 0.5f),
@@ -15,22 +16,23 @@ PPlant::PPlant(const Vector2f& initPos)
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
-	m_volume->Update(GetPosition());
-
 	SetSpeedX(0);
 	SetSpeedY(GameMode::m_mariosMaxSpdX * 0.25f);
 	SetAirTime(1.3f);
 
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	if (spr)
-		spr->SetFrames({2});
+	ENSURE_VALID(m_volume);
+	m_volume->Update(GetPosition());
+
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->SetFrames({2});
 }
 
 void PPlant::Reset()
 {
-	auto spr = GetAnimatedSprite(m_drawable.get());
-	if (spr)
-		spr->EnsureAnim(PPlantAnims::SINK);
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(PPlantAnims::SINK);
 
 	Enemy::Reset();
 }
@@ -51,9 +53,8 @@ void PPlant::Die()
 
 void PPlant::Animate(float deltaTime)
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (!spr)
-		return;
+	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	ENSURE_VALID(GetAirTimer());
 
 	spr->Update(deltaTime);
 
@@ -78,9 +79,12 @@ void PPlant::Animate(float deltaTime)
 		GetAirTimer()->RestartTimer();
 	}
 
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+
 	if (GetYVelocity() != 0)
 	{
 		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
-		GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
+		colMgr->ProcessCollisions(this);
 	}
 }

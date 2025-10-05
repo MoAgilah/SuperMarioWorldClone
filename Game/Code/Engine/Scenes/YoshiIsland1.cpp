@@ -14,11 +14,13 @@
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Interface/Collisions/ITile.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/View.hpp>
 
 YoshiIsland1::YoshiIsland1()
 {
 	m_backgroundSpr = std::make_shared<SFSprite>("Background");
+	ENSURE_VALID(m_backgroundSpr);
 
 	auto bkgSpr = dynamic_cast<SFSprite*>(m_backgroundSpr.get());
 	if (bkgSpr)
@@ -31,8 +33,7 @@ YoshiIsland1::YoshiIsland1()
 
 void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<GameObject> obj, const Vector2f& pos)
 {
-	if (!obj)
-		return;
+	ENSURE_VALID(obj);
 
 	obj->SetPosition(pos);
 
@@ -43,7 +44,8 @@ void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<Game
 
 void YoshiIsland1::AddEnemies()
 {
-	auto colMgr = GameManager::Get()->GetCollisionMgr();
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 
@@ -144,7 +146,11 @@ void YoshiIsland1::AddGUI()
 	m_texts.push_back(std::make_shared<SFText>(config));
 
 	for (auto txt : m_texts)
+	{
+		CONTINUE_IF_INVALID(txt);
+
 		txt->SetFillColour(Colour::Yellow);
+	}
 
 	m_texts[static_cast<int>(Texts::Name)]->SetText("x 00");
 	m_texts[static_cast<int>(Texts::Time)]->SetText(std::to_string(static_cast<int>(GameManager::Get()->GetTimer().GetCurrTime())));
@@ -152,7 +158,8 @@ void YoshiIsland1::AddGUI()
 
 void YoshiIsland1::AddObjects()
 {
-	auto colMgr = GameManager::Get()->GetCollisionMgr();
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 
@@ -201,7 +208,8 @@ void YoshiIsland1::AddObjects()
 
 void YoshiIsland1::AddForeGroundObjects()
 {
-	auto colMgr = GameManager::Get()->GetCollisionMgr();
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 
@@ -218,27 +226,27 @@ void YoshiIsland1::AddForeGroundObjects()
 void YoshiIsland1::UpdateGUI(float deltaTime)
 {
 	auto sfCam = dynamic_cast<SFCamera*>(GameManager::Get()->GetCamera());
-	if (!sfCam)
-		return;
+	ENSURE_VALID(sfCam);
 
 	auto view = sfCam->GetView();
-	if (!view)
-		return;
+	ENSURE_VALID(view);
 
 	auto spr = dynamic_cast<SFSprite*>(m_sprites[static_cast<int>(Sprites::Name)].get());
 	auto txt = dynamic_cast<SFText*>(m_texts[static_cast<int>(Texts::Name)].get());
-	if (spr && txt)
-	{
-		spr->SetPosition(Vector2f((view->getCenter().x - GameConstants::ScreenDim.x * 0.5f) + 30, 20));
-		txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
-	}
+
+	ENSURE_VALID(spr);
+	ENSURE_VALID(txt);
+
+	spr->SetPosition(Vector2f((view->getCenter().x - GameConstants::ScreenDim.x * 0.5f) + 30, 20));
+	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
 
 	spr = dynamic_cast<SFSprite*>(m_sprites[static_cast<int>(Sprites::Time)].get());
 	txt = dynamic_cast<SFText*>(m_texts[static_cast<int>(Texts::Time)].get());
-	if (spr && txt)
-	{
-		spr->SetPosition(Vector2f(view->getCenter().x, 20));
-		txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
-		txt->SetText(std::to_string(static_cast<int>(GameManager::Get()->GetTimer().GetCurrTime())));
-	}
+
+	ENSURE_VALID(spr);
+	ENSURE_VALID(txt);
+
+	spr->SetPosition(Vector2f(view->getCenter().x, 20));
+	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
+	txt->SetText(std::to_string(static_cast<int>(GameManager::Get()->GetTimer().GetCurrTime())));
 }

@@ -3,6 +3,7 @@
 #include <Drawables/SFShape.h>
 #include <Drawables/SFSprite.h>
 #include <Engine/Collisions/BoundingBox.h>
+#include <Utilities/Utils.h>
 
 Pipe::Pipe(const std::string& texID, const Vector2f& pos)
 	: GameObject(std::make_shared<SFSprite>(texID),std::make_shared<BoundingBox<SFRect>>())
@@ -16,6 +17,7 @@ Pipe::Pipe(const std::string& texID, const Vector2f& pos)
 	if (box)
 		box->Reset(m_drawable->GetSize());
 
+	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 }
 

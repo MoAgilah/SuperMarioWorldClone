@@ -6,6 +6,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 
 Chuck::Chuck(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck",5,7,GameConstants::FPS, false,0.5f),
@@ -15,34 +16,32 @@ Chuck::Chuck(bool dir, const Vector2f& initPos)
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);
 	SetPosition(GetInitialPosition());
-	m_volume->Update(GetPosition());
-	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.60f);
-	SetSpeedY(GameMode::m_marioMaxSpdY);
+    SetSpeedX(GameMode::m_mariosMaxSpdX * 0.60f);
+    SetSpeedY(GameMode::m_marioMaxSpdY);
 
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-		spr->SetFrames({ 3, 1, 1, 7, 3 });
+    ENSURE_VALID(m_volume);
+	m_volume->Update(GetPosition());
+
+    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+    spr->SetFrames({ 3, 1, 1, 7, 3 });
 }
 
 void Chuck::Reset()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-	{
-		if (spr->GetCurrentAnim() != ChuckAnims::BOUNCE)
-			spr->ChangeAnim(ChuckAnims::BOUNCE);
-	}
+    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(ChuckAnims::BOUNCE);
+
 	Enemy::Reset();
 }
 
 void Chuck::Die()
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-	if (spr)
-	{
-		if (spr->GetCurrentAnim() != ChuckAnims::WHIPLASH)
-			spr->ChangeAnim(ChuckAnims::WHIPLASH);
-	}
+    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+	spr->EnsureAnim(ChuckAnims::WHIPLASH);
+
 	SetTimeLeftActive(0.5f);
 }
 
@@ -55,67 +54,67 @@ void Chuck::DecrementLife()
 	{
 		m_tookHit = true;
 		SetInvulnerability(true);
-		auto spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-		if (spr)
-		{
-			if (spr->GetCurrentAnim() != ChuckAnims::HIT)
-				spr->ChangeAnim(ChuckAnims::HIT);
-		}
-	}
-}
 
-namespace {
-    // Upward takeoff speed in px/frame (SMW-ish gravity: 0.1875 px/f^2)
-    constexpr float kChuckJumpVy = -3.5f; // ~2 tiles apex; try -3.0f (1.5 tiles) or -3.9f (2.5 tiles)
+        GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+
+		spr->EnsureAnim(ChuckAnims::HIT);
+	}
 }
 
 void Chuck::Animate(float dt)
 {
-    auto* spr = dynamic_cast<SFAnimatedSprite*>(m_drawable.get());
-    if (!spr)
-        return;
+    ENSURE_VALID(GetAirTimer());
+    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
     spr->Update(dt);
 
-    if (GetOnGround())
+    if (HasLifes())
     {
-        m_waitTimer.Update(dt);
-        if (m_waitTimer.CheckEnd())
+        SetPrevPosition(GetPosition());
+
+        if (GetOnGround())
         {
-            spr->EnsureAnim(ChuckAnims::BOUNCE);
-            SetAirTime(0.75f);
-            SetYVelocity(GameMode::m_marioMaxSpdY);
-            SetAirbourne(true);
-        }
-        else
-        {
-            SetYVelocity(0);
-        }
-    }
-    else
-    {
-        if (GetAirbourne())
-        {
-            if (GetAirTimer()->CheckEnd())
+            m_waitTimer.Update(dt);
+            if (m_waitTimer.CheckEnd())
             {
-                spr->EnsureAnim(ChuckAnims::CLAP);
-                SetAirbourne(false);
+                spr->EnsureAnim(ChuckAnims::BOUNCE);
+                SetAirTime(0.75f);
+                SetYVelocity(GameMode::m_marioMaxSpdY);
+                SetAirbourne(true);
+            }
+            else
+            {
                 SetYVelocity(0);
             }
         }
         else
         {
-            if (!GetOnGround())
+            if (GetAirbourne())
             {
-                if (GetYVelocity() < GameMode::m_marioMaxSpdY)
-                    IncrementYVelocity(GameConstants::Gravity);
+                if (GetAirTimer()->CheckEnd())
+                {
+                    spr->EnsureAnim(ChuckAnims::CLAP);
+                    SetAirbourne(false);
+                    SetYVelocity(0);
+                }
+            }
+            else
+            {
+                if (!GetOnGround())
+                {
+                    if (GetYVelocity() < GameMode::m_marioMaxSpdY)
+                        IncrementYVelocity(GameConstants::Gravity);
+                }
             }
         }
-    }
 
-    if (GetYVelocity() != 0.0f)
-    {
-        Move(0.0f, GetYVelocity() * GameConstants::FPS * dt);
-        GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
+        GET_OR_RETURN(gameMgr, GameManager::Get());
+        GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+
+        if (GetYVelocity() != 0.0f)
+        {
+            Move(0.0f, GetYVelocity() * GameConstants::FPS * dt);
+            colMgr->ProcessCollisions(this);
+        }
     }
 }

@@ -7,6 +7,7 @@
 #include <Engine/Collisions/BoundingHalfCapsule.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 #include <memory>
 
 Bill::Bill(bool dir, const Vector2f& initPos)
@@ -19,25 +20,36 @@ Bill::Bill(bool dir, const Vector2f& initPos)
 	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.75f);
 	SetSpeedY(GameMode::m_marioMaxSpdY);
 
-	auto* fullCap = dynamic_cast<BoundingCapsule<SFCapsule>*>(m_volume.get());
-	if (fullCap)
-	{
-		HalfCapsule<SFCapsule>::Which which =
-			GetInitialDirection() ? HalfCapsule<SFCapsule>::Which::End   // moving right → nose at "end"
-			: HalfCapsule<SFCapsule>::Which::Start; // moving left  → nose at "start"
+	ENSURE_VALID(m_volume);
 
-		m_halfCap = std::make_shared<HalfCapsule<SFCapsule>>(fullCap, which);
-		UpdateBody();
-	}
+	auto* fullCap = dynamic_cast<BoundingCapsule<SFCapsule>*>(m_volume.get());
+
+	ENSURE_VALID(fullCap);
+
+	HalfCapsule<SFCapsule>::Which which =
+		GetInitialDirection() ? HalfCapsule<SFCapsule>::Which::End   // moving right → nose at "end"
+		: HalfCapsule<SFCapsule>::Which::Start; // moving left  → nose at "start"
+
+	m_halfCap = std::make_shared<HalfCapsule<SFCapsule>>(fullCap, which);
+
+	ENSURE_VALID(m_halfCap);
+
+	UpdateBody();
 }
 
 bool Bill::Intersects(IGameObject* obj)
 {
+	ENSURE_VALID_RET(obj, false);
+	ENSURE_VALID_RET(m_halfCap, false);
+
 	return m_halfCap->Intersects(obj->GetVolume());
 }
 
 bool Bill::Intersects(IDynamicGameObject* obj, float& tFirst, float& tLast)
 {
+	ENSURE_VALID_RET(obj, false);
+	ENSURE_VALID_RET(m_halfCap, false);
+
 	return m_halfCap->IntersectsMoving(obj->GetVolume(), GetVelocity(), obj->GetVelocity(), tFirst, tLast);
 }
 
@@ -55,6 +67,9 @@ void Bill::SetDirection(bool dir)
 
 void Bill::Render(IRenderer* renderer)
 {
+	ENSURE_VALID(m_drawable);
+	ENSURE_VALID(m_halfCap);
+
 	m_drawable->Render(renderer);
 	m_halfCap->Render(renderer);
 }
@@ -67,6 +82,8 @@ void Bill::UpdateBody()
 
 void Bill::Animate(float deltaTime)
 {
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+
 	SetPrevPosition(GetPosition());
 
 	if (HasLifes())
@@ -74,7 +91,10 @@ void Bill::Animate(float deltaTime)
 		if (GetXVelocity() != 0)
 		{
 			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);
-			GameManager::Get()->GetCollisionMgr()->ProcessCollisions(this);
+
+			GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+
+			colMgr->ProcessCollisions(this);
 		}
 	}
 	else
@@ -84,10 +104,13 @@ void Bill::Animate(float deltaTime)
 
 		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
 
-		GameManager::Get()->GetCamera()->CheckVerticalBounds(m_volume.get());
+		ENSURE_VALID(m_volume);
+		GET_OR_RETURN(camera, gameMgr->GetCamera());
+
+		camera->CheckVerticalBounds(m_volume.get());
 	}
 
 	UpdateBody();
 
-	//CheckForHorizontalBounds(deltaTime);
+	GameMode::CheckForHorizontalBounds(deltaTime, this);
 }
