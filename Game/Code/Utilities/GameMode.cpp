@@ -1,6 +1,10 @@
 #include "GameMode.h"
 
+#include "../Engine/Collisions/MarioCollisionManager.h"
+#include "../Engine/States/TitleState.h"
 #include "../GameObjects/Player.h"
+#include <Collisions/SFGrid.h>
+#include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Interface/Collisions/ITile.h>
 
@@ -31,4 +35,25 @@ void GameMode::InitPlayer()
 	case GameType::Automation:
 		break;
 	}
+}
+
+void GameMode::ToTitle()
+{
+	auto gameMgr = GameManager::Get();
+	if (!gameMgr)
+		return;
+
+	auto stateMgr = gameMgr->GetGameStateMgr();
+	if (!stateMgr)
+		return;
+
+	gameMgr->SetICollisionManager(std::make_shared<MarioCollisionManager>(std::make_shared<SFGrid>(15, 313, "Arial", GameConstants::TileFilePaths)));
+	gameMgr->SetScene(nullptr);
+	GameConstants::GameIsReady = false;
+
+	stateMgr->ClearStates();
+	stateMgr->ChangeState(new TitleState(gameMgr));
+
+	if (s_player)
+		s_player = nullptr;
 }

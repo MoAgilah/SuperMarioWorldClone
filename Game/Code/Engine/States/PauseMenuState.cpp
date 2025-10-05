@@ -1,6 +1,7 @@
 #include "PauseMenuState.h"
 
-#include "TitleState.h"
+#include "../../Utilities/GameMode.h"
+#include <Drawables/SFText.h>
 #include <Engine/Core/Constants.h>
 
 enum MenuPosition { Resume, ToTitle, Quit };
@@ -8,6 +9,8 @@ enum MenuPosition { Resume, ToTitle, Quit };
 void PauseMenuActionFunc(int menuPosition)
 {
 	auto gameMgr = GameManager::Get();
+	if (gameMgr)
+		return;
 
 	switch (menuPosition)
 	{
@@ -15,13 +18,20 @@ void PauseMenuActionFunc(int menuPosition)
 		gameMgr->GetGameStateMgr()->PopState();
 		break;
 	case MenuPosition::ToTitle:
-		/*gameMgr->Reinitialise();
-		gameMgr->GetGameStateMgr()->ClearStates();
-		GameConstants::GameIsReady = false;
-		gameMgr->GetGameStateMgr()->ChangeState(new TitleState(gameMgr));*/
+		GameMode::ToTitle();
 		break;
 	case MenuPosition::Quit:
-		/*gameMgr->GetRenderWindow().close();*/
+	{
+		auto renderer = gameMgr->GetRenderer();
+		if (renderer)
+			return;
+
+		auto window = renderer->GetWindow();
+		if (window)
+			return;
+
+		window->Close();
+	}
 		break;
 	}
 }
@@ -127,12 +137,18 @@ void PauseMenuState::ProcessInputs()
 			m_gameMgr->GetGameStateMgr()->PopState();
 			break;
 		case MenuPosition::ToTitle:
-			m_gameMgr->GetGameStateMgr()->ClearStates();
-			GameConstants::GameIsReady = false;
-			m_gameMgr->GetGameStateMgr()->ChangeState(new TitleState(m_gameMgr));
+			GameMode::ToTitle();
 			break;
 		case MenuPosition::Quit:
-			m_gameMgr->GetRenderer()->GetWindow()->Close();
+			auto renderer = m_gameMgr->GetRenderer();
+			if (renderer)
+				return;
+
+			auto window = renderer->GetWindow();
+			if (window)
+				return;
+
+			window->Close();
 			break;
 		}
 	}

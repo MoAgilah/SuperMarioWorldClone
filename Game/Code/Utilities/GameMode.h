@@ -15,6 +15,7 @@ class GameMode
 {
 public:
 	static void InitPlayer();
+	static void ToTitle();
 
 	static std::shared_ptr<Player> s_player;
 	static GameType m_gameType;
