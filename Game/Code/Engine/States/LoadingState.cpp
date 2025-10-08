@@ -70,6 +70,7 @@ void LoadingState::Update(float deltaTime)
 
 void LoadingState::Render()
 {
+	ENSURE_VALID(m_gameMgr);
 	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 	m_backgroundSpr.Render(renderer);
 	m_titleMessage.Render(renderer);

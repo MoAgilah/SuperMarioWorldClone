@@ -23,5 +23,6 @@ public:
 private:
 
 	SFSprite m_backgroundSpr;
+	SFSprite m_titleSpr;
 	SFAnimatedText m_titleMessage;
 };

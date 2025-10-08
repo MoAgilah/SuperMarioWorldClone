@@ -108,6 +108,7 @@ void MainMenuState::Update(float deltaTime)
 
 void MainMenuState::Render()
 {
+	ENSURE_VALID(m_gameMgr);
 	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
 	m_backgroundSpr.Render(renderer);

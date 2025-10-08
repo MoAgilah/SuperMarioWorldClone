@@ -187,34 +187,35 @@
     <Font Include="Resources\Fonts\supermarioworld.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Sprites\bill.png" />
-    <Image Include="Resources\Sprites\BreakingBox.png" />
-    <Image Include="Resources\Sprites\ChkPnt.png" />
-    <Image Include="Resources\Sprites\Chuck.png" />
-    <Image Include="Resources\Sprites\Coin.png" />
-    <Image Include="Resources\Sprites\CoinBB.png" />
-    <Image Include="Resources\Sprites\Goal.png" />
-    <Image Include="Resources\Sprites\Koopa.png" />
-    <Image Include="Resources\Sprites\mario.png" />
-    <Image Include="Resources\Sprites\Name.png" />
-    <Image Include="Resources\Sprites\Pipe1.png" />
-    <Image Include="Resources\Sprites\Pipe2.png" />
-    <Image Include="Resources\Sprites\Pipe3.png" />
-    <Image Include="Resources\Sprites\PPlant.png" />
-    <Image Include="Resources\Sprites\QBlock.png" />
-    <Image Include="Resources\Sprites\Rex.png" />
-    <Image Include="Resources\Sprites\RBlock.png" />
-    <Image Include="Resources\Sprites\Shroom.png" />
-    <Image Include="Resources\Sprites\Super.png" />
-    <Image Include="Resources\Sprites\Time.png" />
-    <Image Include="Resources\Sprites\Title.png" />
-    <Image Include="Resources\Sprites\YCoin.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Shaders\FlashShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\TileTypes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Textures\Background.png" />
+    <Image Include="Resources\Textures\bill.png" />
+    <Image Include="Resources\Textures\BreakingBox.png" />
+    <Image Include="Resources\Textures\ChkPnt.png" />
+    <Image Include="Resources\Textures\Chuck.png" />
+    <Image Include="Resources\Textures\Coin.png" />
+    <Image Include="Resources\Textures\CoinBB.png" />
+    <Image Include="Resources\Textures\Goal.png" />
+    <Image Include="Resources\Textures\Koopa.png" />
+    <Image Include="Resources\Textures\mario.png" />
+    <Image Include="Resources\Textures\Name.png" />
+    <Image Include="Resources\Textures\Pipe1.png" />
+    <Image Include="Resources\Textures\Pipe2.png" />
+    <Image Include="Resources\Textures\Pipe3.png" />
+    <Image Include="Resources\Textures\PPlant.png" />
+    <Image Include="Resources\Textures\QBlock.png" />
+    <Image Include="Resources\Textures\RBlock.png" />
+    <Image Include="Resources\Textures\Rex.png" />
+    <Image Include="Resources\Textures\Shroom.png" />
+    <Image Include="Resources\Textures\Super.png" />
+    <Image Include="Resources\Textures\Time.png" />
+    <Image Include="Resources\Textures\Title.png" />
+    <Image Include="Resources\Textures\YCoin.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

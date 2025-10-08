@@ -126,6 +126,7 @@ void PauseMenuState::Update(float deltaTime)
 
 void PauseMenuState::Render()
 {
+	ENSURE_VALID(m_gameMgr);
 	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
 	m_backgroundSpr.Render(renderer);
