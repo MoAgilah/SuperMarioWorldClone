@@ -6,12 +6,12 @@
 #include <Engine/Core/Constants.h>
 #include <Utilities/Utils.h>
 
-enum MenuPosition { Automation, Manual };
+enum MenuPosition { Manual, Automation };
 
 MainMenuState::MainMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr),
 	m_backgroundSpr("Title"),
-	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, {1, 2}, MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
+	m_menu(GameConstants::ScaleScreenDim(0.4f, 0.2f), 2.f, { 1, 2 }, MenuPositionData(MenuPositionMode::Centered, GameConstants::ScaleScreenDim(0.5f, 0.65f)))
 {}
 
 void MainMenuState::Initialise()
@@ -22,42 +22,42 @@ void MainMenuState::Initialise()
 	auto cellSize = m_menu.GetCellSize();
 
 	TextConfig config;
-	config.m_fontName = "SuperMarioWorld";
+	config.m_fontName = "SMW";
 	config.m_charSize = static_cast<int>(cellSize.y * 0.6f);
 	config.m_animType = TextAnimType::Flashing;
 	config.m_alignment = TextAlignment::Center;
 	config.m_colour = Colour::Black;
 
-	auto cell = m_menu.GetCell({ 1,1 });
+	auto cell = m_menu.GetCell({ 0,0 });
 
 	ENSURE_VALID(cell);
 	{
-
-		TextConfig config;
 		config.m_position = cell->GetPosition();
 
 		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
 		if (text)
 		{
 			text->SetFillColour(Colour::Yellow);
-			InitFlashingText(dynamic_cast<SFAnimatedText*>(text), "Automation");
+			text->SetText("Manual");
+			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+			sfText->SetIsLooping(true);
 		}
 		cell->SetMenuSlotNumber(0);
 	}
 
-	cell = m_menu.GetCell({ 1,2 });
+	cell = m_menu.GetCell({ 1,0 });
 
 	ENSURE_VALID(cell);
 	{
-
-		TextConfig config;
 		config.m_position = cell->GetPosition();
 
 		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
 		if (text)
 		{
 			text->SetFillColour(Colour::Yellow);
-			InitFlashingText(dynamic_cast<SFAnimatedText*>(text), "Manual");
+			text->SetText("Automation");
+			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+			sfText->SetIsLooping(true);
 		}
 		cell->SetMenuSlotNumber(1);
 	}

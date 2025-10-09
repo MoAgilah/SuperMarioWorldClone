@@ -67,7 +67,8 @@ void RotatingBlock::Update(float deltaTime)
 		{
 			if (spr->GetTexID() != "BreakingBox")
 			{
-				spr->SetTexture("BreakingBox");
+				THROW_IF_FALSE_MSG(spr->SetTexture("BreakingBox"), "Failed to change the RotatingBlock texId to {}", "BreakingBox");
+
 				spr->SetFrameData(2, 9, { 9, 9 });
 				spr->SetScale(Vector2f(1, 1));
 
@@ -109,7 +110,7 @@ void RotatingBlock::Reset()
 
 	if (spr->GetTexID() != "RotatingBlock")
 	{
-		spr->SetTexture("RotatingBlock");
+		THROW_IF_FALSE_MSG(spr->SetTexture("RotatingBlock"), "Failed to change the RotatingBlock texId to {}", "RotatingBlock");
 		spr->SetFrameData(2, 4, { 1, 4 });
 	}
 

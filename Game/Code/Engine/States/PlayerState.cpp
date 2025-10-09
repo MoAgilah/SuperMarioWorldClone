@@ -125,18 +125,18 @@ PlayerState::PlayerState(Player* ply)
 
 		MovementState vertical;
 
-		vertical.AddVelocity(ToInt(VerticalLoco::Low), 3.4375f);			// X Velocity < 1 px/f (-Y)
-		vertical.AddVelocity(ToInt(VerticalLoco::Med), 3.5625f);			// X Velocity > 1 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::Low), 3.4375f);		// X Velocity < 1 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::Med), 3.5625f);		// X Velocity > 1 px/f (-Y)
 		vertical.AddVelocity(ToInt(VerticalLoco::High), 3.6875f);		// X Velocity > 2 px/f (-Y)
-		vertical.AddVelocity(ToInt(VerticalLoco::Max), 3.9375f);			// X Velocity > 3 px/f (-Y)
+		vertical.AddVelocity(ToInt(VerticalLoco::Max), 3.9375f);		// X Velocity > 3 px/f (-Y)
 
 		GameMode::m_marioMaxSpdY = lateral.GetVelocity(ToInt(VerticalLoco::Max));
 
 		vertical.AddVelocity(ToInt(VerticalLoco::Slam), 4.f);			// -Y
-		vertical.AddVelocity(ToInt(VerticalLoco::Tap), 3.f);				// -Y
+		vertical.AddVelocity(ToInt(VerticalLoco::Tap), 3.f);			// -Y
 
 		vertical.AddAcceleration(ToInt(VerticalAccl::High), 0.0625f);	//(A held, Y Vel < -2 px/f)
-		vertical.AddAcceleration(ToInt(VerticalAccl::Low), 0.3125f);		//(Y Vel > -2 px / f)
+		vertical.AddAcceleration(ToInt(VerticalAccl::Low), 0.3125f);	//(Y Vel > -2 px / f)
 
 		m_movementCtrl.AddMovementYState(Vertical, vertical);
 

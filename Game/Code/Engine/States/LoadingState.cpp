@@ -24,7 +24,8 @@ void LoadResources()
 }
 
 LoadingState::LoadingState(GameManager* gameMgr)
-	: IGameState(gameMgr), m_backgroundSpr("Title"), m_titleMessage(TextConfig("Pong"))
+	: IGameState(gameMgr), m_backgroundSpr("Title"),
+	m_titleMessage({ "SMW",  30, GameConstants::ScreenDim * 0.5f, TextAnimType::Flashing, Colour::Black, TextAlignment::Center })
 {
 }
 
@@ -33,14 +34,7 @@ void LoadingState::Initialise()
 	m_backgroundSpr.SetScale(GameConstants::Scale);
 	m_backgroundSpr.SetOrigin(Vector2f());
 
-	TextConfig config;
-	config.m_alignment = TextAlignment::Center;
-	config.m_position = GameConstants::ScreenDim / 2.0f;
-	config.m_charSize = 30;
-	config.m_animType = TextAnimType::Flashing;
-	config.m_colour = Colour::Black;
-
-	InitFlashingText(&m_titleMessage, "Loading", true, config);
+	m_titleMessage.SetText("Loading");
 
 	std::thread t(LoadResources);
 	t.detach();

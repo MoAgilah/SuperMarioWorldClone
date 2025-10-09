@@ -8,6 +8,7 @@
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Engine/Interface/Collisions/ITile.h>
+#include <Utilities/Utils.h>
 
 std::shared_ptr<Player> GameMode::s_player = nullptr;
 GameType GameMode::m_gameType = GameType::Manual;
@@ -18,17 +19,9 @@ float GameMode::m_marioMaxSpdY = 0.f;
 
 void GameMode::InitPlayer()
 {
-	auto gameMgr = GameManager::Get();
-	if (!gameMgr)
-		return;
-
-	auto colMgr = gameMgr->GetCollisionMgr();
-	if (!colMgr)
-		return;
-
-	auto tile = colMgr->GetTile(2, 11);
-	if (!tile)
-		return;
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
+	GET_OR_RETURN(tile, colMgr->GetTile(2, 11));
 
 	switch (m_gameType)
 	{

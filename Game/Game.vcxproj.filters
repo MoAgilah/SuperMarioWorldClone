@@ -199,7 +199,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\Fonts\supermarioworld.ttf">
+    <Font Include="Resources\Fonts\SMW.ttf">
       <Filter>Resource Files\Font</Filter>
     </Font>
   </ItemGroup>
@@ -217,7 +217,7 @@
     <Image Include="Resources\Textures\Background.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\bill.png">
+    <Image Include="Resources\Textures\Bill.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\BreakingBox.png">
@@ -232,16 +232,13 @@
     <Image Include="Resources\Textures\Coin.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\CoinBB.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\Goal.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\Koopa.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\mario.png">
+    <Image Include="Resources\Textures\Mario.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\Name.png">

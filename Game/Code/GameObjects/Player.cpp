@@ -162,7 +162,8 @@ void Player::SetIsSuper(bool super)
 	{
 		if (spr->GetTexID() != "Super")
 		{
-			spr->SetTexture("Super");
+			THROW_IF_FALSE_MSG(spr->SetTexture("Super"), "Failed to change the Player texId to {}", "Super");
+
 			spr->SetFrameSize(Vector2u(spr->GetTextureSize().x / 4, spr->GetTextureSize().y / 14));
 
 			box->Reset(m_boxSizes[MarioBoxes::SUPER]);
@@ -174,7 +175,8 @@ void Player::SetIsSuper(bool super)
 	{
 		if (spr->GetTexID() != "Mario")
 		{
-			spr->SetTexture("Mario");
+			THROW_IF_FALSE_MSG(spr->SetTexture("Mario"), "Failed to change the Player texId to {}", "Mario");
+
 			spr->SetFrameSize(Vector2u(spr->GetTextureSize().x / 4, spr->GetTextureSize().y / 14));
 
 			box->Reset(m_boxSizes[MarioBoxes::REGULAR]);

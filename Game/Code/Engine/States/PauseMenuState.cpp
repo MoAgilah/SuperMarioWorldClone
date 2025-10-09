@@ -20,7 +20,7 @@ void PauseMenuState::Initialise()
 	auto cellSize = m_menu.GetCellSize();
 
 	TextConfig config;
-	config.m_fontName = "SuperMarioWorld";
+	config.m_fontName = "SMW";
 	config.m_charSize = static_cast<int>(cellSize.y * 0.6f);
 	config.m_animType = TextAnimType::Flashing;
 	config.m_alignment = TextAlignment::Center;
@@ -38,7 +38,9 @@ void PauseMenuState::Initialise()
 		if (text)
 		{
 			text->SetFillColour(Colour::Yellow);
-			InitFlashingText(dynamic_cast<SFAnimatedText*>(text), "Resume");
+			text->SetText("Resume");
+			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+			sfText->SetIsLooping(true);
 		}
 		cell->SetMenuSlotNumber(0);
 	}
@@ -55,7 +57,9 @@ void PauseMenuState::Initialise()
 		if (text)
 		{
 			text->SetFillColour(Colour::Yellow);
-			InitFlashingText(dynamic_cast<SFAnimatedText*>(text), "Return To Title Screen");
+			text->SetText("Return To Title Screen");
+			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+			sfText->SetIsLooping(true);
 		}
 		cell->SetMenuSlotNumber(1);
 	}
@@ -72,7 +76,9 @@ void PauseMenuState::Initialise()
 		if (text)
 		{
 			text->SetFillColour(Colour::Yellow);
-			InitFlashingText(dynamic_cast<SFAnimatedText*>(text), "Quit");
+			text->SetText("Quit");
+			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+			sfText->SetIsLooping(true);
 		}
 		cell->SetMenuSlotNumber(2);
 	}

@@ -9,7 +9,7 @@
 #include <Utilities/Utils.h>
 
 PPlant::PPlant(const Vector2f& initPos)
-	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck", 1, 2, GameConstants::FPS, false, 0.5f),
+	: Enemy(std::make_shared<SFAnimatedSprite>("PPlant", 1, 2, GameConstants::FPS, false, 0.5f),
 	std::make_shared<BoundingBox<SFRect>>(Vector2f(14, 19)))
 {
 	SetInitialDirection(false);

@@ -7,9 +7,9 @@
 
 TitleState::TitleState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"), m_titleSpr("Clone"),
-	m_titleMessage({"supermarioworld",  30, GameConstants::ScreenDim / 2.0f, TextAnimType::Flashing})
+	m_titleMessage({"SMW",  30, GameConstants::ScaleScreenDim(0.5f, 0.65f), TextAnimType::Flashing, Colour::Black, TextAlignment::Center})
 {
-
+	GameConstants::ScaleScreenDim(0.5f, 0.5f);
 }
 
 void TitleState::Initialise()
@@ -17,22 +17,12 @@ void TitleState::Initialise()
 	m_backgroundSpr.SetScale(GameConstants::Scale);
 	m_backgroundSpr.SetOrigin(Vector2f());
 
-	m_titleSpr.SetPosition(Vector2f(GameConstants::ScreenDim.x * 0.5f, GameConstants::ScreenDim.y * 0.55f));
-
+	m_titleSpr.SetPosition(GameConstants::ScaleScreenDim(0.5f, 0.55f));
 	m_titleSpr.SetScale(GameConstants::Scale);
-	m_titleSpr.SetOrigin(Vector2f(m_titleSpr.GetSize().x / 2, m_titleSpr.GetSize().y / 2));
+	m_titleSpr.SetOrigin(m_titleSpr.GetSize() / 2.f);
 
-	TextConfig config;
-	config.m_fontName = "Arial";
-	config.m_alignment = TextAlignment::Center;
-	config.m_position = Vector2f(GameConstants::ScreenDim.x * 0.5f, GameConstants::ScreenDim.y * 0.65f);
-	config.m_charSize = 30;
-	config.m_animType = TextAnimType::Flashing;
-	config.m_colour = Colour::Black;
-
-	InitFlashingText(&m_titleMessage, "Press Any Key To Start", true, config);
-
-	m_gameMgr->GetCamera()->Reset(m_gameMgr->GetRenderer());
+	m_titleMessage.SetText("Press Any Key To Start");
+	m_titleMessage.SetIsLooping(true);
 }
 
 void TitleState::Pause()
