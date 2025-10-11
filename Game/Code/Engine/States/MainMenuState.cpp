@@ -1,6 +1,7 @@
 #include "MainMenuState.h"
 
 #include "MainState.h"
+#include "../Scenes/YoshiIsland1.h"
 #include "../../Utilities/GameMode.h"
 #include <Drawables/SFText.h>
 #include <Engine/Core/Constants.h>
@@ -83,6 +84,7 @@ void MainMenuState::ProcessInputs()
 			break;
 		}
 
+		m_gameMgr->SetScene(std::make_shared<YoshiIsland1>());
 		m_gameMgr->GetGameStateMgr()->ChangeState(new MainState(GameManager::Get()));
 	}
 }

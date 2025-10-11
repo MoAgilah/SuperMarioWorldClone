@@ -16,16 +16,12 @@ void LoadResources()
 
 	DECL_GET_OR_RETURN(scene, gameMgr->GetScene());
 
-	scene->AddEnemies();
-	scene->AddObjects();
-	scene->AddForeGroundObjects();
-
-	GameConstants::GameIsReady = true;
+	GameConstants::GameIsReady = scene->Initialise();
 }
 
 LoadingState::LoadingState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"),
-	m_titleMessage({ "SMW",  30, GameConstants::ScreenDim * 0.5f, TextAnimType::Flashing, Colour::Black, TextAlignment::Center })
+	m_titleMessage({ "SMW",  30, GameConstants::ScaleScreenDim(0.5f, 0.65f), TextAnimType::Flashing, Colour::Black, TextAlignment::Center })
 {
 }
 

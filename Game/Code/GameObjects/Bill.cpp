@@ -14,9 +14,7 @@ Bill::Bill(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFSprite>("Bill"), std::make_shared<BoundingCapsule<SFCapsule>>(24.f, 44.f, 90.f))
 {
 	SetInitialDirection(dir);
-	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);
-	SetPosition(GetInitialPosition());
 	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.75f);
 	SetSpeedY(GameMode::m_marioMaxSpdY);
 
@@ -31,6 +29,8 @@ Bill::Bill(bool dir, const Vector2f& initPos)
 	m_halfCap = std::make_shared<HalfCapsule<SFCapsule>>(fullCap, which);
 
 	ENSURE_VALID(m_halfCap);
+	SetDirection(GetInitialDirection());
+	SetPosition(GetInitialPosition());
 
 	UpdateBody();
 }

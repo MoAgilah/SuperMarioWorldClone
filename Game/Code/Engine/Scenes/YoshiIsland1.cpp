@@ -34,104 +34,138 @@ void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<Game
 
 	obj->SetPosition(pos);
 
+	if (m_objects.find(id) != m_objects.end())
+		THROW_IF_FALSE_MSG(false, "Key '{}' already exists", id);
+
 	auto [it, inserted] = m_objects.emplace(id, std::move(obj));
-	if (inserted)
-		m_spawnedObjKeys.push_back(it->first);
+	THROW_IF_FALSE_MSG(inserted, "Key '{}' already exists", id);
+	m_spawnedObjKeys.push_back(it->first);
 }
 
-void YoshiIsland1::AddEnemies()
+bool YoshiIsland1::AddEnemies()
 {
-	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
-	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
+	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
-	if (tmp = colMgr->GetTile(13, 5))
-		m_enemies.emplace("Koopa1", std::make_shared<Koopa>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(13, 5), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Koopa>("Koopa1", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(31, 8))
-		m_enemies.emplace("Bill1", std::make_shared<Bill>(false, tmp->GetPosition() + Vector2f(0, 22)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(31, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Bill>("Bill1", false, tmp->GetPosition() + Vector2f(0, 22));
 
-	if (tmp = colMgr->GetTile(37, 11))
-		m_enemies.emplace("Rex1", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(37, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex1", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(47, 11))
-		m_enemies.emplace("Rex2", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(47, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex2", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(55, 6))
-		m_enemies.emplace("Rex3", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(55, 6), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex3", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(72, 6))
-		m_enemies.emplace("Rex4", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(72, 6), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex4", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(82, 11))
-		m_enemies.emplace("Rex5", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(82, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex5", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(89, 11))
-		m_enemies.emplace("Rex6", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(89, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex6", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(112, 11))
-		m_enemies.emplace("Rex7", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(112, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex7", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(113, 9))
-		m_enemies.emplace("PPlant1", std::make_shared<PPlant>(tmp->GetPosition() + Vector2f(18, 16)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(113, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<PPlant>("PPlant1", tmp->GetPosition() + Vector2f(18, 16));
 
-	if (tmp = colMgr->GetTile(138, 11))
-		m_enemies.emplace("Rex8", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(138, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex8", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(139, 8))
-		m_enemies.emplace("PPlant2", std::make_shared<PPlant>(tmp->GetPosition() + Vector2f(18, 16)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(139, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<PPlant>("PPlant2", tmp->GetPosition() + Vector2f(18, 16));
 
-	if (tmp = colMgr->GetTile(172, 11))
-		m_enemies.emplace("Rex9", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(172, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex9", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(182, 11))
-		m_enemies.emplace("Rex10", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(182, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex10", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(184, 11))
-		m_enemies.emplace("Rex11", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(184, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex11", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(186, 11))
-		m_enemies.emplace("Rex12", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(186, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex12", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(189, 11))
-		m_enemies.emplace("Rex13", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(189, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex13", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(203, 9))
-		m_enemies.emplace("Bill2", std::make_shared<Bill>(false, tmp->GetPosition() + Vector2f(0, 20)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(203, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Bill>("Bill2", false, tmp->GetPosition() + Vector2f(0, 20));
 
-	if (tmp = colMgr->GetTile(207, 11))
-		m_enemies.emplace("Rex14", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(207, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex14", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(227, 9))
-		m_enemies.emplace("Bill3", std::make_shared<Bill>(false, tmp->GetPosition() + Vector2f(0, 20)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(227, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Bill>("Bill3", false, tmp->GetPosition() + Vector2f(0, 20));
 
-	if (tmp = colMgr->GetTile(242, 11))
-		m_enemies.emplace("Rex15", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(242, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex15", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(257, 11))
-		m_enemies.emplace("Rex16", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(257, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex16", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(263, 11))
-		m_enemies.emplace("Rex17", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(263, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex17", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(280, 9))
-		m_enemies.emplace("Bill3", std::make_shared<Bill>(false, tmp->GetPosition() + Vector2f(0, 20)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(280, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Bill>("Bill4", false, tmp->GetPosition() + Vector2f(0, 20));
 
-	if (tmp = colMgr->GetTile(284, 8))
-		m_enemies.emplace("PPlant3", std::make_shared<PPlant>(tmp->GetPosition() + Vector2f(18, 16)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(284, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<PPlant>("PPlant3", tmp->GetPosition() + Vector2f(18, 16));
 
-	if (tmp = colMgr->GetTile(290, 8))
-		m_enemies.emplace("Rex17", std::make_shared<Rex>(false, tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(290, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Rex>("Rex18", false, tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(298, 10))
-		m_enemies.emplace("Chuck1", std::make_shared<Chuck>(false, tmp->GetPosition() + Vector2f(0, 24)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(298, 10), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceEnemyOrThrow<Chuck>("Chuck1", false, tmp->GetPosition() + Vector2f(0, 24));
+
+	return true;
 }
 
-void YoshiIsland1::AddGUI()
+bool YoshiIsland1::AddGUI()
 {
-	m_sprites.push_back(std::make_shared<SFSprite>("Name"));
-	m_sprites.push_back(std::make_shared<SFSprite>("Time"));
+	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
+
+	EmplaceGUISpriteOrThrow<SFSprite>("Name", "Name");
+	EmplaceGUISpriteOrThrow<SFSprite>("Time", "Time");
 
 	TextConfig config;
 	config.m_alignment = TextAlignment::None;
@@ -139,111 +173,127 @@ void YoshiIsland1::AddGUI()
 	config.m_fontName = "Arial";
 	config.m_colour = Colour::Black;
 
-	m_texts.push_back(std::make_shared<SFText>(config));
-	m_texts.push_back(std::make_shared<SFText>(config));
+	EmplaceGUITextOrThrow<SFText>("Name", config);
+	EmplaceGUITextOrThrow<SFText>("Time", config);
 
-	for (auto& txt : m_texts)
+	for (auto& [_, txt] : m_texts)
 	{
 		CONTINUE_IF_INVALID(txt);
 
 		txt->SetFillColour(Colour::Yellow);
 	}
 
-	m_texts[static_cast<int>(Texts::Name)]->SetText("x 00");
-	m_texts[static_cast<int>(Texts::Time)]->SetText(std::to_string(static_cast<int>(GameManager::Get()->GetTimer().GetCurrTime())));
+	GetGUITextByName("Name")->SetText("x 00");
+	GetGUITextByName("Time")->SetText(std::to_string(static_cast<int>(gameMgr->GetTimer().GetCurrTime())));
+
+	return true;
 }
 
-void YoshiIsland1::AddObjects()
+bool YoshiIsland1::AddObjects()
 {
-	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
-	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
+	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
-	if (tmp = colMgr->GetTile(17, 4))
-		m_objects.emplace("YCoin1", std::make_shared<YCoin>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(17, 4), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<YCoin>("YCoin1", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(37, 8))
-		m_objects.emplace("QBox1", std::make_shared<QuestionBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(37, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<QuestionBlock>("QBox1", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(89, 5))
-		m_objects.emplace("YCoin2", std::make_shared<YCoin>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(89, 5), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<YCoin>("YCoin2", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(102, 11))
-		m_objects.emplace("Shroom1", std::make_shared<Mushroom>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(102, 11), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<Mushroom>("Shroom1", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(120, 8))
-		m_objects.emplace("RBox1", std::make_shared<RotatingBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(120, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<RotatingBlock>("RBox1", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(121, 8))
-		m_objects.emplace("RBox2", std::make_shared<RotatingBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(121, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<RotatingBlock>("RBox2", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(151, 9))
-		m_objects.emplace("ChkPnt", std::make_shared<CheckPoint>(tmp->GetPosition() - Vector2f(3, 10.5f)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(151, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<CheckPoint>("ChkPnt", tmp->GetPosition() - Vector2f(3, 10.5f));
 
-	if (tmp = colMgr->GetTile(179, 2))
-		m_objects.emplace("YCoin3", std::make_shared<YCoin>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(179, 2), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<YCoin>("YCoin3", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(239, 8))
-		m_objects.emplace("RBox3", std::make_shared<RotatingBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(239, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<RotatingBlock>("RBox3", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(243, 9))
-		m_objects.emplace("RBox4", std::make_shared<RotatingBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(243, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<RotatingBlock>("RBox4", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(247, 8))
-		m_objects.emplace("RBox5", std::make_shared<RotatingBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(247, 8), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<RotatingBlock>("RBox5", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(243, 5))
-		m_objects.emplace("QBox2", std::make_shared<QuestionBlock>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(243, 5), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<QuestionBlock>("QBox2", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(288, 4))
-		m_objects.emplace("YCoin4", std::make_shared<YCoin>(tmp->GetPosition()));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(288, 4), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<YCoin>("YCoin4", tmp->GetPosition());
 
-	if (tmp = colMgr->GetTile(302, 3))
-		m_objects.emplace("Goal", std::make_shared<Goal>(Vector2f(tmp->GetPosition().x - 7.f, tmp->GetPosition().y + 16)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(302, 3), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<Goal>("Goal", Vector2f(tmp->GetPosition().x - 7.f, tmp->GetPosition().y + 16));
+
+	return true;
 }
 
-void YoshiIsland1::AddForeGroundObjects()
+bool YoshiIsland1::AddForeGroundObjects()
 {
-	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
-	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
+	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
-	if (tmp = colMgr->GetTile(113, 10))
-		m_objects.emplace("Pipe1", std::make_shared<Pipe>("Pipe1", tmp->GetPosition() + Vector2f(18.5f, 0.f)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(113, 10), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<Pipe>("Pipe1", "Pipe1", tmp->GetPosition() + Vector2f(18.5f, 0.f));
 
-	if (tmp = colMgr->GetTile(140, 9))
-		m_objects.emplace("Pipe2", std::make_shared<Pipe>("Pipe2", tmp->GetPosition() + Vector2f(18.5f, 0.f)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(140, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<Pipe>("Pipe2", "Pipe2", tmp->GetPosition() + Vector2f(18.5f, 0.f));
 
-	if (tmp = colMgr->GetTile(284, 9))
-		m_objects.emplace("Pipe3", std::make_shared<Pipe>("Pipe3", tmp->GetPosition() + Vector2f(18.5f, 0.f)));
+	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(284, 9), false);
+	ENSURE_VALID_RET(tmp, false);
+	EmplaceObjectOrThrow<Pipe>("Pipe3", "Pipe3", tmp->GetPosition() + Vector2f(18.5f, 0.f));
+
+	return true;
 }
 
 void YoshiIsland1::UpdateGUI(float deltaTime)
 {
-	auto sfCam = dynamic_cast<SFCamera*>(GameManager::Get()->GetCamera());
-	ENSURE_VALID(sfCam);
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(cam, gameMgr->GetCamera());
+	DECL_GET_OR_RETURN(sfCam, dynamic_cast<SFCamera*>(cam));
+	DECL_GET_OR_RETURN(view, sfCam->GetView());
 
-	auto view = sfCam->GetView();
-	ENSURE_VALID(view);
-
-	auto spr = dynamic_cast<SFSprite*>(m_sprites[static_cast<int>(Sprites::Name)].get());
-	auto txt = dynamic_cast<SFText*>(m_texts[static_cast<int>(Texts::Name)].get());
-
-	ENSURE_VALID(spr);
-	ENSURE_VALID(txt);
+	DECL_GET_OR_RETURN(spr, dynamic_cast<SFSprite*>(GetGUITextByName("Name")));
+	DECL_GET_OR_RETURN(txt, dynamic_cast<SFText*>(GetGUISpriteByName("Name")));
 
 	spr->SetPosition(Vector2f((view->getCenter().x - GameConstants::ScreenDim.x * 0.5f) + 30, 20));
 	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
 
-	spr = dynamic_cast<SFSprite*>(m_sprites[static_cast<int>(Sprites::Time)].get());
-	txt = dynamic_cast<SFText*>(m_texts[static_cast<int>(Texts::Time)].get());
-
-	ENSURE_VALID(spr);
-	ENSURE_VALID(txt);
+	GET_OR_RETURN(spr, dynamic_cast<SFSprite*>(GetGUISpriteByName("Time")));
+	GET_OR_RETURN(txt, dynamic_cast<SFText*>(GetGUITextByName("Time")));
 
 	spr->SetPosition(Vector2f(view->getCenter().x, 20));
 	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
-	txt->SetText(std::to_string(static_cast<int>(GameManager::Get()->GetTimer().GetCurrTime())));
+	txt->SetText(std::to_string(static_cast<int>(gameMgr->GetTimer().GetCurrTime())));
 }

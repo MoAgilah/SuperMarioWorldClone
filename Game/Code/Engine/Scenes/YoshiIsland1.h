@@ -8,9 +8,6 @@
 class SFText;
 class SFSprite;
 
-enum class Texts { Name, Time, Max };
-enum class Sprites { Name, Time, Max};
-
 class YoshiIsland1 : public IScene
 {
 public:
@@ -19,10 +16,11 @@ public:
 
 	void SpawnGameObjectAt(const std::string& id, std::shared_ptr<GameObject> obj, const Vector2f& pos) override;
 
-	void AddEnemies();
-	void AddGUI();
-	void AddObjects();
-	void AddForeGroundObjects();
+protected:
+	bool AddEnemies() override;
+	bool AddGUI() override;
+	bool AddObjects() override;
+	bool AddForeGroundObjects() override;
 
 private:
 
