@@ -8,13 +8,13 @@
 
 void LoadResources()
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 
 	GameMode::InitPlayer();
 
-	GET_OR_RETURN(ply, GameMode::GetPlayer());
+	DECL_GET_OR_RETURN(ply, GameMode::GetPlayer());
 
-	GET_OR_RETURN(scene, gameMgr->GetScene());
+	DECL_GET_OR_RETURN(scene, gameMgr->GetScene());
 
 	scene->AddEnemies();
 	scene->AddObjects();
@@ -65,7 +65,7 @@ void LoadingState::Update(float deltaTime)
 void LoadingState::Render()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+	DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 	m_backgroundSpr.Render(renderer);
 	m_titleMessage.Render(renderer);
 }

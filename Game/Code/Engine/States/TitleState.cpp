@@ -21,8 +21,7 @@ void TitleState::Initialise()
 	m_titleSpr.SetScale(GameConstants::Scale);
 	m_titleSpr.SetOrigin(m_titleSpr.GetSize() / 2.f);
 
-	m_titleMessage.SetText("Press Any Key To Start");
-	m_titleMessage.SetIsLooping(true);
+	m_titleMessage.InitFlashingText("Press Any Key To Start");
 }
 
 void TitleState::Pause()
@@ -36,7 +35,7 @@ void TitleState::Resume()
 void TitleState::ProcessInputs()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->IsAnyKeyPressed())
 		m_gameMgr->GetGameStateMgr()->ChangeState(new MainMenuState(m_gameMgr));
@@ -52,7 +51,7 @@ void TitleState::Update(float deltaTime)
 void TitleState::Render()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+	DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
 	m_backgroundSpr.Render(renderer);
 	m_titleSpr.Render(renderer);

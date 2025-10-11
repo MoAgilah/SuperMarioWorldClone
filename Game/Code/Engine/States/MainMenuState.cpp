@@ -28,39 +28,27 @@ void MainMenuState::Initialise()
 	config.m_alignment = TextAlignment::Center;
 	config.m_colour = Colour::Black;
 
-	auto cell = m_menu.GetCell({ 0,0 });
+	DECL_GET_OR_RETURN(cell, m_menu.GetCell({ 0,0 }));
 
-	ENSURE_VALID(cell);
-	{
-		config.m_position = cell->GetPosition();
+	config.m_position = cell->GetPosition();
 
-		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
-		if (text)
-		{
-			text->SetFillColour(Colour::Yellow);
-			text->SetText("Manual");
-			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-			sfText->SetIsLooping(true);
-		}
-		cell->SetMenuSlotNumber(0);
-	}
+	DECL_GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
+	text->SetFillColour(Colour::Yellow);
+	DECL_GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+	sfText->InitFlashingText("Manual");
 
-	cell = m_menu.GetCell({ 1,0 });
+	cell->SetMenuSlotNumber(0);
 
-	ENSURE_VALID(cell);
-	{
-		config.m_position = cell->GetPosition();
+	GET_OR_RETURN(cell, m_menu.GetCell({ 1,0 }));
 
-		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
-		if (text)
-		{
-			text->SetFillColour(Colour::Yellow);
-			text->SetText("Automation");
-			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-			sfText->SetIsLooping(true);
-		}
-		cell->SetMenuSlotNumber(1);
-	}
+	config.m_position = cell->GetPosition();
+
+	GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
+	text->SetFillColour(Colour::Yellow);
+	GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+	sfText->InitFlashingText("Automation");
+
+	cell->SetMenuSlotNumber(1);
 
 	m_menu.SetActiveCells();
 
@@ -80,11 +68,11 @@ void MainMenuState::Resume()
 void MainMenuState::ProcessInputs()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Enter)))
 	{
-		GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
+		DECL_GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
 		switch (menuNav->GetCurrCursorPos())
 		{
 		case MenuPosition::Automation:
@@ -109,7 +97,7 @@ void MainMenuState::Update(float deltaTime)
 void MainMenuState::Render()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+	DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
 	m_backgroundSpr.Render(renderer);
 	m_menu.Render(renderer);

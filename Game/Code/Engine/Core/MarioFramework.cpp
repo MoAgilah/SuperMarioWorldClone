@@ -24,7 +24,7 @@ void MarioFramework::Initialise()
 	m_gameMgr.GetSoundMgr().AddMusic("../Game/Resources/Music/");
 	m_gameMgr.GetTextureMgr().AddTextures("../Game/Resources/Textures/");
 
-	GET_OR_RETURN(renderer, m_gameMgr.GetRenderer());
+	DECL_GET_OR_RETURN(renderer, m_gameMgr.GetRenderer());
 	renderer->Initialise(GameConstants::ScreenDim, GameConstants::WindowTitle);
 
 	GameConstants::TileFilePaths = "../Game/Resources/TileTypes.txt";

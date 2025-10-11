@@ -22,14 +22,14 @@ Chuck::Chuck(bool dir, const Vector2f& initPos)
     ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 
-    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+    DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
     spr->SetFrames({ 3, 1, 1, 7, 3 });
 }
 
 void Chuck::Reset()
 {
-    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+    DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(ChuckAnims::BOUNCE);
 
@@ -38,7 +38,7 @@ void Chuck::Reset()
 
 void Chuck::Die()
 {
-    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+    DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(ChuckAnims::WHIPLASH);
 
@@ -55,7 +55,7 @@ void Chuck::DecrementLife()
 		m_tookHit = true;
 		SetInvulnerability(true);
 
-        GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+        DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 		spr->EnsureAnim(ChuckAnims::HIT);
 	}
@@ -64,7 +64,7 @@ void Chuck::DecrementLife()
 void Chuck::Animate(float dt)
 {
     ENSURE_VALID(GetAirTimer());
-    GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+    DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
     spr->Update(dt);
 
@@ -108,8 +108,8 @@ void Chuck::Animate(float dt)
             }
         }
 
-        GET_OR_RETURN(gameMgr, GameManager::Get());
-        GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+        DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+        DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
         if (GetYVelocity() != 0.0f)
         {

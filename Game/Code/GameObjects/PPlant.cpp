@@ -23,14 +23,14 @@ PPlant::PPlant(const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->SetFrames({2});
 }
 
 void PPlant::Reset()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(PPlantAnims::SINK);
 
@@ -53,7 +53,7 @@ void PPlant::Die()
 
 void PPlant::Animate(float deltaTime)
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 	ENSURE_VALID(GetAirTimer());
 
 	spr->Update(deltaTime);
@@ -79,8 +79,8 @@ void PPlant::Animate(float deltaTime)
 		GetAirTimer()->RestartTimer();
 	}
 
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	if (GetYVelocity() != 0)
 	{

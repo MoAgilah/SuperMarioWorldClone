@@ -13,8 +13,7 @@ QuestionBlock::QuestionBlock(const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
-
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 	spr->SetFrames({ 1, 4 });
 	spr->ChangeAnim(QBlockAnims::ROTATE);
 }
@@ -23,7 +22,7 @@ void QuestionBlock::Update(float deltaTime)
 {
 	if (GetActive())
 	{
-		GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+		DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 		spr->Update(deltaTime);
 
@@ -39,7 +38,7 @@ void QuestionBlock::Update(float deltaTime)
 
 void QuestionBlock::Reset()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(QBlockAnims::ROTATE);
 
@@ -52,8 +51,7 @@ RotatingBlock::RotatingBlock(const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
-
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 	spr->SetFrames({ 1, 4 });
 }
 
@@ -61,7 +59,7 @@ void RotatingBlock::Update(float deltaTime)
 {
 	if (GetActive())
 	{
-		GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+		DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 		if (GetJustSmashed())
 		{
@@ -106,7 +104,7 @@ void RotatingBlock::Update(float deltaTime)
 
 void RotatingBlock::Reset()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	if (spr->GetTexID() != "RotatingBlock")
 	{
@@ -121,7 +119,7 @@ void RotatingBlock::Reset()
 
 void RotatingBlock::Scatter()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->OffsetPosition(Vector2f(0, GameConstants::ObjectSpeed));
 

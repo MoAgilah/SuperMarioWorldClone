@@ -26,66 +26,42 @@ void PauseMenuState::Initialise()
 	config.m_alignment = TextAlignment::Center;
 	config.m_colour = Colour::Black;
 
-	auto cell = m_menu.GetCell({ 1,1 });
+	DECL_GET_OR_RETURN(cell, m_menu.GetCell({ 1,1 }));
 
-	ENSURE_VALID(cell);
-	{
+	config.m_position = cell->GetPosition();
 
-		TextConfig config;
-		config.m_position = cell->GetPosition();
+	DECL_GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
+	text->SetFillColour(Colour::Yellow);
+	DECL_GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+	sfText->InitFlashingText("Resume");
 
-		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
-		if (text)
-		{
-			text->SetFillColour(Colour::Yellow);
-			text->SetText("Resume");
-			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-			sfText->SetIsLooping(true);
-		}
-		cell->SetMenuSlotNumber(0);
-	}
+	cell->SetMenuSlotNumber(0);
 
-	cell = m_menu.GetCell({ 1,2 });
+	GET_OR_RETURN(cell, m_menu.GetCell({ 1,2 }));
 
-	ENSURE_VALID(cell);
-	{
+	config.m_position = cell->GetPosition();
 
-		TextConfig config;
-		config.m_position = cell->GetPosition();
+	GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
+	text->SetFillColour(Colour::Yellow);
+	GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+	sfText->InitFlashingText("Return To Title Screen");
 
-		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
-		if (text)
-		{
-			text->SetFillColour(Colour::Yellow);
-			text->SetText("Return To Title Screen");
-			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-			sfText->SetIsLooping(true);
-		}
-		cell->SetMenuSlotNumber(1);
-	}
+	cell->SetMenuSlotNumber(1);
 
-	cell = m_menu.GetCell({ 1,3 });
+	GET_OR_RETURN(cell, m_menu.GetCell({ 1,3 }));
 
-	ENSURE_VALID(cell);
-	{
+	config.m_position = cell->GetPosition();
 
-		TextConfig config;
-		config.m_position = cell->GetPosition();
+	GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
+	text->SetFillColour(Colour::Yellow);
+	GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
+	sfText->InitFlashingText("Quit");
 
-		auto text = cell->AddTextElement(std::make_shared<SFAnimatedText>(config));
-		if (text)
-		{
-			text->SetFillColour(Colour::Yellow);
-			text->SetText("Quit");
-			GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-			sfText->SetIsLooping(true);
-		}
-		cell->SetMenuSlotNumber(2);
-	}
+	cell->SetMenuSlotNumber(2);
 
 	m_menu.SetActiveCells();
 
-	GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
+	DECL_GET_OR_RETURN(menuNav, m_menu.GetMenuNav());
 
 	menuNav->SetCursorRange({ 0,1,2 });
 	menuNav->SetCurrCursorPos(0);
@@ -101,7 +77,7 @@ void PauseMenuState::Resume()
 void PauseMenuState::ProcessInputs()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Enter)))
 	{
@@ -114,10 +90,12 @@ void PauseMenuState::ProcessInputs()
 			GameMode::ToTitle();
 			break;
 		case MenuPosition::Quit:
+		{
 
-			GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
-			GET_OR_RETURN(window, renderer->GetWindow());
+			DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+			DECL_GET_OR_RETURN(window, renderer->GetWindow());
 			window->Close();
+		}
 			break;
 		}
 	}
@@ -133,7 +111,7 @@ void PauseMenuState::Update(float deltaTime)
 void PauseMenuState::Render()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+	DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
 
 	m_backgroundSpr.Render(renderer);
 	m_menu.Render(renderer);

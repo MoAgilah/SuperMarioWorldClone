@@ -26,7 +26,7 @@ Player::Player(const Vector2f& pos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 
-	GET_OR_RETURN(spr, GetAnimatedSprite());
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite());
 
 	spr->SetFrames({ 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4 });
 
@@ -43,8 +43,8 @@ Player::Player(const Vector2f& pos)
 void Player::Update(float deltaTime)
 {
 	ENSURE_VALID(m_drawable);
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ProcessInput();
 
@@ -55,7 +55,7 @@ void Player::Update(float deltaTime)
 
 	if (GetIsAlive())
 	{
-		GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+		DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 		if (GetOnGround())
 			SetYVelocity(0);
@@ -140,12 +140,12 @@ void Player::Reset()
 	m_stateMgr.ClearStates();
 	m_stateMgr.ChangeState(new LateralState(this));
 
-	GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 
 
 	gameMgr->GetTimer().RestartTimer();
 
-	GET_OR_RETURN(scene, gameMgr->GetScene());
+	DECL_GET_OR_RETURN(scene, gameMgr->GetScene());
 
 	scene->ResetScene();
 }
@@ -154,9 +154,9 @@ void Player::SetIsSuper(bool super)
 {
 	m_super = super;
 
-	GET_OR_RETURN(spr, GetAnimatedSprite());
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite());
 
-	GET_OR_RETURN(box, GetBox());
+	DECL_GET_OR_RETURN(box, GetBox());
 
 	if (m_super)
 	{
@@ -207,7 +207,7 @@ void Player::SetSpawnLoc(Vector2f loc)
 
 void Player::SetIsCrouched(bool crouched)
 {
-	GET_OR_RETURN(box, GetBox());
+	DECL_GET_OR_RETURN(box, GetBox());
 
 	m_crouched = crouched;
 	if (m_crouched)

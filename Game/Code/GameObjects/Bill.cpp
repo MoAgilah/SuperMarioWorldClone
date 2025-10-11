@@ -22,9 +22,7 @@ Bill::Bill(bool dir, const Vector2f& initPos)
 
 	ENSURE_VALID(m_volume);
 
-	auto* fullCap = dynamic_cast<BoundingCapsule<SFCapsule>*>(m_volume.get());
-
-	ENSURE_VALID(fullCap);
+	DECL_GET_OR_RETURN(fullCap, dynamic_cast<BoundingCapsule<SFCapsule>*>(m_volume.get()));
 
 	HalfCapsule<SFCapsule>::Which which =
 		GetInitialDirection() ? HalfCapsule<SFCapsule>::Which::End   // moving right → nose at "end"
@@ -82,7 +80,7 @@ void Bill::UpdateBody()
 
 void Bill::Animate(float deltaTime)
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 
 	SetPrevPosition(GetPosition());
 
@@ -92,7 +90,7 @@ void Bill::Animate(float deltaTime)
 		{
 			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);
 
-			GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+			DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 			colMgr->ProcessCollisions(this);
 		}
@@ -105,7 +103,7 @@ void Bill::Animate(float deltaTime)
 		Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
 
 		ENSURE_VALID(m_volume);
-		GET_OR_RETURN(camera, gameMgr->GetCamera());
+		DECL_GET_OR_RETURN(camera, gameMgr->GetCamera());
 
 		camera->CheckVerticalBounds(m_volume.get());
 	}

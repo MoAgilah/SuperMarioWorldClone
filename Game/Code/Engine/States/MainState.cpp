@@ -34,7 +34,7 @@ void MainState::Resume()
 void MainState::ProcessInputs()
 {
 	ENSURE_VALID(m_gameMgr);
-	GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(inputMgr, m_gameMgr->GetInputManager());
 
 	if (inputMgr->GetKeyState(static_cast<int>(KeyCode::Space)))
 	{
@@ -52,7 +52,7 @@ void MainState::Update(float deltaTime)
 
 	if (m_ready)
 	{
-		GET_OR_RETURN(ply, GameMode::GetPlayer());
+		DECL_GET_OR_RETURN(ply, GameMode::GetPlayer());
 
 		ProcessInputs();
 
@@ -72,8 +72,8 @@ void MainState::Render()
 
 	if (m_ready)
 	{
-		GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
-		GET_OR_RETURN(ply, GameMode::GetPlayer());
+		DECL_GET_OR_RETURN(renderer, m_gameMgr->GetRenderer());
+		DECL_GET_OR_RETURN(ply, GameMode::GetPlayer());
 
 		m_gameMgr->GetCamera()->Reset(renderer);
 
@@ -81,7 +81,7 @@ void MainState::Render()
 
 		ply->Render(renderer);
 
-		GET_OR_RETURN(colMgr, m_gameMgr->GetCollisionMgr());
+		DECL_GET_OR_RETURN(colMgr, m_gameMgr->GetCollisionMgr());
 
 		colMgr->Render(renderer);
 	}

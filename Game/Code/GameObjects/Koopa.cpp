@@ -22,7 +22,7 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->SetFrames({ 2, 3, 1 });
 	spr->ChangeAnim(KoopaAnims::WALK);
@@ -30,7 +30,7 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 
 void Koopa::Reset()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(KoopaAnims::WALK);
 
@@ -39,7 +39,7 @@ void Koopa::Reset()
 
 void Koopa::Die()
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->EnsureAnim(KoopaAnims::COMPRESS);
 
@@ -48,7 +48,7 @@ void Koopa::Die()
 
 void Koopa::Animate(float deltaTime)
 {
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 
 	spr->Update(deltaTime);
 
@@ -101,8 +101,8 @@ void Koopa::Animate(float deltaTime)
 				IncrementYVelocity(GameConstants::Gravity);
 		}
 
-		GET_OR_RETURN(gameMgr, GameManager::Get());
-		GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+		DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+		DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 		if (GetXVelocity() != 0)
 		{

@@ -22,13 +22,10 @@ YoshiIsland1::YoshiIsland1()
 	m_backgroundSpr = std::make_shared<SFSprite>("Background");
 	ENSURE_VALID(m_backgroundSpr);
 
-	auto bkgSpr = dynamic_cast<SFSprite*>(m_backgroundSpr.get());
-	if (bkgSpr)
-	{
-		bkgSpr->SetScale(GameConstants::Scale);
-		bkgSpr->SetOrigin(GameConstants::ScreenDim / 2.f);
-		bkgSpr->SetPosition(GameConstants::ScreenDim / 2.f);
-	}
+	DECL_GET_OR_RETURN(bkgSpr,dynamic_cast<SFSprite*>(m_backgroundSpr.get()));
+	bkgSpr->SetScale(GameConstants::Scale);
+	bkgSpr->SetOrigin(GameConstants::ScreenDim / 2.f);
+	bkgSpr->SetPosition(GameConstants::ScreenDim / 2.f);
 }
 
 void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<GameObject> obj, const Vector2f& pos)
@@ -44,8 +41,8 @@ void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<Game
 
 void YoshiIsland1::AddEnemies()
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 
@@ -145,7 +142,7 @@ void YoshiIsland1::AddGUI()
 	m_texts.push_back(std::make_shared<SFText>(config));
 	m_texts.push_back(std::make_shared<SFText>(config));
 
-	for (auto txt : m_texts)
+	for (auto& txt : m_texts)
 	{
 		CONTINUE_IF_INVALID(txt);
 
@@ -158,8 +155,8 @@ void YoshiIsland1::AddGUI()
 
 void YoshiIsland1::AddObjects()
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 
@@ -208,8 +205,8 @@ void YoshiIsland1::AddObjects()
 
 void YoshiIsland1::AddForeGroundObjects()
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	ITile* tmp;
 

@@ -19,9 +19,9 @@ float GameMode::m_marioMaxSpdY = 0.f;
 
 void GameMode::InitPlayer()
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
-	GET_OR_RETURN(tile, colMgr->GetTile(2, 11));
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(tile, colMgr->GetTile(2, 11));
 
 	switch (m_gameType)
 	{
@@ -57,7 +57,7 @@ void GameMode::ToTitle()
 void GameMode::CheckForHorizontalBounds(float deltaTime, IDynamicGameObject* obj)
 {
 	ENSURE_VALID(obj);
-	GET_OR_RETURN(volume, obj->GetVolume());
+	DECL_GET_OR_RETURN(volume, obj->GetVolume());
 
 	if (volume->GetPoint(Side::Left).x <= m_leftMost)
 	{

@@ -152,13 +152,13 @@ PlayerState::~PlayerState()
 
 void PlayerState::Pause()
 {
-	GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
 	ply->SetActive(false);
 }
 
 void PlayerState::Resume()
 {
-	GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
 	ply->SetActive(true);
 }
 
@@ -261,8 +261,8 @@ void LateralState::Initialise()
 
 void LateralState::Resume()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
@@ -276,10 +276,10 @@ void LateralState::Resume()
 
 void LateralState::ProcessInputs()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -329,7 +329,7 @@ void LateralState::Update(float deltaTime)
 
 	if (m_runKeyHeld)
 	{
-		GET_OR_RETURN(ply, GetPlayer());
+		DECL_GET_OR_RETURN(ply, GetPlayer());
 
 		auto velX = ply->GetXVelocity();
 
@@ -354,8 +354,8 @@ void LateralState::Update(float deltaTime)
 
 void LateralState::UpdateAnimation()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	auto& currMovState = m_movementCtrl.GetCurrentXState();
 
@@ -394,8 +394,8 @@ CrouchedState::CrouchedState(Player* ply)
 
 void CrouchedState::Resume()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
@@ -409,8 +409,8 @@ void CrouchedState::Resume()
 
 void CrouchedState::Initialise()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Lateral);
 
@@ -420,10 +420,10 @@ void CrouchedState::Initialise()
 
 void CrouchedState::ProcessInputs()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (!inputManager->GetKeyState(Keys::DOWN_KEY))
 		ply->GetStateMgr()->PopState();
@@ -464,26 +464,26 @@ InclinedState::InclinedState(Player* ply)
 
 void InclinedState::Resume()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Inclined);
 }
 
 void InclinedState::Initialise()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	m_movementCtrl.ChangeMovementXState(Inclined);
 }
 
 void InclinedState::ProcessInputs()
 {
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -534,8 +534,8 @@ void VerticalState::Resume()
 void VerticalState::Initialise()
 {
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
@@ -577,10 +577,10 @@ void VerticalState::Initialise()
 void VerticalState::ProcessInputs()
 {
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 	if (inputManager->GetKeyState(Keys::LEFT_KEY))
 		MoveLeft(ply);
@@ -618,7 +618,7 @@ void VerticalState::Update(float deltaTime)
 	UpdateAnimation();
 
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
 
 	auto& movementState = m_movementCtrl.GetCurrentYState();
 
@@ -643,7 +643,7 @@ void VerticalState::Update(float deltaTime)
 void VerticalState::UpdateAnimation()
 {
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	if (m_airTimer->CheckEnd())
 	{
@@ -662,8 +662,8 @@ DieingState::DieingState(Player* ply)
 void DieingState::Initialise()
 {
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
 
 	animSpr->EnsureAnim(MarioAnims::DIE);
 
@@ -678,10 +678,10 @@ void DieingState::ProcessInputs()
 void DieingState::Update(float deltaTime)
 {
 	ENSURE_VALID(m_airTimer);
-	GET_OR_RETURN(ply, GetPlayer());
-	GET_OR_RETURN(animSpr, GetAnimSpr());
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(camera, gameMgr->GetCamera());
+	DECL_GET_OR_RETURN(ply, GetPlayer());
+	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(camera, gameMgr->GetCamera());
 
 	if (ply->GetAirbourne())
 	{

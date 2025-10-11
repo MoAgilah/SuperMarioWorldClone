@@ -17,8 +17,7 @@ Coin::Coin(const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
-
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 	spr->SetFrames({ 4 });
 }
 
@@ -40,8 +39,7 @@ YCoin::YCoin(const Vector2f& initPos)
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 
-	GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
-
+	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
 	spr->SetFrames({ 6 });
 }
 
@@ -94,8 +92,8 @@ Mushroom::Mushroom(const Vector2f& initPos)
 
 void Mushroom::Update(float deltaTime)
 {
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	SetPrevPosition(GetPosition());
 
@@ -164,8 +162,8 @@ void Goal::Update(float deltaTime)
 		SetYVelocity(GameConstants::ObjectSpeed);
 	}
 
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 	if (GetYVelocity() != 0)
 	{

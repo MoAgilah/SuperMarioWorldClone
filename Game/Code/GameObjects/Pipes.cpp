@@ -13,9 +13,8 @@ Pipe::Pipe(const std::string& texID, const Vector2f& pos)
 	SetInitialPosition(pos);
 	SetPosition(GetInitialPosition());
 
-	auto box = dynamic_cast<BoundingBox<SFRect>*>(m_volume.get());
-	if (box)
-		box->Reset(m_drawable->GetSize());
+	DECL_GET_OR_RETURN(box, dynamic_cast<BoundingBox<SFRect>*>(m_volume.get()));
+	box->Reset(m_drawable->GetSize());
 
 	ENSURE_VALID(m_volume);
 	m_volume->Update(GetPosition());
