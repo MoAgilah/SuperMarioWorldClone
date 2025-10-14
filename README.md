@@ -39,3 +39,18 @@ git submodule update --init --recursive
 
 #### 🧰 Using Visual Studio
 Simply open the solution (if provided) and build your desired configuration (**Debug** or **Release**).
+
+## 🧩 How It Works
+
+**SuperMarioWorldClone** is powered by the modular [**SFMLEngine**](https://github.com/MoAgilah/SFMLEngine), handling rendering, input, timing, and state transitions.  
+The game logic sits above this layer, focusing purely on character control, AI decision-making, and scene progression.
+
+---
+
+### 🔗 Key Systems
+
+- **Player & PlayerState** — A layered state machine controlling movement (*Lateral, Inclined, Vertical, Crouched, Dieing*) with shared physics for both manual and AI control.  
+- **MainMenuState** — Entry point for selecting between **Manual Play** and **Automated AI Control**.  
+- **PauseMenuState** — Global pause overlay with **Resume**, **Title**, and **Quit** actions.  
+- **AI Controller** — Issues high-level movement intents (e.g. *MoveLeft*, *Jump*, *SpinJump*) through the same interface as manual input, ensuring parity between human and automated control.  
+
