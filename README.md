@@ -135,5 +135,25 @@ The game logic sits above this layer, focusing purely on character control, AI d
 - **Player & PlayerState** — A layered state machine controlling movement (*Lateral, Inclined, Vertical, Crouched, Dieing*) with shared physics for both manual and AI control.  
 - **MainMenuState** — Entry point for selecting between **Manual Play** and **Automated AI Control**.  
 - **PauseMenuState** — Global pause overlay with **Resume**, **Title**, and **Quit** actions.  
-- **AI Controller** — Issues high-level movement intents (e.g. *MoveLeft*, *Jump*, *SpinJump*) through the same interface as manual input, ensuring parity between human and automated control.  
+- **AI Controller** — Issues high-level movement intents (e.g. *MoveLeft*, *Jump*, *SpinJump*) through the same interface as manual input, ensuring parity between human and automated control.
+
+## 🧱 Game States
+
+| State | Description |
+|--------|-------------|
+| **MainMenuState** | Title and mode selection (Manual or AI). |
+| **LoadingState** | Preloads textures, scenes, and assets. |
+| **MainState** | Active gameplay and camera logic. |
+| **PauseMenuState** | Accessible via **Space**, contains Resume, Title, and Quit. |
+
+
+## 🛠️ Future Extensions
+
+- [ ] Expand AI controller with **NEAT-based learning** and adaptive decision-making.  
+- [ ] Add multiple **worlds** and stage transitions.  
+- [ ] Introduce new **enemies** and environmental hazards.  
+- [ ] Integrate **sound and music systems** for immersive feedback.  
+- [ ] Implement a **save/load** system for player progress.  
+- [ ] Add **AI debug overlays** to visualise decisions, sensors, and pathfinding.  
+
 
