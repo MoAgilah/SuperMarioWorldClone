@@ -149,6 +149,7 @@ The game logic sits above this layer, focusing purely on character control, AI d
 
 ## 🛠️ Future Extensions
 
+- [ ] Complete integration of the **Manual Debugging Mode** — connect remaining input, camera, and state systems for full manual testing and developer control.
 - [ ] Expand AI controller with **NEAT-based learning** and adaptive decision-making.  
 - [ ] Add multiple **worlds** and stage transitions.  
 - [ ] Introduce new **enemies** and environmental hazards.  
