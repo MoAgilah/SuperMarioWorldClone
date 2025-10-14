@@ -42,7 +42,7 @@ When you launch the game:
 3. Use **↑ / ↓** to navigate and **Enter** to confirm your selection.
 
 ### Menu Flow
-- Choose your **mode** → select **difficulty** (if available) → load the current world.  
+- Choose your **mode** → load the current world.  
 - During play, you can pause, resume, or return to the title screen via the **Pause Menu**.
 
 ---
