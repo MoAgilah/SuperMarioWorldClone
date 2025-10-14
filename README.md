@@ -19,8 +19,7 @@ This project demonstrates the new engine’s scalability with enhanced player co
 
 ## 📦 Download & Run
 
-You can download the latest standalone executable here:  
-👉 [**Download Standalone Executable**](https://raw.githubusercontent.com/MoAgilah/SuperMarioWorldClone/master/Bin/SuperMarioWorldClone.zip)
+You can download the latest standalone executable below when manual debug mode integration has been completed.
 
 After downloading:
 
