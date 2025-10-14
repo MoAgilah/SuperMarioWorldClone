@@ -17,6 +17,89 @@ This project demonstrates the new engine’s scalability with enhanced player co
 
 ---
 
+## 📦 Download & Run
+
+You can download the latest standalone executable here:  
+👉 [**Download Standalone Executable**](https://raw.githubusercontent.com/MoAgilah/SuperMarioWorldClone/master/Bin/SuperMarioWorldClone.zip)
+
+After downloading:
+
+- Extract the `.zip` file.  
+- Open the folder and run the executable:  
+  - **Windows:** `SuperMarioWorldClone.exe`  
+- Follow the instructions below to start and play.
+
+---
+
+## 🕹️ How to Start / Select
+
+When you launch the game:
+
+1. A **Loading Screen** will appear briefly while assets and levels load.  
+2. The **Main Menu** will then display:  
+   - **Play Manually** — control Mario directly.  
+   - **AI Mode** — let the controller play automatically. *(WIP)*  
+3. Use **↑ / ↓** to navigate and **Enter** to confirm your selection.
+
+### Menu Flow
+- Choose your **mode** → select **difficulty** (if available) → load the current world.  
+- During play, you can pause, resume, or return to the title screen via the **Pause Menu**.
+
+---
+
+## 🌍 Global Actions
+
+| Action                  | Key         |
+|--------------------------|-------------|
+| Open / Close Pause Menu  | **Space**   |
+| Confirm / Select         | **Enter**   |
+| Navigate Up / Down       | **↑ / ↓**   |
+| Navigate Left / Right    | **← / →**   |
+| Exit Game (any time)     | **Esc**     |
+
+---
+
+## ⏸️ Pause Menu
+
+Accessible during gameplay by pressing **Space**.
+
+**Options:**
+- **Resume** – return to the game.  
+- **To Title** – return to the main menu.  
+- **Quit** – close the game entirely.  
+
+Use **↑ / ↓** to navigate and **Enter** to select.
+
+---
+
+## 🎮 Player Controls
+
+| Action | Key |
+|--------|-----|
+| Move Left / Right | ← / → |
+| Jump | **A** |
+| Spin Jump | **S** |
+| Crouch | ↓ |
+| Run / Hold | **Shift** |
+| Pause | **Space** |
+| Confirm / Select | **Enter** |
+| Exit Game | **Esc** |
+
+> These inputs are mirrored internally by the AI controller, ensuring identical movement and physics handling between human and automated play.
+
+---
+
+## 🤖 Future AI Mode
+
+The **AI Mode** will leverage the updated **AI Controller** system introduced in [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller), rebuilt to take advantage of [**SFMLEngine**](https://github.com/MoAgilah/SFMLEngine)’s state-driven design.
+
+### Planned Features
+- **NEAT-inspired neural evolution** — AI agents will learn movement, timing, and survival through adaptive fitness-based learning.  
+- **Shared input mapping** — AI uses the same input events as human players (*Jump, SpinJump, Move*, etc.).  
+- **Environment awareness** — the agent will analyse tiles, enemies, and platforms to plan movement.  
+- **Scalable training environments** — future worlds will serve as progressively challenging testbeds for evolving agents.
+
+
 ## 📁 Repository Structure
 ```
 Pong/
