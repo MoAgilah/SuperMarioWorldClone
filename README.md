@@ -156,4 +156,8 @@ The game logic sits above this layer, focusing purely on character control, AI d
 - [ ] Implement a **save/load** system for player progress.  
 - [ ] Add **AI debug overlays** to visualise decisions, sensors, and pathfinding.  
 
-
+## 👤 Author
+**Mohamed Agilah**  
+🎓 Games Programmer & AI Developer  
+🌐 [Portfolio Website](https://moagilah.com/)  
+📧 Contact: agilahmohamed@gmail.com  
