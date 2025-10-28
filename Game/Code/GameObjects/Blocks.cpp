@@ -10,6 +10,8 @@
 QuestionBlock::QuestionBlock(const Vector2f& initPos)
 	: Box(std::make_shared<SFAnimatedSprite>("QBlock", 2,4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), initPos)
 {
+	m_dynType = typeid(*this);
+
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 
@@ -48,6 +50,8 @@ void QuestionBlock::Reset()
 RotatingBlock::RotatingBlock(const Vector2f& initPos)
 	: Box(std::make_shared<SFAnimatedSprite>("RBlock", 2, 4, GameConstants::FPS, false, 0.35f), std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16), Vector2f()), initPos)
 {
+	m_dynType = typeid(*this);
+
 	ENSURE_VALID(m_volume);
 	m_volume->Update(initPos);
 

@@ -359,31 +359,37 @@ void LateralState::UpdateAnimation()
 
 	auto& currMovState = m_movementCtrl.GetCurrentXState();
 
-	if (m_runKeyHeld)
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
+
+	if (inputManager->GetKeyState(Keys::LEFT_KEY) || inputManager->GetKeyState(Keys::RIGHT_KEY))
 	{
-		auto currVelLimit = currMovState.GetCurrentVelLimit();
-
-		if (currVelLimit == m_runCap)
+		if (m_runKeyHeld)
 		{
-			if (animSpr->GetCurrAnimSpeed() != 0.75f)
-				animSpr->UpdateAnimSpeed(0.75f);
+			auto currVelLimit = currMovState.GetCurrentVelLimit();
 
-			animSpr->EnsureAnim(MarioAnims::MOVING);
+			if (currVelLimit == m_runCap)
+			{
+				if (animSpr->GetCurrAnimSpeed() != 0.75f)
+					animSpr->UpdateAnimSpeed(0.75f);
+
+				animSpr->EnsureAnim(MarioAnims::MOVING);
+			}
+			else if (currVelLimit == m_sprintCap)
+			{
+				if (animSpr->GetCurrAnimSpeed() != 0.5f)
+					animSpr->UpdateAnimSpeed(0.5f);
+
+				animSpr->EnsureAnim(MarioAnims::RUNNING);
+			}
 		}
-		else if (currVelLimit == m_sprintCap)
+		else
 		{
 			if (animSpr->GetCurrAnimSpeed() != 0.5f)
 				animSpr->UpdateAnimSpeed(0.5f);
 
-			animSpr->EnsureAnim(MarioAnims::RUNNING);
+			animSpr->EnsureAnim(MarioAnims::MOVING);
 		}
-	}
-	else
-	{
-		if (animSpr->GetCurrAnimSpeed() != 0.5f)
-			animSpr->UpdateAnimSpeed(0.5f);
-
-		animSpr->EnsureAnim(MarioAnims::MOVING);
 	}
 }
 

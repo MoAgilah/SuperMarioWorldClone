@@ -52,7 +52,7 @@ bool YoshiIsland1::AddEnemies()
 
 	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(13, 5), false);
 	ENSURE_VALID_RET(tmp, false);
-	EmplaceEnemyOrThrow<Koopa>("Koopa1", true, tmp->GetPosition());
+	EmplaceEnemyOrThrow<Koopa>("Koopa1", false, tmp->GetPosition());
 
 	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(31, 8), false);
 	ENSURE_VALID_RET(tmp, false);

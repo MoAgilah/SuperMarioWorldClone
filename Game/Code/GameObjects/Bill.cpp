@@ -13,6 +13,8 @@
 Bill::Bill(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFSprite>("Bill"), std::make_shared<BoundingCapsule<SFCapsule>>(24.f, 44.f, 90.f))
 {
+	m_dynType = typeid(*this);
+
 	SetInitialDirection(dir);
 	SetInitialPosition(initPos);
 	SetSpeedX(GameMode::m_mariosMaxSpdX * 0.75f);

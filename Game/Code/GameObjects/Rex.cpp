@@ -12,6 +12,8 @@ Rex::Rex(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Rex", 4, 3, GameConstants::FPS, false, 0.5f),
 		std::make_shared<BoundingBox<SFRect>>(Vector2f(10, 26)), 2)
 {
+	m_dynType = typeid(*this);
+
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);

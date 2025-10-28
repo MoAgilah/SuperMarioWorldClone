@@ -12,6 +12,8 @@ Chuck::Chuck(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Chuck",5,7,GameConstants::FPS, false,0.5f),
 		std::make_shared<BoundingBox<SFRect>>(Vector2f(24.f,25.f))), m_waitTimer(0.5f)
 {
+    m_dynType = typeid(*this);
+
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);

@@ -12,6 +12,8 @@ Koopa::Koopa(bool dir, const Vector2f& initPos)
 	: Enemy(std::make_shared<SFAnimatedSprite>("Koopa",3,3,GameConstants::FPS, false, 0.5f),
 		std::make_shared<BoundingBox<SFRect>>(Vector2f(17, 12)))
 {
+	m_dynType = typeid(*this);
+
 	SetInitialDirection(dir);
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(initPos);

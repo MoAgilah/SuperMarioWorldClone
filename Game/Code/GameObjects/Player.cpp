@@ -17,6 +17,8 @@ Player::Player(const Vector2f& pos)
 	: DynamicGameObject(std::make_shared<SFAnimatedSprite>("Mario", 14, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(9,16)))
 	, m_airTimer(0.4f), m_invulTimer(1)
 {
+	m_dynType = typeid(*this);
+
 	SetInitialDirection(true);
 	SetDirection(GetInitialDirection());
 	SetInitialPosition(pos);
@@ -60,7 +62,13 @@ void Player::Update(float deltaTime)
 		DECL_GET_OR_RETURN(inputManager, gameMgr->GetInputManager());
 
 		if (GetOnGround())
+		{
 			SetYVelocity(0);
+		}
+		else
+		{
+			IncrementYVelocity(GameConstants::Gravity * GameConstants::FPS * deltaTime);
+		}
 
 		if ((!inputManager->GetKeyState(Keys::LEFT_KEY) && !inputManager->GetKeyState(Keys::RIGHT_KEY)))
 			SetXVelocity(0.0f);
