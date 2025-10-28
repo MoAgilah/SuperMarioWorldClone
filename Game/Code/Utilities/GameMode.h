@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Utilities/Vector.h>
 #include <memory>
 
 enum class GameType
@@ -25,6 +26,7 @@ public:
 	static float m_rightMost;
 	static float m_mariosMaxSpdX;
 	static float m_marioMaxSpdY;
+	static Vector2f m_SnesResolution;
 
 	static Player* GetPlayer() { return s_player.get(); }
 };

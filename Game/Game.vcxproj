@@ -193,11 +193,13 @@
     <Text Include="Resources\TileTypes.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Textures\Automation.png" />
     <Image Include="Resources\Textures\Background.png" />
     <Image Include="Resources\Textures\Bill.png" />
     <Image Include="Resources\Textures\BreakingBox.png" />
     <Image Include="Resources\Textures\ChkPnt.png" />
     <Image Include="Resources\Textures\Chuck.png" />
+    <Image Include="Resources\Textures\Clone.png" />
     <Image Include="Resources\Textures\Coin.png" />
     <Image Include="Resources\Textures\Goal.png" />
     <Image Include="Resources\Textures\Koopa.png" />

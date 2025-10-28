@@ -38,6 +38,8 @@ Player::Player(const Vector2f& pos)
 	}
 
 	m_invulTimer.SetCurrTime(0);
+
+	m_stateMgr.PushState(new LateralState(this));
 }
 
 void Player::Update(float deltaTime)
@@ -51,7 +53,7 @@ void Player::Update(float deltaTime)
 	m_stateMgr.Update(deltaTime);
 	m_drawable->Update(deltaTime);
 
-	ProcessInput();
+	auto pos = m_drawable->GetPosition();
 
 	if (GetIsAlive())
 	{

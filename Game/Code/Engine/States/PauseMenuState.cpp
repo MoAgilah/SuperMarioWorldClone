@@ -9,7 +9,7 @@ enum MenuPosition { Resume, ToTitle, Quit };
 
 PauseMenuState::PauseMenuState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"),
-	m_menu(Vector2f({ GameConstants::ScreenDim.x * 0.8f, GameConstants::ScreenDim.y * 0.4f }), 2.f, Vector2f(1,3), MenuPositionData(MenuPositionMode::Centered, GameConstants::ScreenDim / 2.f))
+	m_menu(Vector2f(GameConstants::ScaleScreenDim(0.4f, 0.2f)), 2.f, Vector2f(1,3), MenuPositionData(MenuPositionMode::Centered, GameConstants::ScaleScreenDim(0.5f, 0.65f)))
 {}
 
 void PauseMenuState::Initialise()
@@ -26,7 +26,7 @@ void PauseMenuState::Initialise()
 	config.m_alignment = TextAlignment::Center;
 	config.m_colour = Colour::Black;
 
-	DECL_GET_OR_RETURN(cell, m_menu.GetCell({ 1,1 }));
+	DECL_GET_OR_RETURN(cell, m_menu.GetCell({ 0,0 }));
 
 	config.m_position = cell->GetPosition();
 
@@ -37,18 +37,18 @@ void PauseMenuState::Initialise()
 
 	cell->SetMenuSlotNumber(0);
 
-	GET_OR_RETURN(cell, m_menu.GetCell({ 1,2 }));
+	GET_OR_RETURN(cell, m_menu.GetCell({ 1,0 }));
 
 	config.m_position = cell->GetPosition();
 
 	GET_OR_RETURN(text, cell->AddTextElement(std::make_shared<SFAnimatedText>(config)));
 	text->SetFillColour(Colour::Yellow);
 	GET_OR_RETURN(sfText, dynamic_cast<SFAnimatedText*>(text));
-	sfText->InitFlashingText("Return To Title Screen");
+	sfText->InitFlashingText("To Title");
 
 	cell->SetMenuSlotNumber(1);
 
-	GET_OR_RETURN(cell, m_menu.GetCell({ 1,3 }));
+	GET_OR_RETURN(cell, m_menu.GetCell({ 2,0 }));
 
 	config.m_position = cell->GetPosition();
 

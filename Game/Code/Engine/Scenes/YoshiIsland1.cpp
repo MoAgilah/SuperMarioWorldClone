@@ -23,9 +23,10 @@ YoshiIsland1::YoshiIsland1()
 	ENSURE_VALID(m_backgroundSpr);
 
 	DECL_GET_OR_RETURN(bkgSpr,dynamic_cast<SFSprite*>(m_backgroundSpr.get()));
+
 	bkgSpr->SetScale(GameConstants::Scale);
-	bkgSpr->SetOrigin(GameConstants::ScreenDim / 2.f);
-	bkgSpr->SetPosition(GameConstants::ScreenDim / 2.f);
+	bkgSpr->SetOrigin(Vector2f());
+	bkgSpr->SetPosition(Vector2f(0.f, -480.f));
 }
 
 void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<GameObject> obj, const Vector2f& pos)
@@ -51,7 +52,7 @@ bool YoshiIsland1::AddEnemies()
 
 	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(13, 5), false);
 	ENSURE_VALID_RET(tmp, false);
-	EmplaceEnemyOrThrow<Koopa>("Koopa1", false, tmp->GetPosition());
+	EmplaceEnemyOrThrow<Koopa>("Koopa1", true, tmp->GetPosition());
 
 	ERR_TRY_ASSIGN_OR_RET(tmp, colMgr->GetTile(31, 8), false);
 	ENSURE_VALID_RET(tmp, false);
@@ -166,6 +167,15 @@ bool YoshiIsland1::AddGUI()
 
 	EmplaceGUISpriteOrThrow<SFSprite>("Name", "Name");
 	EmplaceGUISpriteOrThrow<SFSprite>("Time", "Time");
+
+	for (auto& [_, spr] : m_sprites)
+	{
+		CONTINUE_IF_INVALID(spr);
+
+		GET_OR_CONTINUE(sfSpr, dynamic_cast<SFSprite*>(spr.get()));
+
+		sfSpr->SetScale({ 1.f,1.f });
+	}
 
 	TextConfig config;
 	config.m_alignment = TextAlignment::None;
@@ -284,8 +294,8 @@ void YoshiIsland1::UpdateGUI(float deltaTime)
 	DECL_GET_OR_RETURN(sfCam, dynamic_cast<SFCamera*>(cam));
 	DECL_GET_OR_RETURN(view, sfCam->GetView());
 
-	DECL_GET_OR_RETURN(spr, dynamic_cast<SFSprite*>(GetGUITextByName("Name")));
-	DECL_GET_OR_RETURN(txt, dynamic_cast<SFText*>(GetGUISpriteByName("Name")));
+	DECL_GET_OR_RETURN(spr, dynamic_cast<SFSprite*>(GetGUISpriteByName("Name")));
+	DECL_GET_OR_RETURN(txt, dynamic_cast<SFText*>(GetGUITextByName("Name")));
 
 	spr->SetPosition(Vector2f((view->getCenter().x - GameConstants::ScreenDim.x * 0.5f) + 30, 20));
 	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));

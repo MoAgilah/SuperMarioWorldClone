@@ -16,12 +16,13 @@ float GameMode::m_leftMost = 15.6f;
 float GameMode::m_rightMost = 11400.f;
 float GameMode::m_mariosMaxSpdX = 0.f;
 float GameMode::m_marioMaxSpdY = 0.f;
+Vector2f GameMode::m_SnesResolution = Vector2f(256.f, 224.f);
 
 void GameMode::InitPlayer()
 {
 	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 	DECL_GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
-	DECL_GET_OR_RETURN(tile, colMgr->GetTile(2, 11));
+	DECL_GET_OR_RETURN(tile, colMgr->GetTile(2, 9));
 
 	switch (m_gameType)
 	{

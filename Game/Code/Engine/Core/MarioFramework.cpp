@@ -3,6 +3,7 @@
 #include "../Collisions/MarioCollisionManager.h"
 #include "../States/DebugState.h"
 #include "../States/TitleState.h"
+#include "../../Utilities/GameMode.h"
 #include <Collisions/SFGrid.h>
 #include <Engine/Core/Constants.h>
 #include <Utilities/Utils.h>
@@ -28,6 +29,9 @@ void MarioFramework::Initialise()
 	renderer->Initialise(GameConstants::ScreenDim, GameConstants::WindowTitle);
 
 	GameConstants::TileFilePaths = "../Game/Resources/TileTypes.txt";
+
+	auto scl = GameConstants::ScreenDim.x / GameMode::m_SnesResolution.x;
+	GameConstants::Scale = Vector2f(2.5,2.5);
 
 	m_gameMgr.SetICollisionManager(std::make_shared<MarioCollisionManager>(std::make_shared<SFGrid>(15, 313, "Arial", GameConstants::TileFilePaths)));
 	ENSURE_VALID(m_gameMgr.GetCollisionMgr());

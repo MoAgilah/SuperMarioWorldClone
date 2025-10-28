@@ -1,6 +1,7 @@
 #include "TitleState.h"
 
 #include "MainMenuState.h"
+#include "../../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Utilities/Utils.h>
 #include <Utilities/Vector.h>
@@ -9,17 +10,15 @@ TitleState::TitleState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"), m_titleSpr("Clone"),
 	m_titleMessage({"SMW",  30, GameConstants::ScaleScreenDim(0.5f, 0.65f), TextAnimType::Flashing, Colour::Black, TextAlignment::Center})
 {
-	GameConstants::ScaleScreenDim(0.5f, 0.5f);
 }
 
 void TitleState::Initialise()
 {
 	m_backgroundSpr.SetScale(GameConstants::Scale);
 	m_backgroundSpr.SetOrigin(Vector2f());
+	m_backgroundSpr.SetPosition(Vector2f());
 
 	m_titleSpr.SetPosition(GameConstants::ScaleScreenDim(0.5f, 0.55f));
-	m_titleSpr.SetScale(GameConstants::Scale);
-	m_titleSpr.SetOrigin(m_titleSpr.GetSize() / 2.f);
 
 	m_titleMessage.InitFlashingText("Press Any Key To Start");
 }
