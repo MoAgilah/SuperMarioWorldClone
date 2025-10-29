@@ -58,11 +58,13 @@ void MainState::Update(float deltaTime)
 
 		m_gameMgr->GetTimer().Update(deltaTime);
 
-		m_gameMgr->CheckInView();
-
 		m_gameMgr->GetScene()->Update(deltaTime);
 
 		ply->Update(deltaTime);
+
+		m_gameMgr->GetCamera()->Update();
+
+		m_gameMgr->CheckInView();
 	}
 }
 

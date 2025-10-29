@@ -29,6 +29,8 @@ public:
 	SFAnimatedSprite* GetAnimSpr();
 	Player* GetPlayer();
 
+	static float s_frameStep;
+
 protected:
 
 	void MoveLeft(Player* ply);
@@ -110,7 +112,7 @@ private:
 class VerticalState : public PlayerState
 {
 public:
-	VerticalState(Player* ply, bool spinJump = false);
+	VerticalState(Player* ply, bool spinJump = false, bool fromFall = false);
 	~VerticalState() = default;
 
 	std::string_view GetStateName() const override { return "Airborne"; }
@@ -127,6 +129,7 @@ private:
 
 	Timer* m_airTimer;
 	bool m_spinJump = false;
+	bool m_fromFall = false;
 };
 
 class DieingState : public PlayerState

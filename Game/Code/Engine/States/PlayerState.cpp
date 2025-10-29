@@ -10,6 +10,7 @@
 #include <iostream>
 
 MovementController PlayerState::m_movementCtrl = {};
+float PlayerState::s_frameStep = 0.0f;
 
 // Lateral
 enum class LateralLoco
@@ -198,7 +199,10 @@ void PlayerState::MoveLeft(Player* ply)
 
 	auto& currMovState = m_movementCtrl.GetCurrentXState();
 
-	ply->DecrementXVelocity(currMovState.GetCurrentAccel());
+	ply->DecrementXVelocity(currMovState.GetCurrentAccel() * s_frameStep);
+
+	if (ply->GetXVelocity() < -currMovState.GetCurrentVelLimit())
+		ply->SetXVelocity(-currMovState.GetCurrentVelLimit());
 }
 
 void PlayerState::MoveRight(Player* ply)
@@ -210,16 +214,32 @@ void PlayerState::MoveRight(Player* ply)
 
 	auto& currMovState = m_movementCtrl.GetCurrentXState();
 
-	ply->IncrementXVelocity(currMovState.GetCurrentAccel());
+	ply->IncrementXVelocity(currMovState.GetCurrentAccel() * s_frameStep);
+
+	if (std::abs(ply->GetXVelocity()) > currMovState.GetCurrentVelLimit())
+		ply->SetXVelocity(currMovState.GetCurrentVelLimit());
 }
 
 void PlayerState::MoveUp(Player* ply)
 {
 	ENSURE_VALID(ply);
 
+	// Do NOT apply upward acceleration if not in the "airborne jump-hold" window
+	if (!ply->GetAirbourne()) return;                 // only allow while airborne
+	if (auto* t = ply->GetAirTimer(); t && t->CheckEnd()) return; // hold window ended
+
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
-	ply->DecrementYVelocity(currMovState.GetCurrentAccel());
+	ply->DecrementYVelocity(currMovState.GetCurrentAccel() * s_frameStep);
+
+	if (currMovState.GetCurrentAccel() == ToInt(VerticalAccl::High))
+	{
+		if (ply->GetYVelocity() < -2)
+			currMovState.SetCurrentAccel(ToInt(VerticalAccl::Low));
+	}
+
+	if(ply->GetYVelocity() < -currMovState.GetCurrentVelLimit())
+		ply->SetYVelocity(-currMovState.GetCurrentVelLimit());
 }
 
 void PlayerState::MoveDown(Player* ply)
@@ -228,7 +248,10 @@ void PlayerState::MoveDown(Player* ply)
 
 	auto& currMovState = m_movementCtrl.GetCurrentYState();
 
-	ply->IncrementYVelocity(currMovState.GetCurrentAccel());
+	ply->IncrementYVelocity(currMovState.GetCurrentAccel() * s_frameStep);
+
+	if (ply->GetYVelocity() > currMovState.GetCurrentVelLimit())
+		ply->SetYVelocity(currMovState.GetCurrentVelLimit());
 }
 
 void PlayerState::InitiateJump(Player* ply)
@@ -264,6 +287,8 @@ void LateralState::Initialise()
 {
 	m_movementCtrl.ChangeMovementXState(Lateral);
 	m_movementCtrl.ChangeMovementYState(Vertical);
+
+	m_movementCtrl.GetCurrentXState().SetCurrentAccel(ToInt(VerticalAccl::High));
 }
 
 void LateralState::Resume()
@@ -526,8 +551,8 @@ void InclinedState::UpdateAnimation()
 {
 }
 
-VerticalState::VerticalState(Player* ply, bool spinJump)
-	: PlayerState(ply)
+VerticalState::VerticalState(Player* ply, bool spinJump, bool fromFall)
+	: PlayerState(ply), m_spinJump(spinJump), m_fromFall(fromFall)
 {
 	m_airTimer = ply->GetAirTimer();
 	ENSURE_VALID(m_airTimer);
@@ -547,37 +572,33 @@ void VerticalState::Initialise()
 
 	animSpr->UpdateAnimSpeed(0.5f);
 
-	if (m_spinJump)
+	if (m_fromFall)
 	{
-		animSpr->EnsureAnim(MarioAnims::SPINJUMP);
+		animSpr->EnsureAnim(MarioAnims::FALL);
+		m_airTimer->SetCurrTime(0);
+		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Max));
 	}
 	else
 	{
-		if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
-		{
+		// normal jump/spin-jump path (existing behavior)
+		if (m_spinJump)
+			animSpr->EnsureAnim(MarioAnims::SPINJUMP);
+		else if (animSpr->GetCurrentAnim() != MarioAnims::CROUCH)
 			animSpr->EnsureAnim(MarioAnims::JUMP);
-		}
-	}
 
-	float xVel = ply->GetXVelocity();
-	if (xVel < Speed::Low)
-	{
-		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Low));
-	}
-	else if (xVel > Speed::Low)
-	{
-		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Med));
-	}
-	else if (xVel > Speed::Med)
-	{
-		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::High));
-	}
-	else if (xVel > Speed::High)
-	{
-		currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Max));
-	}
+		// pick vertical speed cap from current X speed
+		float xVel = ply->GetXVelocity();
+		if (xVel < Speed::Low)
+			currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Low));
+		else if (xVel > Speed::Low && xVel <= Speed::Med)
+			currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Med));
+		else if (xVel > Speed::Med && xVel <= Speed::High)
+			currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::High));
+		else
+			currMovState.SetCurrentVelLimit(ToInt(VerticalLoco::Max));
 
-	m_airTimer->RestartTimer();
+		m_airTimer->RestartTimer();
+	}
 }
 
 void VerticalState::ProcessInputs()

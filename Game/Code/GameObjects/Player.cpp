@@ -16,7 +16,7 @@
 
 Player::Player(const Vector2f& pos)
 	: DynamicGameObject(std::make_shared<SFAnimatedSprite>("Mario", 14, 4, GameConstants::FPS, false, 0.5f), std::make_shared<BoundingBox<SFRect>>(Vector2f(9,16)))
-	, m_airTimer(0.4f), m_invulTimer(1)
+	, m_airTimer(0.6f), m_invulTimer(1)
 {
 	m_dynType = typeid(*this);
 
@@ -42,7 +42,7 @@ Player::Player(const Vector2f& pos)
 
 	m_invulTimer.SetCurrTime(0);
 
-	m_stateMgr.PushState(new LateralState(this));
+	m_stateMgr.ChangeState(new LateralState(this));
 }
 
 void Player::Update(float deltaTime)
@@ -50,6 +50,8 @@ void Player::Update(float deltaTime)
 	ENSURE_VALID(m_drawable);
 	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 	DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
+
+	PlayerState::s_frameStep = GameConstants::FPS * deltaTime;
 
 	ProcessInput();
 
@@ -70,7 +72,11 @@ void Player::Update(float deltaTime)
 		}
 		else
 		{
-			IncrementYVelocity(GameConstants::Gravity * GameConstants::FPS * deltaTime);
+			if (m_stateMgr.GetStateName() != "Airborne")
+			{
+				SetAirbourne(true);
+				m_stateMgr.PushState(new VerticalState(this, false, true));
+			}
 		}
 
 		if ((!inputManager->GetKeyState(Keys::LEFT_KEY) && !inputManager->GetKeyState(Keys::RIGHT_KEY)))
@@ -80,7 +86,7 @@ void Player::Update(float deltaTime)
 		if (GetXVelocity() != 0)
 		{
 			SetPrevPosition(GetPosition());
-			Move(Vector2f(GetXVelocity() * GameConstants::FPS * deltaTime, 0));
+			Move(Vector2f(GetXVelocity() * PlayerState::s_frameStep, 0));
 			colMgr->ProcessCollisions(this);
 		}
 
@@ -89,7 +95,7 @@ void Player::Update(float deltaTime)
 		if (GetYVelocity() != 0)
 		{
 			SetPrevPosition(GetPosition());
-			Move(Vector2f(0, GetYVelocity() * GameConstants::FPS * deltaTime));
+			Move(Vector2f(0, GetYVelocity() * PlayerState::s_frameStep));
 			colMgr->ProcessCollisions(this);
 		}
 

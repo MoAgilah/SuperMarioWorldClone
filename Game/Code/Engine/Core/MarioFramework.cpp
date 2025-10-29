@@ -33,6 +33,8 @@ void MarioFramework::Initialise()
 	auto scl = GameConstants::ScreenDim.x / GameMode::m_SnesResolution.x;
 	GameConstants::Scale = Vector2f(2.5,2.5);
 
+	GameConstants::Gravity = 1250.f;
+
 	m_gameMgr.SetICollisionManager(std::make_shared<MarioCollisionManager>(std::make_shared<SFGrid>(15, 313, "Arial", GameConstants::TileFilePaths)));
 	ENSURE_VALID(m_gameMgr.GetCollisionMgr());
 

@@ -56,7 +56,7 @@ public:
 	bool GetIsAlive() const { return m_alive; }
 	void SetIsAlive(bool val, float airtime = 0.1f);
 
-	void IncreaseCoins(int num) { m_coinTotal = +num; }
+	void IncreaseCoins(int num) { m_coinTotal += num; }
 
 	void SetSpawnLoc(Vector2f loc = Vector2f(0, 0));
 

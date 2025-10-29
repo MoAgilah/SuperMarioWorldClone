@@ -22,12 +22,14 @@ void GameMode::InitPlayer()
 {
 	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 	DECL_GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
+	DECL_GET_OR_RETURN(cam, gameMgr->GetCamera());
 	DECL_GET_OR_RETURN(tile, colMgr->GetTile(1, 10));
 
 	switch (m_gameType)
 	{
 	case GameType::Manual:
 		s_player = std::make_shared<Player>(tile->GetPosition());
+		cam->SetObjectToFollow(s_player);
 		break;
 	case GameType::Automation:
 		break;
