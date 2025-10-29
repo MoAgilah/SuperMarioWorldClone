@@ -80,9 +80,5 @@ void MainState::Render()
 		m_gameMgr->GetScene()->Render(renderer);
 
 		ply->Render(renderer);
-
-		DECL_GET_OR_RETURN(colMgr, m_gameMgr->GetCollisionMgr());
-
-		colMgr->Render(renderer);
 	}
 }

@@ -22,7 +22,7 @@ void GameMode::InitPlayer()
 {
 	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 	DECL_GET_OR_RETURN(colMgr,gameMgr->GetCollisionMgr());
-	DECL_GET_OR_RETURN(tile, colMgr->GetTile(2, 9));
+	DECL_GET_OR_RETURN(tile, colMgr->GetTile(1, 10));
 
 	switch (m_gameType)
 	{

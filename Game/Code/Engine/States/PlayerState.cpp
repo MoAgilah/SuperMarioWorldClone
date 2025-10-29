@@ -119,9 +119,11 @@ PlayerState::PlayerState(Player* ply)
 		inclined.AddVelocity(ToInt(InclinedLoco::LrgDecRun),
 			inclined.GetVelocity(ToInt(InclinedLoco::Run)) + 0.1875f);
 
-		lateral.AddAcceleration(ToInt(InclinedAccl::Imp), 0.0546875f);
-		lateral.AddAcceleration(ToInt(InclinedAccl::SldSmlInc), 0.0625f);
-		lateral.AddAcceleration(ToInt(InclinedAccl::SldLrgInc), 0.125f);
+		inclined.AddAcceleration(ToInt(InclinedAccl::Imp), 0.0546875f);
+		inclined.AddAcceleration(ToInt(InclinedAccl::SldSmlInc), 0.0625f);
+		inclined.AddAcceleration(ToInt(InclinedAccl::SldLrgInc), 0.125f);
+
+		inclined.SetCurrentAccel(ToInt(InclinedAccl::Imp));
 
 		m_movementCtrl.AddMovementXState(Inclined, inclined);
 
@@ -139,6 +141,8 @@ PlayerState::PlayerState(Player* ply)
 
 		vertical.AddAcceleration(ToInt(VerticalAccl::High), 0.0625f);	//(A held, Y Vel < -2 px/f)
 		vertical.AddAcceleration(ToInt(VerticalAccl::Low), 0.3125f);	//(Y Vel > -2 px / f)
+
+		vertical.SetCurrentAccel(ToInt(VerticalAccl::High));
 
 		m_movementCtrl.AddMovementYState(Vertical, vertical);
 
@@ -259,19 +263,13 @@ LateralState::LateralState(Player* ply)
 void LateralState::Initialise()
 {
 	m_movementCtrl.ChangeMovementXState(Lateral);
+	m_movementCtrl.ChangeMovementYState(Vertical);
 }
 
 void LateralState::Resume()
 {
 	DECL_GET_OR_RETURN(ply, GetPlayer());
 	DECL_GET_OR_RETURN(animSpr, GetAnimSpr());
-
-	m_movementCtrl.ChangeMovementXState(Lateral);
-
-	if (ply->GetAirbourne())
-		ply->GetStateMgr()->PushState(new VerticalState(ply, ply->GetCantSpinJump()));
-	else
-		ply->SetIsCrouched(false);
 
 	PlayerState::Resume();
 }
@@ -643,9 +641,6 @@ void VerticalState::Update(float deltaTime)
 	m_airTimer->Update(deltaTime);
 	if (m_airTimer->CheckEnd())
 		MoveDown(ply);
-
-	if (ply->GetOnGround())
-		ply->GetStateMgr()->PopState();
 }
 
 void VerticalState::UpdateAnimation()

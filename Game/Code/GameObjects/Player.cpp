@@ -64,6 +64,8 @@ void Player::Update(float deltaTime)
 
 		if (GetOnGround())
 		{
+			if (m_stateMgr.GetStateName() == "Airborne")
+				m_stateMgr.PopState();
 			SetYVelocity(0);
 		}
 		else
