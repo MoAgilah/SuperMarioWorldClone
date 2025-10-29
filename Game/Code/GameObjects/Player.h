@@ -48,6 +48,8 @@ public:
 
 	void Reset() override;
 
+	void SetDirection(bool dir) override;
+
 	bool GetIsSuper() const { return m_super; }
 	void SetIsSuper(bool super);
 

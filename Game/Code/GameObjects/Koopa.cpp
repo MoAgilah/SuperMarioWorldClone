@@ -51,64 +51,72 @@ void Koopa::Die()
 void Koopa::Animate(float deltaTime)
 {
 	DECL_GET_OR_RETURN(spr, GetAnimatedSprite(m_drawable.get()));
+	const float step = GameConstants::FPS * deltaTime;
 
 	spr->Update(deltaTime);
 
-	if (HasLifes())
+	SetPrevPosition(GetPosition());
+
+	if (GetDirection())
 	{
-		SetPrevPosition(GetPosition());
+		SetXVelocity(GetSpeedX());
+	}
+	else
+	{
+		SetXVelocity(-GetSpeedX());
+	}
 
-		if (GetOnGround())
+	if (GetOnGround())
+	{
+		if (GetOnSlope())
 		{
-			if (GetOnSlope())
+			if (spr->GetCurrentAnim() != KoopaAnims::NOSEDIVE)
+				spr->ChangeAnim(KoopaAnims::NOSEDIVE);
+
+			if (!GetXVelocity())
 			{
-				spr->EnsureAnim(KoopaAnims::NOSEDIVE);
+				if (GetShouldSlideLeft())
+					SetSlideLeft(true);
 
-				if (!GetSlideLeft() || !GetSlideRight())
-				{
-					if (GetDirection())
-					{
-
-						SetShouldSlideRight(true);
-					}
-					else
-					{
-						SetShouldSlideLeft(true);
-					}
-				}
-				else
-				{
-					if (GetSlideLeft())
-						DecrementXVelocity(GameConstants::Gravity);
-
-					if (GetSlideRight())
-						IncrementXVelocity(GameConstants::Gravity);
-				}
-			}
-			else
-			{
-				if (spr->GetCurrentAnim() == KoopaAnims::NOSEDIVE)
-					spr->ChangeAnim(KoopaAnims::WALK);
-
-				SetSlideLeft(false);
-				SetSlideRight(false);
+				if (GetShouldSlideRight())
+					SetSlideRight(true);
 			}
 
-			if (GetYVelocity() != 0)
-				SetYVelocity(0);
+			if (GetSlideLeft() || GetSlideRight())
+			{
+				if (GetSlideLeft())
+					DecrementXVelocity(GameConstants::Gravity * step);
+
+				if (GetSlideRight())
+					IncrementXVelocity(GameConstants::Gravity * step);
+			}
 		}
 		else
 		{
-			if (GetYVelocity() < GameMode::m_marioMaxSpdY)
-				IncrementYVelocity(GameConstants::Gravity);
+			if (spr->GetCurrentAnim() == KoopaAnims::NOSEDIVE)
+				spr->ChangeAnim(KoopaAnims::WALK);
+
+			SetSlideLeft(false);
+			SetSlideRight(false);
+			SetShouldSlideLeft(false);
+			SetShouldSlideRight(false);
 		}
 
+		SetYVelocity(0);
+	}
+	else
+	{
+		IncrementYVelocity(GameConstants::Gravity * step);
+	}
+
+	if (HasLifes())
+	{
 		DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 		DECL_GET_OR_RETURN(colMgr, gameMgr->GetCollisionMgr());
 
 		if (GetXVelocity() != 0)
 		{
-			Move(GetXVelocity() * GameConstants::FPS * deltaTime, 0);
+			Move(GetXVelocity() * step, 0);
 			colMgr->ProcessCollisions(this);
 		}
 
@@ -116,7 +124,7 @@ void Koopa::Animate(float deltaTime)
 
 		if (GetYVelocity() != 0)
 		{
-			Move(0, GetYVelocity() * GameConstants::FPS * deltaTime);
+			Move(0, GetYVelocity() * step);
 			colMgr->ProcessCollisions(this);
 		}
 	}

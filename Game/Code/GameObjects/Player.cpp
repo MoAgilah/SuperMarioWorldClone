@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "../Engine/States/PlayerState.h"
+#include "../Utilities/GameMode.h"
 #include <Drawables/SFSprite.h>
 #include <Drawables/SFShape.h>
 #include <Resources/SFShader.h>
@@ -81,6 +82,8 @@ void Player::Update(float deltaTime)
 			colMgr->ProcessCollisions(this);
 		}
 
+		GameMode::CheckForHorizontalBounds(deltaTime, this);
+
 		if (GetYVelocity() != 0)
 		{
 			SetPrevPosition(GetPosition());
@@ -158,6 +161,14 @@ void Player::Reset()
 	DECL_GET_OR_RETURN(scene, gameMgr->GetScene());
 
 	scene->ResetScene();
+}
+
+void Player::SetDirection(bool dir)
+{
+	IGameObject::SetDirection(dir);
+
+	if (auto spr = dynamic_cast<ISprite*>(m_drawable.get()))
+		spr->SetDirection(dir);
 }
 
 void Player::SetIsSuper(bool super)

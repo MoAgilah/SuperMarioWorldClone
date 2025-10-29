@@ -92,9 +92,11 @@ PlayerState::PlayerState(Player* ply)
 		lateral.AddVelocity(ToInt(LateralLoco::EOL), 1.25f);
 
 		lateral.AddAcceleration(ToInt(LateralAccl::Imp), 0.0546875f);
+		lateral.SetCurrentAccel(ToInt(LateralAccl::Imp));
 
 		lateral.AddDeceleration(ToInt(LateralDecl::Stop), 0.0546875f);
 		lateral.AddDeceleration(ToInt(LateralDecl::Skid), 0.046875f);
+		lateral.SetCurrentDecel(ToInt(LateralDecl::Stop));
 
 		m_walkCap = lateral.GetVelocity(ToInt(LateralLoco::Walk));
 		m_runCap = lateral.GetVelocity(ToInt(LateralLoco::Run));

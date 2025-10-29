@@ -27,7 +27,8 @@ LoadingState::LoadingState(GameManager* gameMgr)
 
 void LoadingState::Initialise()
 {
-	m_backgroundSpr.SetScale(GameConstants::Scale);
+	auto scl = GameConstants::ScreenDim.x / GameMode::m_SnesResolution.x;
+	m_backgroundSpr.SetScale({ scl, scl });
 	m_backgroundSpr.SetOrigin(Vector2f());
 
 	m_titleMessage.SetText("Loading");

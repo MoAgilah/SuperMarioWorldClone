@@ -17,7 +17,8 @@ MainMenuState::MainMenuState(GameManager* gameMgr)
 
 void MainMenuState::Initialise()
 {
-	m_backgroundSpr.SetScale(GameConstants::Scale);
+	auto scl = GameConstants::ScreenDim.x / GameMode::m_SnesResolution.x;
+	m_backgroundSpr.SetScale({ scl, scl });
 	m_backgroundSpr.SetOrigin(Vector2f());
 
 	auto cellSize = m_menu.GetCellSize();
