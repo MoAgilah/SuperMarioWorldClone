@@ -4,7 +4,7 @@
 #include "../../Utilities/GameMode.h"
 #include <Engine/Core/Constants.h>
 #include <Utilities/Utils.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 
 TitleState::TitleState(GameManager* gameMgr)
 	: IGameState(gameMgr), m_backgroundSpr("Title"), m_titleSpr("Clone"),

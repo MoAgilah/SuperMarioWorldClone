@@ -45,8 +45,8 @@ void YoshiIsland1::SpawnGameObjectAt(const std::string& id, std::shared_ptr<Game
 
 bool YoshiIsland1::AddEnemies()
 {
-	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
-	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
+	DECL_GET_OR_RETURN_VAL(gameMgr, GameManager::Get(), false);
+	DECL_GET_OR_RETURN_VAL(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
@@ -163,7 +163,7 @@ bool YoshiIsland1::AddEnemies()
 
 bool YoshiIsland1::AddGUI()
 {
-	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
+	DECL_GET_OR_RETURN_VAL(gameMgr, GameManager::Get(), false);
 
 	EmplaceGUISpriteOrThrow<SFSprite>("Name", "Name");
 	EmplaceGUISpriteOrThrow<SFSprite>("Time", "Time");
@@ -172,7 +172,7 @@ bool YoshiIsland1::AddGUI()
 	{
 		CONTINUE_IF_INVALID(spr);
 
-		GET_OR_CONTINUE(sfSpr, dynamic_cast<SFSprite*>(spr.get()));
+		DECL_GET_OR_CONTINUE(sfSpr, dynamic_cast<SFSprite*>(spr.get()));
 
 		sfSpr->SetScale({ 1.f,1.f });
 	}
@@ -201,8 +201,8 @@ bool YoshiIsland1::AddGUI()
 
 bool YoshiIsland1::AddObjects()
 {
-	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
-	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
+	DECL_GET_OR_RETURN_VAL(gameMgr, GameManager::Get(), false);
+	DECL_GET_OR_RETURN_VAL(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
@@ -267,8 +267,8 @@ bool YoshiIsland1::AddObjects()
 
 bool YoshiIsland1::AddForeGroundObjects()
 {
-	DECL_GET_ENSURE_VALID_RET(gameMgr, GameManager::Get(), false);
-	DECL_GET_ENSURE_VALID_RET(colMgr, gameMgr->GetCollisionMgr(), false);
+	DECL_GET_OR_RETURN_VAL(gameMgr, GameManager::Get(), false);
+	DECL_GET_OR_RETURN_VAL(colMgr, gameMgr->GetCollisionMgr(), false);
 
 	ITile* tmp;
 
