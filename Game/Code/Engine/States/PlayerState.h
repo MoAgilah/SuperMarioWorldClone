@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/Core/Timer.h>
+#include <Engine/Core/CountdownTimer.h>
 #include <Engine/Interface/Scene/IObjectState.h>
 #include <Utilities/MovementController.h>
 #include <memory>
@@ -127,7 +127,7 @@ private:
 
 	void UpdateAnimation() override;
 
-	Timer* m_airTimer;
+	CountdownTimer* m_airTimer;
 	bool m_spinJump = false;
 	bool m_fromFall = false;
 };
@@ -148,5 +148,5 @@ private:
 
 	void UpdateAnimation() override;
 
-	Timer* m_airTimer;
+	CountdownTimer* m_airTimer;
 };

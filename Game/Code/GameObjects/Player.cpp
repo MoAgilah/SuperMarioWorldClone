@@ -164,7 +164,7 @@ void Player::Reset()
 	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
 
 
-	gameMgr->GetTimer().RestartTimer();
+	gameMgr->GetGameTimer().RestartTimer();
 
 	DECL_GET_OR_RETURN(scene, gameMgr->GetScene());
 

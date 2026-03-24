@@ -194,7 +194,7 @@ bool YoshiIsland1::AddGUI()
 	}
 
 	GetGUITextByName("Name")->SetText("x 00");
-	GetGUITextByName("Time")->SetText(std::to_string(static_cast<int>(gameMgr->GetTimer().GetCurrTime())));
+	GetGUITextByName("Time")->SetText(std::to_string(static_cast<int>(gameMgr->GetGameTimer().GetCurrTime())));
 
 	return true;
 }
@@ -305,5 +305,5 @@ void YoshiIsland1::UpdateGUI(float deltaTime)
 
 	spr->SetPosition(Vector2f(view->getCenter().x, 20));
 	txt->SetPosition(spr->GetPosition() + Vector2f(static_cast<float>(spr->GetTextureSize().x) * 0.5f + 20, -10));
-	txt->SetText(std::to_string(static_cast<int>(gameMgr->GetTimer().GetCurrTime())));
+	txt->SetText(std::to_string(static_cast<int>(gameMgr->GetGameTimer().GetCurrTime())));
 }

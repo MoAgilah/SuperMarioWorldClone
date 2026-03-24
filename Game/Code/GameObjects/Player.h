@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Engine/States/PlayerState.h"
-#include <Engine/Core/Timer.h>
+#include <Engine/Core/CountdownTimer.h>
 #include <Engine/Core/GameStateMgr.h>
 #include <Engine/Interface/Resources/IShader.h>
 #include <Engine/Input/KeyCode.h>
@@ -78,7 +78,7 @@ public:
 	bool GetAirbourne() const { return m_airbourne; }
 	void SetAirbourne(bool air);
 
-	Timer* GetAirTimer() { return &m_airTimer; }
+	CountdownTimer* GetAirTimer() { return &m_airTimer; }
 
 	SFAnimatedSprite* GetAnimatedSprite();
 	SFShader* GetShader();
@@ -99,8 +99,8 @@ private:
 	bool m_airbourne = false;
 	int m_coinTotal = 0;
 	float m_heightDiff = 11.25;
-	Timer m_airTimer;
-	Timer m_invulTimer;
+	CountdownTimer m_airTimer;
+	CountdownTimer m_invulTimer;
 	Vector2f m_spawnLoc;
 	IShader* m_fragShader;
 	GameStateMgr<IObjectState> m_stateMgr;
