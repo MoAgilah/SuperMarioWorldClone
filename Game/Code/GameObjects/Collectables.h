@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GameObjects/Collectables.h>
-#include <Engine/Core/Timer.h>
+#include <Engine/Core/CountdownTimer.h>
 #include <Utilities/Vector2.h>
 
 class Player;
@@ -69,5 +69,5 @@ public:
 private:
 
 	const float c_maxTravelTime = 2.15f;
-	Timer m_airTimer;
+	CountdownTimer m_airTimer;
 };

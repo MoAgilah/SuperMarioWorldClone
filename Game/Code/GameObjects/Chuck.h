@@ -24,5 +24,5 @@ private:
 	float m_waitTime = 0;
 	bool m_goingUp = true;
 	bool m_tookHit = false;
-	Timer m_waitTimer;
+	CountdownTimer m_waitTimer;
 };

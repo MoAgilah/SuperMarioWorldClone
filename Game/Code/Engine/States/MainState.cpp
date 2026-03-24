@@ -56,7 +56,7 @@ void MainState::Update(float deltaTime)
 
 		ProcessInputs();
 
-		m_gameMgr->GetTimer().Update(deltaTime);
+		m_gameMgr->GetGameTimer().Update(deltaTime);
 
 		m_gameMgr->GetScene()->Update(deltaTime);
 
