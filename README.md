@@ -1,163 +1,120 @@
-# 🍄 SuperMarioWorldClone
+# SuperMarioWorldClone
 
-A modern C++ reimagining of *Super Mario World*, rebuilt using [**SFMLEngine**](https://github.com/MoAgilah/SFMLEngine) and expanding on concepts from [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller).  
-This project demonstrates the new engine’s scalability with enhanced player controls, AI-driven automation, and robust state management systems.
+A modern **C++ 2D platformer project** inspired by *Super Mario World*, built using the modular [SFMLEngine](https://github.com/MoAgilah/SFMLEngine) framework.
 
-> **Status:** In active development — gameplay systems, AI controllers, and world logic are being incrementally rebuilt on the new architecture.
+The project focuses on scalable gameplay architecture, reusable systems, AI-driven automation, collision handling, animation systems, and state-driven game design while rebuilding and extending concepts originally explored in *AI-Game-Controller*.
 
----
-
-## 🎯 Goals & Purpose
-
-- Showcase the **capabilities of SFMLEngine** in handling more complex, state-driven games beyond Pong.  
-- Demonstrate the **integration of an AI controller** that mirrors human control inputs via the shared PlayerState system.  
-- Provide a testbed for **expanding AI behaviour**, such as adaptive learning, environment awareness, and procedural decision-making.  
-- Serve as a **blueprint for scalable 2D platformer architecture**, featuring clean code separation between engine, logic, and assets.  
-- Continue the evolution of ideas first explored in **AI-Game-Controller**, now reimagined through a modular engine and improved abstractions.
+> **Status:** Active development — gameplay systems, AI controllers, world logic, and engine integration are being incrementally expanded.
 
 ---
 
-## 📦 Download & Run
+## 🧠 Overview
 
-You can download the latest standalone executable below when manual debug mode integration has been completed.
+SuperMarioWorldClone explores how a larger-scale platformer can be structured using modular engine systems and clean gameplay separation.
 
-After downloading:
-
-- Extract the `.zip` file.  
-- Open the folder and run the executable:  
-  - **Windows:** `SuperMarioWorldClone.exe`  
-- Follow the instructions below to start and play.
+The project demonstrates player movement systems, collision handling, animation pipelines, tilemap-driven worlds, state management, and AI-ready input systems designed to support both manual and automated gameplay.
 
 ---
 
-## 🕹️ How to Start / Select
+## ⚙️ Key Features
 
-When you launch the game:
-
-1. A **Loading Screen** will appear briefly while assets and levels load.  
-2. The **Main Menu** will then display:  
-   - **Play Manually** — control Mario directly.  
-   - **AI Mode** — let the controller play automatically. *(WIP)*  
-3. Use **↑ / ↓** to navigate and **Enter** to confirm your selection.
-
-### Menu Flow
-- Choose your **mode** → load the current world.  
-- During play, you can pause, resume, or return to the title screen via the **Pause Menu**.
-
----
-
-## 🌍 Global Actions
-
-| Action                  | Key         |
-|--------------------------|-------------|
-| Open / Close Pause Menu  | **Space**   |
-| Confirm / Select         | **Enter**   |
-| Navigate Up / Down       | **↑ / ↓**   |
-| Navigate Left / Right    | **← / →**   |
-| Exit Game (any time)     | **Esc**     |
+- Player movement and platforming controls
+- Collision and physics systems
+- Tilemap and level management
+- Animation and sprite rendering systems
+- State-driven architecture
+- Scene and menu management
+- Collectables and scoring systems
+- Modular gameplay architecture
+- Shared player input abstraction for AI integration
+- AI-ready controller systems
+- Built on top of SFMLEngine
 
 ---
 
-## ⏸️ Pause Menu
+## 🤖 AI Integration
 
-Accessible during gameplay by pressing **Space**.
+The project is designed to support future AI-driven gameplay using systems evolved from the *AI-Game-Controller* project.
 
-**Options:**
-- **Resume** – return to the game.  
-- **To Title** – return to the main menu.  
-- **Quit** – close the game entirely.  
+Planned AI systems include:
 
-Use **↑ / ↓** to navigate and **Enter** to select.
+- Shared input mapping between human and AI players
+- NEAT-inspired evolutionary learning
+- Environment-aware movement and navigation
+- Adaptive gameplay behaviour
+- AI debugging and visualisation overlays
 
----
-
-## 🎮 Player Controls
-
-| Action | Key |
-|--------|-----|
-| Move Left / Right | ← / → |
-| Jump | **A** |
-| Spin Jump | **S** |
-| Crouch | ↓ |
-| Run / Hold | **Shift** |
-| Pause | **Space** |
-| Confirm / Select | **Enter** |
-| Exit Game | **Esc** |
-
-> These inputs are mirrored internally by the AI controller, ensuring identical movement and physics handling between human and automated play.
+The AI controller interacts with the same gameplay input systems used by manual players to ensure consistent physics and movement behaviour.
 
 ---
 
-## 🤖 Future AI Mode
+## 🧱 Architecture
 
-The **AI Mode** will leverage the updated **AI Controller** system introduced in [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller), rebuilt to take advantage of [**SFMLEngine**](https://github.com/MoAgilah/SFMLEngine)’s state-driven design.
+The project separates engine functionality, gameplay systems, rendering, and AI behaviour into modular components.
 
-### Planned Features
-- **NEAT-inspired neural evolution** — AI agents will learn movement, timing, and survival through adaptive fitness-based learning.  
-- **Shared input mapping** — AI uses the same input events as human players (*Jump, SpinJump, Move*, etc.).  
-- **Environment awareness** — the agent will analyse tiles, enemies, and platforms to plan movement.  
-- **Scalable training environments** — future worlds will serve as progressively challenging testbeds for evolving agents.
-
-
-## 📁 Repository Structure
-```
-Pong/
+```text
+SuperMarioWorldClone/
 ├── Game/
-│ ├── Code/ # Game-specific source code (entities, logic, main loop)
-│ └── Resources/ # Game-specific assets (textures, sounds, etc.)
-├── SFMLEngine/ # Submodule: the SFMLEngine repository
+│   ├── Code/         → Gameplay systems and logic
+│   ├── Resources/    → Sprites, audio, and assets
+│   └── Levels/       → Tilemaps and world data
+├── SFMLEngine/       → Engine submodule
 └── README.md
 ```
 
-## ⚙️ Getting Started
+### Core Systems
 
-### 1. Clone with Submodules
-```
-git clone https://github.com/MoAgilah/SuperMarioWorldClone.git
-cd Pong SuperMarioWorldClone
-git submodule update --init --recursive
-```
-### 2. Build
-
-#### 🧰 Using Visual Studio
-Simply open the solution (if provided) and build your desired configuration (**Debug** or **Release**).
-
-## 🧩 How It Works
-
-**SuperMarioWorldClone** is powered by the modular [**SFMLEngine**](https://github.com/MoAgilah/SFMLEngine), handling rendering, input, timing, and state transitions.  
-The game logic sits above this layer, focusing purely on character control, AI decision-making, and scene progression.
+- **Player & PlayerState** — layered movement and gameplay state handling
+- **MainMenuState** — menu and mode selection flow
+- **PauseMenuState** — global pause and navigation overlay
+- **AI Controller** — automated gameplay input abstraction
+- **Tilemap Systems** — level loading and collision support
+- **Animation Systems** — sprite and state-driven animation handling
 
 ---
 
-### 🔗 Key Systems
+## 🛠 Technologies
 
-- **Player & PlayerState** — A layered state machine controlling movement (*Lateral, Inclined, Vertical, Crouched, Dieing*) with shared physics for both manual and AI control.  
-- **MainMenuState** — Entry point for selecting between **Manual Play** and **Automated AI Control**.  
-- **PauseMenuState** — Global pause overlay with **Resume**, **Title**, and **Quit** actions.  
-- **AI Controller** — Issues high-level movement intents (e.g. *MoveLeft*, *Jump*, *SpinJump*) through the same interface as manual input, ensuring parity between human and automated control.
+- C++
+- SFML
+- SFMLEngine
+- Visual Studio
+- Object-oriented programming
+- State-driven architecture
+- Collision detection and physics
+- AI gameplay systems
 
-## 🧱 Game States
+---
 
-| State | Description |
-|--------|-------------|
-| **MainMenuState** | Title and mode selection (Manual or AI). |
-| **LoadingState** | Preloads textures, scenes, and assets. |
-| **MainState** | Active gameplay and camera logic. |
-| **PauseMenuState** | Accessible via **Space**, contains Resume, Title, and Quit. |
+## 🚀 Getting Started
 
+### Clone with Submodules
 
-## 🛠️ Future Extensions
+```bash
+git clone https://github.com/MoAgilah/SuperMarioWorldClone.git
+cd SuperMarioWorldClone
+git submodule update --init --recursive
+```
 
-- [ ] Complete integration of the **Manual Debugging Mode** — connect remaining input, camera, and state systems for full manual testing and developer control.
-- [ ] Expand AI controller with **NEAT-based learning** and adaptive decision-making.  
-- [ ] Add multiple **worlds** and stage transitions.  
-- [ ] Introduce new **enemies** and environmental hazards.  
-- [ ] Integrate **sound and music systems** for immersive feedback.  
-- [ ] Implement a **save/load** system for player progress.  
-- [ ] Add **AI debug overlays** to visualise decisions, sensors, and pathfinding.  
+### Build
 
-## 👤 Author
-**Mohamed Agilah**  
-🎓 Games Programmer & AI Developer  
-🌐 [Portfolio Website](https://moagilah.com/)  
-📧 Contact: agilahmohamed@gmail.com  
+1. Open the Visual Studio solution.
+2. Select **Debug** or **Release**.
+3. Build and run the project.
+
+A standalone executable will be provided once manual debug mode integration is completed.
+
+---
+
+## 🔭 Future Work
+
+- Complete manual debugging mode integration
+- Expand AI controller systems and adaptive learning
+- Add additional worlds and level transitions
+- Introduce enemies and environmental hazards
+- Integrate audio and music systems
+- Add save/load functionality
+- Implement AI debugging overlays and visualisation tools
+- Expand gameplay systems and engine tooling
+
+---
