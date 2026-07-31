@@ -1,120 +1,104 @@
-# SuperMarioWorldClone
+# SuperMarioClone
 
-A modern **C++ 2D platformer project** inspired by *Super Mario World*, built using the modular [SFMLEngine](https://github.com/MoAgilah/SFMLEngine) framework.
+A modern C++ application that demonstrates modular platforming systems, layered application architecture and reusable engine integration.
 
-The project focuses on scalable gameplay architecture, reusable systems, AI-driven automation, collision handling, animation systems, and state-driven game design while rebuilding and extending concepts originally explored in *AI-Game-Controller*.
+SuperMarioClone is built as an application layer on top of EngineSFMLBackend and EngineInterface, recreating the platform simulation originally developed within AIGameController as a standalone, reusable application. Rather than combining platform mechanics, rendering, artificial intelligence and engine functionality into a single project, the application separates world management, character systems, physics, animation and gameplay into modular components that consume reusable engine services through well-defined architectural boundaries.
 
-> **Status:** Active development — gameplay systems, AI controllers, world logic, and engine integration are being incrementally expanded.
-
----
-
-## 🧠 Overview
-
-SuperMarioWorldClone explores how a larger-scale platformer can be structured using modular engine systems and clean gameplay separation.
-
-The project demonstrates player movement systems, collision handling, animation pipelines, tilemap-driven worlds, state management, and AI-ready input systems designed to support both manual and automated gameplay.
+The project focuses on software engineering rather than recreating a commercial platform game, demonstrating how a modern platforming framework can be structured using scalable architecture, separation of concerns and reusable engine systems while providing the foundation for the next generation of AIGameController.
 
 ---
 
-## ⚙️ Key Features
+## The Engineering Problem
 
-- Player movement and platforming controls
-- Collision and physics systems
-- Tilemap and level management
-- Animation and sprite rendering systems
-- State-driven architecture
-- Scene and menu management
-- Collectables and scoring systems
-- Modular gameplay architecture
-- Shared player input abstraction for AI integration
-- AI-ready controller systems
-- Built on top of SFMLEngine
+The original AIGameController tightly coupled platform simulation and artificial intelligence within the same application. While effective as a research project, this architecture limited reuse of both the gameplay systems and the AI framework, making future development increasingly difficult.
+
+SuperMarioClone addresses this challenge by rebuilding the platform simulation as an independent application above EngineSFMLBackend and EngineInterface. This allows gameplay systems to evolve independently of artificial intelligence while providing stable interfaces that will allow the AIGameController to be reintroduced as a reusable submodule rather than remaining a standalone implementation.
 
 ---
 
-## 🤖 AI Integration
+## Application Architecture
 
-The project is designed to support future AI-driven gameplay using systems evolved from the *AI-Game-Controller* project.
+<p align="center">
+  <img width="700" alt="SuperMarioClone" src="https://github.com/user-attachments/assets/8070a3b2-7b34-4338-9968-cd2b577e9223" />
+</p>
 
-Planned AI systems include:
+The application is organised into modular systems responsible for world management, scene composition, platform simulation, character behaviour and supporting utilities. Beneath the application layer, EngineSFMLBackend and EngineInterface are integrated as Git submodules, providing reusable engine services while remaining completely independent from gameplay implementation.
 
-- Shared input mapping between human and AI players
-- NEAT-inspired evolutionary learning
-- Environment-aware movement and navigation
-- Adaptive gameplay behaviour
-- AI debugging and visualisation overlays
-
-The AI controller interacts with the same gameplay input systems used by manual players to ensure consistent physics and movement behaviour.
+The long-term architecture also positions AIGameController as an optional submodule capable of controlling characters through shared gameplay interfaces without requiring changes to the platform simulation.
 
 ---
 
-## 🧱 Architecture
+## Architecture Goals
 
-The project separates engine functionality, gameplay systems, rendering, and AI behaviour into modular components.
+The project was designed to demonstrate:
 
-```text
-SuperMarioWorldClone/
-├── Game/
-│   ├── Code/         → Gameplay systems and logic
-│   ├── Resources/    → Sprites, audio, and assets
-│   └── Levels/       → Tilemaps and world data
-├── SFMLEngine/       → Engine submodule
-└── README.md
-```
+- Modular platforming architecture
+- Layered application design
+- Separation of gameplay and engine systems
+- World and scene management
+- Platform simulation systems
+- Character and animation architecture
+- Future AI module integration
+- Scalable application structure
 
-### Core Systems
-
-- **Player & PlayerState** — layered movement and gameplay state handling
-- **MainMenuState** — menu and mode selection flow
-- **PauseMenuState** — global pause and navigation overlay
-- **AI Controller** — automated gameplay input abstraction
-- **Tilemap Systems** — level loading and collision support
-- **Animation Systems** — sprite and state-driven animation handling
+Although demonstrated through a side-scrolling platformer, these engineering principles are transferable to simulation software, robotics, interactive visualisations and larger C++ applications.
 
 ---
 
-## 🛠 Technologies
+## Key Features
 
-- C++
-- SFML
-- SFMLEngine
-- Visual Studio
-- Object-oriented programming
-- State-driven architecture
-- Collision detection and physics
-- AI gameplay systems
-
----
-
-## 🚀 Getting Started
-
-### Clone with Submodules
-
-```bash
-git clone https://github.com/MoAgilah/SuperMarioWorldClone.git
-cd SuperMarioWorldClone
-git submodule update --init --recursive
-```
-
-### Build
-
-1. Open the Visual Studio solution.
-2. Select **Debug** or **Release**.
-3. Build and run the project.
-
-A standalone executable will be provided once manual debug mode integration is completed.
+- Layered platforming architecture built on reusable engine modules
+- Modular world and scene management
+- Physics-driven character movement
+- Collision detection and response
+- Character animation systems
+- Tile-based level framework
+- Git submodule integration with EngineSFMLBackend and EngineInterface
+- Designed to support future AIGameController integration as a reusable module
 
 ---
 
-## 🔭 Future Work
+## Technologies & Engineering Practices
 
-- Complete manual debugging mode integration
-- Expand AI controller systems and adaptive learning
-- Add additional worlds and level transitions
-- Introduce enemies and environmental hazards
-- Integrate audio and music systems
-- Add save/load functionality
-- Implement AI debugging overlays and visualisation tools
-- Expand gameplay systems and engine tooling
+### Development
+
+- C++20
+- SFML 3
+- Visual Studio 2022
+- Git
+- Git Submodules
+
+### Engineering Practices
+
+- Layered Architecture
+- Modular Gameplay Systems
+- Separation of Concerns
+- State-Driven Design
+- Scene Management
+- Platform Simulation
+- Object-Oriented Design
+- Composition
+- Reusable Components
+- Engine Integration
+
+---
+
+## Architecture Highlights
+
+- Platform simulation isolated from rendering implementation
+- Modular world and scene management
+- Dedicated character movement and animation systems
+- Reusable collision and physics architecture
+- Clean separation between application, engine and backend layers
+- EngineSFMLBackend and EngineInterface integrated as reusable submodules
+- Designed for future AIGameController integration through shared interfaces
+
+---
+
+## Engineering Outcome
+
+SuperMarioClone demonstrates how a modern C++ platforming application can be developed on top of a reusable engine architecture while maintaining clear separation between gameplay systems and engine functionality.
+
+By rebuilding the platform simulation independently of the original AIGameController, the project establishes a reusable gameplay framework capable of supporting future artificial intelligence, additional gameplay features and larger worlds without compromising the modular engine architecture. The result is a cleaner, more extensible foundation that validates both EngineSFMLBackend and EngineInterface while preparing the next generation of AIGameController as a reusable application module.
 
 ---
